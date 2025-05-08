@@ -1,0 +1,66 @@
+@startuml C4_Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component diagram for Langflow Backend
+
+Container_Boundary(api_server, "Backend API") {
+    Component(api_router, "API Router", "FastAPI Router", "Routes API requests to appropriate handlers")
+    Component(auth_service, "Auth Service", "Python", "Handles authentication and authorization")
+    Component(settings_service, "Settings Service", "Python", "Manages application configuration")
+    Component(user_controller, "User Controller", "Python", "Handles user management operations")
+    Component(flow_controller, "Flow Controller", "Python", "Manages flow CRUD operations")
+    Component(component_controller, "Component Controller", "Python", "Provides component metadata")
+    Component(execution_controller, "Execution Controller", "Python", "Handles flow execution requests")
+    Component(file_controller, "File Controller", "Python", "Manages file uploads and downloads")
+    Component(middleware, "Middleware", "Python", "Handles cross-cutting concerns")
+}
+
+Container_Boundary(flow_engine, "Flow Engine") {
+    Component(flow_parser, "Flow Parser", "Python", "Parses flow definitions")
+    Component(graph_manager, "Graph Manager", "Python", "Manages flow graph representation")
+    Component(component_registry, "Component Registry", "Python", "Registers and manages component types")
+    Component(executor, "Executor", "Python", "Executes flow components")
+    Component(state_manager, "State Manager", "Python", "Manages execution state")
+    Component(error_handler, "Error Handler", "Python", "Handles execution errors")
+}
+
+Container(web_app, "Frontend", "React, TypeScript", "Provides UI for building and testing flows")
+ContainerDb(database, "Database", "SQLite/PostgreSQL", "Stores flows, users, and configuration")
+Container(file_storage, "File Storage", "Python", "Manages uploaded files and assets")
+Container(queue_service, "Queue Service", "Python", "Handles background tasks")
+
+System_Ext(llm_provider, "LLM Provider", "External LLM service")
+System_Ext(vector_db, "Vector Database", "External vector storage")
+
+Rel(web_app, api_router, "Makes API calls to", "HTTPS/REST")
+Rel(api_router, auth_service, "Authenticates requests using")
+Rel(api_router, user_controller, "Routes user requests to")
+Rel(api_router, flow_controller, "Routes flow requests to")
+Rel(api_router, component_controller, "Routes component requests to")
+Rel(api_router, execution_controller, "Routes execution requests to")
+Rel(api_router, file_controller, "Routes file requests to")
+
+Rel(flow_controller, database, "Stores and retrieves flows from")
+Rel(user_controller, database, "Stores and retrieves users from")
+Rel(file_controller, file_storage, "Stores and retrieves files from")
+
+Rel(execution_controller, flow_engine, "Executes flows using")
+Rel(execution_controller, queue_service, "Queues long-running executions with")
+
+Rel(flow_engine, component_registry, "Uses components from")
+Rel(flow_parser, graph_manager, "Creates graph using")
+Rel(executor, state_manager, "Tracks execution state using")
+Rel(executor, error_handler, "Handles errors using")
+
+Rel(executor, llm_provider, "Makes API calls to", "HTTPS/REST")
+Rel(executor, vector_db, "Stores and retrieves vectors from", "HTTPS/REST")
+
+Rel(component_controller, component_registry, "Retrieves component metadata from")
+Rel(flow_controller, flow_parser, "Validates flows using")
+
+Rel_U(auth_service, settings_service, "Uses configuration from")
+Rel_U(component_registry, settings_service, "Uses configuration from")
+
+@enduml

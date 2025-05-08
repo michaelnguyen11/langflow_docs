@@ -1,0 +1,47 @@
+@startuml C4_Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container diagram for Langflow
+
+Person(user, "User", "A user who wants to create and deploy AI workflows")
+Person(admin, "Administrator", "A system administrator who manages users and configurations")
+Person(developer, "Developer", "A developer who wants to integrate with Langflow APIs")
+
+System_Boundary(langflow_system, "Langflow") {
+    Container(web_app, "Frontend", "React, TypeScript", "Provides UI for building and testing flows")
+    Container(api_server, "Backend API", "Python, FastAPI", "Handles API requests and manages flows")
+    Container(flow_engine, "Flow Engine", "Python", "Executes AI workflows")
+    ContainerDb(database, "Database", "SQLite/PostgreSQL", "Stores flows, users, and configuration")
+    Container(file_storage, "File Storage", "Python", "Manages uploaded files and assets")
+    Container(queue_service, "Queue Service", "Python", "Handles background tasks and long-running operations")
+}
+
+System_Ext(llm_provider, "LLM Provider", "External LLM service (OpenAI, etc.)")
+System_Ext(vector_db, "Vector Database", "External vector storage (Pinecone, etc.)")
+System_Ext(data_source, "External Data Source", "Source of documents and data")
+System_Ext(monitoring, "Monitoring Tools", "LangSmith, LangFuse, etc.")
+System_Ext(external_app, "External Application", "Application using Langflow APIs")
+
+Rel(user, web_app, "Uses", "HTTPS")
+Rel(admin, web_app, "Administers", "HTTPS")
+Rel(developer, api_server, "Uses API", "HTTPS/REST")
+Rel(external_app, api_server, "Makes API calls to", "HTTPS/REST")
+
+Rel(web_app, api_server, "Makes API calls to", "HTTPS/REST")
+Rel(api_server, flow_engine, "Executes flows using")
+Rel(api_server, database, "Reads from and writes to")
+Rel(api_server, file_storage, "Stores and retrieves files")
+Rel(api_server, queue_service, "Queues background tasks")
+Rel(flow_engine, database, "Reads flow definitions from")
+Rel(flow_engine, file_storage, "Accesses files from")
+Rel(queue_service, flow_engine, "Executes flows using")
+
+Rel(flow_engine, llm_provider, "Makes API calls to", "HTTPS/REST")
+Rel(flow_engine, vector_db, "Stores and retrieves vectors", "HTTPS/REST")
+Rel(flow_engine, data_source, "Loads data from", "Various")
+Rel(api_server, monitoring, "Sends telemetry to", "HTTPS")
+Rel(flow_engine, monitoring, "Sends execution data to", "HTTPS")
+
+@enduml

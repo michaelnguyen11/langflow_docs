@@ -1,0 +1,60 @@
+@startuml Developer_Custom_Component
+title Developer Perspective - Creating Custom Component Sequence
+
+actor "Developer" as Developer
+boundary "Code Editor" as Editor
+entity "Custom Component" as Component
+control "Langflow Backend" as Backend
+control "Component Registry" as Registry
+boundary "Langflow UI" as UI
+control "Flow Editor" as FlowEditor
+
+Developer -> Editor: Create component class
+Developer -> Editor: Define component inputs and outputs
+Developer -> Editor: Implement component logic
+Developer -> Editor: Add type annotations
+Developer -> Editor: Add docstrings and metadata
+
+Developer -> Editor: Save component to project directory
+
+alt Local component
+    Developer -> Backend: Start/restart Langflow
+    Backend -> Registry: Scan component directories
+    Registry -> Registry: Discover custom component
+    Registry -> Component: Load component class
+    Component -> Registry: Return component metadata
+    Registry -> Backend: Register component
+    Developer -> UI: Open Langflow
+    UI -> Backend: Get components
+    Backend --> UI: Component list including custom component
+    UI -> Developer: Display custom component in sidebar
+else Custom component bundle
+    Developer -> Editor: Package component as bundle
+    Editor -> Developer: Generated bundle file
+    Developer -> UI: Upload component bundle
+    UI -> Backend: Upload bundle
+    Backend -> Registry: Extract and register component
+    Registry -> Component: Load component class
+    Component -> Registry: Return component metadata
+    Registry -> Backend: Register component
+    Backend --> UI: Update component list
+    UI -> Developer: Display custom component in sidebar
+end
+
+Developer -> FlowEditor: Drag custom component to canvas
+FlowEditor -> Backend: Get component schema
+Backend -> Registry: Retrieve component schema
+Registry --> Backend: Component schema
+Backend --> FlowEditor: Schema information
+FlowEditor -> Developer: Display component configuration panel
+
+Developer -> FlowEditor: Configure component
+FlowEditor -> FlowEditor: Update flow with custom component
+Developer -> FlowEditor: Connect component to other nodes
+Developer -> FlowEditor: Save flow with custom component
+FlowEditor -> Backend: Save flow
+Backend -> Backend: Validate flow with custom component
+Backend --> FlowEditor: Flow saved
+FlowEditor -> Developer: Display success message
+
+@enduml

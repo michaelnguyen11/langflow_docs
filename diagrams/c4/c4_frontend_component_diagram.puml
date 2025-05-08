@@ -1,0 +1,59 @@
+@startuml C4_Frontend_Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component diagram for Langflow Frontend
+
+Container_Boundary(web_app, "Frontend") {
+    Component(router, "Router", "React Router", "Manages application routing")
+    Component(auth_context, "Auth Context", "React Context", "Manages authentication state")
+    Component(api_client, "API Client", "TypeScript", "Communicates with backend API")
+    
+    Component(flow_editor, "Flow Editor", "React Component", "Provides flow editing interface")
+    Component(component_sidebar, "Component Sidebar", "React Component", "Lists available components")
+    Component(node_panel, "Node Panel", "React Component", "Configures node properties")
+    Component(playground, "Playground", "React Component", "Tests flow execution")
+    
+    Component(custom_nodes, "Custom Nodes", "React Components", "UI representations of components")
+    Component(custom_edges, "Custom Edges", "React Components", "UI representations of connections")
+    
+    Component(flow_store, "Flow Store", "TypeScript", "Manages flow state")
+    Component(component_store, "Component Store", "TypeScript", "Manages component metadata")
+    Component(ui_store, "UI Store", "TypeScript", "Manages UI state")
+    
+    Component(flow_hooks, "Flow Hooks", "React Hooks", "Provides flow functionality")
+    Component(api_hooks, "API Hooks", "React Hooks", "Provides API functionality")
+    Component(auth_hooks, "Auth Hooks", "React Hooks", "Provides authentication functionality")
+}
+
+Container(api_server, "Backend API", "Python, FastAPI", "Handles API requests and manages flows")
+
+Rel(router, flow_editor, "Routes to")
+Rel(router, playground, "Routes to")
+
+Rel(flow_editor, custom_nodes, "Uses")
+Rel(flow_editor, custom_edges, "Uses")
+Rel(flow_editor, component_sidebar, "Includes")
+Rel(flow_editor, node_panel, "Includes")
+
+Rel(flow_editor, flow_store, "Uses")
+Rel(component_sidebar, component_store, "Uses")
+Rel(node_panel, flow_store, "Updates")
+Rel(playground, flow_store, "Uses")
+
+Rel(flow_editor, flow_hooks, "Uses")
+Rel(playground, api_hooks, "Uses")
+Rel(router, auth_hooks, "Uses")
+
+Rel(flow_hooks, flow_store, "Manages")
+Rel(api_hooks, api_client, "Uses")
+Rel(auth_hooks, auth_context, "Uses")
+
+Rel(api_client, api_server, "Makes API calls to", "HTTPS/REST")
+Rel(auth_context, api_client, "Provides tokens to")
+
+Rel(flow_store, ui_store, "Updates")
+Rel(component_store, api_client, "Fetches component data using")
+
+@enduml

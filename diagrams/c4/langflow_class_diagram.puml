@@ -1,0 +1,164 @@
+@startuml Langflow_Classes
+
+title Class diagram for Langflow Core Components
+
+' Backend Component Classes
+class FlowService {
+  +create_flow()
+  +update_flow()
+  +delete_flow()
+  +get_flow()
+}
+
+class Flow {
+  +id: str
+  +name: str
+  +nodes: List[Node]
+  +edges: List[Edge]
+}
+
+class Node {
+  +id: str
+  +type: str
+  +position: Dict
+  +data: Dict
+}
+
+class Edge {
+  +id: str
+  +source: str
+  +target: str
+}
+
+class ComponentType {
+  +build()
+  +to_dict()
+}
+
+class LLMComponent extends ComponentType {
+  +model_name: str
+  +api_key: str
+}
+
+class AgentComponent extends ComponentType {
+  +agent_type: str
+  +tools: List
+}
+
+class ChainComponent extends ComponentType {
+  +chain_type: str
+  +memory: Memory
+}
+
+class GraphProcessor {
+  +process_graph()
+}
+
+class FlowExecutor {
+  +execute_flow()
+}
+
+' Frontend Component Classes
+class FlowProvider {
+  +currentFlow: Flow
+  +updateFlow()
+}
+
+class FlowStore {
+  +flows: Map<string, Flow>
+  +selectedFlow: string
+  +fetchFlows()
+  +saveFlow()
+}
+
+class NodeComponent {
+  +node: Node
+  +selected: boolean
+  +render()
+}
+
+class FlowCanvas {
+  +nodes: Node[]
+  +edges: Edge[]
+  +render()
+}
+
+class NodeConfigPanel {
+  +node: Node
+  +updateNodeData()
+}
+
+class ApiService {
+  +fetchFlows()
+  +saveFlow()
+  +executeFlow()
+}
+
+' Database models
+class FlowModel {
+  +id: str
+  +user_id: str
+  +data: JSON
+}
+
+class UserModel {
+  +id: str
+  +username: str
+  +email: str
+}
+
+class FileModel {
+  +id: str
+  +user_id: str
+  +filename: str
+}
+
+' API endpoints
+class FlowEndpoints {
+  +create_flow()
+  +update_flow()
+  +delete_flow()
+  +get_flow()
+}
+
+class UserEndpoints {
+  +create_user()
+  +get_user()
+}
+
+class ComponentEndpoints {
+  +get_components()
+}
+
+class ExecutionEndpoints {
+  +execute_flow()
+}
+
+' Relationships
+Flow "1" -- "*" Node : contains
+Flow "1" -- "*" Edge : contains
+Node "*" -- "*" Edge : connected by
+
+FlowService -- Flow : creates/updates/deletes
+FlowExecutor -- Flow : executes
+GraphProcessor -- Flow : processes
+Node -- ComponentType : is of type
+
+FlowProvider -- FlowStore : uses
+FlowCanvas -- NodeComponent : renders
+NodeConfigPanel -- NodeComponent : configures
+FlowStore -- ApiService : uses
+ApiService -- FlowService : calls
+
+FlowService -- FlowModel : uses
+FlowModel -- UserModel : belongs to
+FileModel -- UserModel : belongs to
+
+FlowEndpoints -- FlowService : uses
+ExecutionEndpoints -- FlowExecutor : uses
+ApiService -- FlowEndpoints : calls
+ApiService -- ExecutionEndpoints : calls
+ApiService -- ComponentEndpoints : calls
+ApiService -- UserEndpoints : calls
+
+@enduml

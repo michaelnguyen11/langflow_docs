@@ -1,0 +1,59 @@
+@startuml Integration_Architecture
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Langflow Integration Architecture
+
+Person(end_user, "End User", "User of mobile/web applications")
+Person(knowledge_user, "Knowledge Worker", "Creates content in Confluence")
+
+System_Boundary(langflow_system, "Langflow Platform") {
+    Container(frontend, "Langflow Frontend", "React", "User interface for building flows")
+    Container(backend_api, "Langflow Backend API", "FastAPI", "REST API for flows and execution")
+    Container(flow_engine, "Flow Engine", "Python", "Executes AI workflows")
+    
+    Container(confluence_component, "Confluence Component", "Python", "Custom component for Confluence integration")
+    Container(vector_store, "Vector Store", "Python/Database", "Stores document embeddings")
+    Container(api_gateway, "API Gateway", "AWS/Azure/Custom", "Exposes flow execution APIs")
+}
+
+System_Boundary(aws_services, "AWS AI Services") {
+    System_Ext(bedrock, "Amazon Bedrock", "Foundation model service")
+    System_Ext(kendra, "Amazon Kendra", "Enterprise search service")
+    System_Ext(comprehend, "Amazon Comprehend", "NLP service")
+}
+
+System_Ext(confluence, "Confluence", "Enterprise wiki and documentation")
+System_Ext(mobile_app, "Mobile Application", "iOS/Android app")
+System_Ext(web_app, "Web Application", "Browser-based app")
+System_Ext(auth_provider, "Authentication Provider", "Corporate IdP, Cognito, etc.")
+
+' Langflow internal relationships
+Rel(frontend, backend_api, "Makes API calls to")
+Rel(backend_api, flow_engine, "Executes flows using")
+Rel(flow_engine, confluence_component, "Uses")
+Rel(flow_engine, vector_store, "Stores and retrieves vectors from")
+Rel(backend_api, api_gateway, "Exposes APIs through")
+
+' External relationships
+Rel(confluence_component, confluence, "Retrieves documents from")
+Rel(knowledge_user, confluence, "Creates and updates content in")
+Rel(flow_engine, bedrock, "Uses for text generation")
+Rel(flow_engine, kendra, "Uses for search")
+Rel(flow_engine, comprehend, "Uses for text analysis")
+
+' Client application relationships
+Rel(end_user, mobile_app, "Uses")
+Rel(end_user, web_app, "Uses")
+Rel(mobile_app, api_gateway, "Makes API calls to")
+Rel(web_app, api_gateway, "Makes API calls to")
+Rel(end_user, frontend, "Builds flows using")
+
+' Authentication
+Rel(mobile_app, auth_provider, "Authenticates with")
+Rel(web_app, auth_provider, "Authenticates with")
+Rel(frontend, auth_provider, "Authenticates with")
+Rel(api_gateway, auth_provider, "Validates tokens with")
+
+@enduml

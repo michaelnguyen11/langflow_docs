@@ -1,0 +1,63 @@
+@startuml Confluence_Integration
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Confluence Integration Flow for Langflow
+
+Person(end_user, "End User", "Asks questions about internal documentation")
+
+Container_Boundary(langflow, "Langflow Platform") {
+    Component(flow_editor, "Flow Editor", "React", "Creates the integration flow")
+    Component(flow_engine, "Flow Engine", "Python", "Executes the workflow")
+    
+    Container_Boundary(confluence_components, "Confluence Integration Components") {
+        Component(confluence_loader, "Confluence Loader", "Python Component", "Loads documents from Confluence")
+        Component(text_splitter, "Text Splitter", "Python Component", "Splits documents into chunks")
+        Component(embeddings, "Embedding Model", "Python Component", "Generates vector embeddings")
+        Component(vector_store, "Vector Store", "Python Component", "Stores and retrieves document embeddings")
+        Component(retriever, "Retrieval Component", "Python Component", "Retrieves relevant documents")
+        Component(llm, "LLM Component", "Python Component", "Generates responses from context")
+        Component(prompt_template, "Prompt Template", "Python Component", "Formats the input for the LLM")
+        Component(chain, "Retrieval Chain", "Python Component", "Orchestrates the retrieval process")
+    }
+    
+    Component(api_endpoint, "API Endpoint", "FastAPI", "Exposes the flow as an API")
+}
+
+System_Ext(confluence, "Confluence", "Atlassian Confluence")
+System_Ext(client_app, "Client Application", "Mobile/Web App")
+System_Ext(bedrock, "Amazon Bedrock", "Foundation model service")
+
+' Flow creation
+Rel(flow_editor, confluence_loader, "Configures")
+Rel(flow_editor, text_splitter, "Configures")
+Rel(flow_editor, embeddings, "Configures")
+Rel(flow_editor, vector_store, "Configures")
+Rel(flow_editor, retriever, "Configures")
+Rel(flow_editor, llm, "Configures")
+Rel(flow_editor, prompt_template, "Configures")
+Rel(flow_editor, chain, "Configures")
+Rel(flow_editor, api_endpoint, "Exposes as")
+
+' Document indexing flow
+Rel(confluence_loader, confluence, "Fetches documents from")
+Rel(confluence_loader, text_splitter, "Passes documents to")
+Rel(text_splitter, embeddings, "Passes chunks to")
+Rel(embeddings, vector_store, "Stores embeddings in")
+Rel(embeddings, bedrock, "May use for embedding generation")
+
+' Query flow
+Rel(client_app, api_endpoint, "Sends query to")
+Rel(api_endpoint, chain, "Invokes")
+Rel(chain, prompt_template, "Uses")
+Rel(chain, retriever, "Uses for document retrieval")
+Rel(retriever, vector_store, "Retrieves similar documents from")
+Rel(chain, llm, "Sends context and query to")
+Rel(llm, bedrock, "May use for text generation")
+Rel(api_endpoint, client_app, "Returns response to")
+
+' End user interaction
+Rel(end_user, client_app, "Interacts with")
+
+@enduml

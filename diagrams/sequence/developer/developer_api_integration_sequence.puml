@@ -1,0 +1,65 @@
+@startuml Developer_API_Integration
+title Developer Perspective - API Integration Sequence
+
+actor "Developer" as Developer
+boundary "Application Code" as App
+control "Auth Module" as Auth
+control "API Client" as Client
+control "Langflow API" as API
+entity "Flow Execution" as Flow
+
+Developer -> App: Implement authentication
+App -> Auth: Configure authentication
+Developer -> App: Create API client
+
+Developer -> Client: Implement API client methods
+Client -> Client: Add endpoint URLs
+Client -> Client: Add authentication headers
+Client -> Client: Add request/response handling
+
+Developer -> App: Implement flow execution
+App -> Client: prepareRequestData()
+App -> Client: executeFlow(flowId, inputs)
+Client -> Auth: getAuthToken()
+Auth --> Client: Token
+Client -> API: POST /api/v1/flows/{id}/execute
+API -> API: Validate request
+API -> API: Authenticate token
+API -> Flow: Execute flow
+Flow --> API: Execution results
+API --> Client: Response with results
+Client -> Client: parseResponse()
+Client --> App: Processed results
+
+Developer -> App: Implement error handling
+App -> Client: Handle timeouts
+App -> Client: Handle authentication errors
+App -> Client: Handle execution errors
+
+Developer -> App: Implement streaming for chat flows
+App -> Client: startChatSession(flowId)
+Client -> API: POST /api/v1/flows/chat/{id}
+API -> Flow: Initialize chat
+Flow --> API: Initial response
+API --> Client: Response
+Client --> App: Initial message
+
+loop Chat interaction
+    App -> Client: sendMessage(message)
+    Client -> API: POST /api/v1/flows/chat/{id}
+    API -> Flow: Process message with history
+    Flow --> API: Response
+    API --> Client: Response with message
+    Client --> App: New message
+end
+
+Developer -> App: Implement caching (optional)
+App -> App: Cache responses
+App -> App: Implement cache invalidation
+
+Developer -> App: Test integration
+App -> API: Test API calls
+API --> App: Test responses
+App -> Developer: Display test results
+
+@enduml

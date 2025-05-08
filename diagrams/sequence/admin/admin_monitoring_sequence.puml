@@ -1,0 +1,118 @@
+@startuml Admin_Monitoring
+title Administrator Perspective - System Monitoring Sequence
+
+actor "Administrator" as Admin
+boundary "Admin UI" as AdminUI
+control "Monitoring Dashboard" as Dashboard
+control "Backend API" as API
+database "Database" as DB
+entity "Logging Service" as Logging
+entity "Metrics Service" as Metrics
+entity "Alert Service" as Alerts
+
+Admin -> AdminUI: Login with admin credentials
+AdminUI -> API: Authenticate admin
+API -> DB: Verify admin credentials
+DB --> API: Admin authenticated
+API --> AdminUI: Authentication successful
+AdminUI -> Admin: Display admin dashboard
+
+Admin -> AdminUI: Navigate to monitoring
+AdminUI -> Dashboard: Initialize monitoring view
+Dashboard -> API: GET /api/v1/admin/metrics/summary
+API -> Metrics: get_system_metrics()
+Metrics -> Metrics: Collect current metrics
+Metrics --> API: System metrics
+API --> Dashboard: Metrics data
+Dashboard -> Admin: Display system overview
+
+loop Periodic refresh
+    Dashboard -> API: GET /api/v1/admin/metrics/live
+    API -> Metrics: get_live_metrics()
+    Metrics --> API: Live metrics
+    API --> Dashboard: Updated metrics
+    Dashboard -> Dashboard: Update displays
+end
+
+Admin -> Dashboard: View logs
+Dashboard -> API: GET /api/v1/admin/logs
+API -> Logging: get_recent_logs()
+Logging -> DB: Query logs
+DB --> Logging: Log entries
+Logging --> API: Log data
+API --> Dashboard: Log entries
+Dashboard -> Admin: Display log viewer
+
+alt Filter logs
+    Admin -> Dashboard: Set log filters
+    Dashboard -> API: GET /api/v1/admin/logs?filters=...
+    API -> Logging: get_filtered_logs(filters)
+    Logging -> DB: Query with filters
+    DB --> Logging: Filtered logs
+    Logging --> API: Filtered log data
+    API --> Dashboard: Filtered entries
+    Dashboard -> Admin: Display filtered logs
+end
+
+Admin -> Dashboard: View active users
+Dashboard -> API: GET /api/v1/admin/users/active
+API -> DB: Query active sessions
+DB --> API: Active user data
+API --> Dashboard: Active user list
+Dashboard -> Admin: Display active users
+
+Admin -> Dashboard: View flow executions
+Dashboard -> API: GET /api/v1/admin/executions
+API -> DB: Query recent executions
+DB --> API: Execution data
+API --> Dashboard: Execution list
+Dashboard -> Admin: Display execution history
+
+alt Filter executions
+    Admin -> Dashboard: Set execution filters
+    Dashboard -> API: GET /api/v1/admin/executions?filters=...
+    API -> DB: Query with filters
+    DB --> API: Filtered executions
+    API --> Dashboard: Filtered list
+    Dashboard -> Admin: Display filtered executions
+end
+
+Admin -> Dashboard: View system alerts
+Dashboard -> API: GET /api/v1/admin/alerts
+API -> Alerts: get_active_alerts()
+Alerts -> DB: Query alerts
+DB --> Alerts: Alert data
+Alerts --> API: Active alerts
+API --> Dashboard: Alert list
+Dashboard -> Admin: Display alerts
+
+alt Respond to alert
+    Admin -> Dashboard: Acknowledge alert
+    Dashboard -> API: PUT /api/v1/admin/alerts/{id}/acknowledge
+    API -> Alerts: acknowledge_alert(id)
+    Alerts -> DB: Update alert status
+    DB --> Alerts: Alert updated
+    Alerts --> API: Acknowledgment successful
+    API --> Dashboard: Alert status updated
+    Dashboard -> Admin: Display updated alert status
+end
+
+Admin -> Dashboard: View performance metrics
+Dashboard -> API: GET /api/v1/admin/metrics/performance
+API -> Metrics: get_performance_metrics()
+Metrics -> DB: Query historical metrics
+DB --> Metrics: Historical data
+Metrics --> API: Performance data
+API --> Dashboard: Performance metrics
+Dashboard -> Admin: Display performance charts
+
+Admin -> Dashboard: Generate system report
+Dashboard -> API: POST /api/v1/admin/reports/generate
+API -> API: Collect system data
+API -> DB: Query report data
+DB --> API: Report data
+API -> API: Generate report document
+API --> Dashboard: Report download link
+Dashboard -> Admin: Provide download link
+
+@enduml

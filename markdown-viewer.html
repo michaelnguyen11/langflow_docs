@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Viewer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            padding: 20px;
+            max-width: 100%;
+        }
+        
+        #markdown-content {
+            padding-bottom: 40px;
+        }
+        
+        pre {
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 16px;
+            overflow: auto;
+        }
+        
+        code {
+            font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        pre code {
+            padding: 0;
+            background-color: transparent;
+        }
+        
+        blockquote {
+            border-left: 4px solid #ddd;
+            padding-left: 16px;
+            margin-left: 0;
+            color: #666;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+        
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        
+        th, td {
+            padding: 8px 12px;
+        }
+        
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+        
+        h1 {
+            font-size: 2em;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid #eaecef;
+        }
+        
+        h2 {
+            font-size: 1.5em;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid #eaecef;
+        }
+        
+        h3 {
+            font-size: 1.25em;
+        }
+        
+        h4 {
+            font-size: 1em;
+        }
+        
+        h5 {
+            font-size: 0.875em;
+        }
+        
+        h6 {
+            font-size: 0.85em;
+            color: #6a737d;
+        }
+        
+        ul, ol {
+            padding-left: 2em;
+        }
+        
+        li + li {
+            margin-top: 0.25em;
+        }
+        
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .toc {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .toc-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="markdown-content">
+        <div class="loading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const markdownContent = document.getElementById('markdown-content');
+            
+            // Get file path from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const filePath = urlParams.get('file');
+            
+            if (!filePath) {
+                markdownContent.innerHTML = '<div class="alert alert-danger">No file specified</div>';
+                return;
+            }
+            
+            // Set document title based on file name
+            const fileName = filePath.split('/').pop().replace('.md', '');
+            document.title = fileName;
+            
+            // Function to convert relative image paths to absolute
+            function fixImagePaths(markdown, baseUrl) {
+                // Replace relative image paths with absolute paths
+                // This regex looks for markdown image syntax: ![alt text](path/to/image.jpg)
+                return markdown.replace(/!\[(.*?)\]\(((?!http|https:\/\/).*?)\)/g, function(match, alt, path) {
+                    // If path is already absolute, leave it as is
+                    if (path.startsWith('/')) {
+                        return `![${alt}](${path})`;
+                    }
+                    
+                    // Extract directory from the markdown file path
+                    const dirPath = baseUrl.split('/').slice(0, -1).join('/');
+                    return `![${alt}](${dirPath}/${path})`;
+                });
+            }
+            
+            // Function to create table of contents
+            function createTableOfContents(html) {
+                const container = document.createElement('div');
+                container.innerHTML = html;
+                
+                const headings = container.querySelectorAll('h2, h3, h4');
+                if (headings.length < 3) {
+                    return html;
+                }
+                
+                const toc = document.createElement('div');
+                toc.className = 'toc';
+                toc.innerHTML = '<div class="toc-title">Table of Contents</div><ul></ul>';
+                
+                headings.forEach((heading, index) => {
+                    // Add ID to heading if it doesn't have one
+                    if (!heading.id) {
+                        heading.id = `heading-${index}`;
+                    }
+                    
+                    const li = document.createElement('li');
+                    li.style.marginLeft = `${(heading.tagName.charAt(1) - 2) * 20}px`;
+                    
+                    const a = document.createElement('a');
+                    a.href = `#${heading.id}`;
+                    a.textContent = heading.textContent;
+                    
+                    li.appendChild(a);
+                    toc.querySelector('ul').appendChild(li);
+                });
+                
+                container.insertBefore(toc, container.firstChild);
+                return container.innerHTML;
+            }
+            
+            // Fetch and render markdown
+            fetch(filePath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(markdown => {
+                    // Fix image paths
+                    const fixedMarkdown = fixImagePaths(markdown, filePath);
+                    
+                    // Render markdown to HTML
+                    let html = marked.parse(fixedMarkdown);
+                    
+                    // Add table of contents
+                    html = createTableOfContents(html);
+                    
+                    // Display content
+                    markdownContent.innerHTML = html;
+                    
+                    // Add syntax highlighting
+                    if (window.hljs) {
+                        document.querySelectorAll('pre code').forEach((block) => {
+                            hljs.highlightBlock(block);
+                        });
+                    }
+                    
+                    // Add CSS class to tables
+                    document.querySelectorAll('table').forEach(table => {
+                        table.classList.add('table', 'table-bordered');
+                    });
+                    
+                    // Make external links open in new tab
+                    document.querySelectorAll('a[href^="http"]').forEach(link => {
+                        link.setAttribute('target', '_blank');
+                        link.setAttribute('rel', 'noopener noreferrer');
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading markdown:', error);
+                    markdownContent.innerHTML = `<div class="alert alert-danger">Error loading document: ${error.message}</div>`;
+                });
+        });
+    </script>
+    
+    <!-- Optional: Add syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+</body>
+</html>

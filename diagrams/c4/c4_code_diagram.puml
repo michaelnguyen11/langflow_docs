@@ -1,0 +1,70 @@
+@startuml C4_Code
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Code diagram for Langflow Core Components
+
+' Backend Component Classes
+Class(FlowService, "FlowService", "Python Class", "Manages flow operations")
+Class(Flow, "Flow", "Python Class", "Represents a flow")
+Class(Node, "Node", "Python Class", "Represents a node in a flow")
+Class(Edge, "Edge", "Python Class", "Represents a connection between nodes")
+Class(ComponentType, "ComponentType", "Python Class", "Base class for component types")
+Class(LLMComponent, "LLMComponent", "Python Class", "LLM component implementation")
+Class(AgentComponent, "AgentComponent", "Python Class", "Agent component implementation")
+Class(ChainComponent, "ChainComponent", "Python Class", "Chain component implementation")
+Class(GraphProcessor, "GraphProcessor", "Python Class", "Processes flow graphs")
+Class(FlowExecutor, "FlowExecutor", "Python Class", "Executes flows")
+
+' Frontend Component Classes
+Class(FlowProvider, "FlowProvider", "React Context", "Provides flow context")
+Class(FlowStore, "FlowStore", "TypeScript Class", "Manages flow state")
+Class(NodeComponent, "NodeComponent", "React Component", "Base component for nodes")
+Class(FlowCanvas, "FlowCanvas", "React Component", "Canvas for the flow editor")
+Class(NodeConfigPanel, "NodeConfigPanel", "React Component", "Panel for node configuration")
+Class(ApiService, "ApiService", "TypeScript Class", "Handles API communication")
+
+' Relationships
+Rel(Flow, "1", "*", Node, "contains")
+Rel(Flow, "1", "*", Edge, "contains")
+Rel(Node, "*", "*", Edge, "connected by")
+
+Rel(FlowService, "creates/updates/deletes", Flow)
+Rel(FlowExecutor, "executes", Flow)
+Rel(GraphProcessor, "processes", Flow)
+Rel(Node, "is of type", ComponentType)
+
+Rel_Inheritance(LLMComponent, ComponentType)
+Rel_Inheritance(AgentComponent, ComponentType)
+Rel_Inheritance(ChainComponent, ComponentType)
+
+Rel(FlowProvider, "uses", FlowStore)
+Rel(FlowCanvas, "renders", NodeComponent)
+Rel(NodeConfigPanel, "configures", NodeComponent)
+Rel(FlowStore, "uses", ApiService)
+Rel(ApiService, "calls", FlowService)
+
+' Database models
+Class(FlowModel, "FlowModel", "SQLAlchemy Model", "Database model for flows")
+Class(UserModel, "UserModel", "SQLAlchemy Model", "Database model for users")
+Class(FileModel, "FileModel", "SQLAlchemy Model", "Database model for files")
+
+Rel(FlowService, "uses", FlowModel)
+Rel(FlowModel, "belongs to", UserModel)
+Rel(FileModel, "belongs to", UserModel)
+
+' API endpoints
+Class(FlowEndpoints, "FlowEndpoints", "FastAPI Router", "API endpoints for flows")
+Class(UserEndpoints, "UserEndpoints", "FastAPI Router", "API endpoints for users")
+Class(ComponentEndpoints, "ComponentEndpoints", "FastAPI Router", "API endpoints for components")
+Class(ExecutionEndpoints, "ExecutionEndpoints", "FastAPI Router", "API endpoints for execution")
+
+Rel(FlowEndpoints, "uses", FlowService)
+Rel(ExecutionEndpoints, "uses", FlowExecutor)
+Rel(ApiService, "calls", FlowEndpoints)
+Rel(ApiService, "calls", ExecutionEndpoints)
+Rel(ApiService, "calls", ComponentEndpoints)
+Rel(ApiService, "calls", UserEndpoints)
+
+@enduml

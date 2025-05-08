@@ -1,0 +1,30 @@
+@startuml C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context diagram for Langflow
+
+Person(user, "User", "A user who wants to create and deploy AI workflows")
+Person(admin, "Administrator", "A system administrator who manages users and configurations")
+Person(developer, "Developer", "A developer who wants to integrate with Langflow APIs")
+
+System(langflow, "Langflow", "A platform for building and deploying AI-powered agents and workflows")
+
+System_Ext(llm_provider, "LLM Provider", "External LLM service (OpenAI, etc.)")
+System_Ext(vector_db, "Vector Database", "External vector storage (Pinecone, etc.)")
+System_Ext(data_source, "External Data Source", "Source of documents and data")
+System_Ext(monitoring, "Monitoring Tools", "LangSmith, LangFuse, etc.")
+System_Ext(external_app, "External Application", "Application using Langflow APIs")
+
+Rel(user, langflow, "Creates AI workflows using")
+Rel(admin, langflow, "Administers and configures")
+Rel(developer, langflow, "Integrates with APIs")
+
+Rel(langflow, llm_provider, "Uses for text generation")
+Rel(langflow, vector_db, "Stores and retrieves vectors")
+Rel(langflow, data_source, "Loads and processes data from")
+Rel(langflow, monitoring, "Sends telemetry and logs to")
+Rel(external_app, langflow, "Consumes APIs from")
+
+@enduml
