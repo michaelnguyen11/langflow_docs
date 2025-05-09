@@ -1,0 +1,202 @@
+@startuml C4_Developer_Code
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Code diagram for Langflow Development
+
+Boundary(backend_code, "Backend Core Classes") {
+    Class BaseComponent {
+        +_id: str
+        +_code: str
+        +build(): Any
+        +build_template_config(): dict
+    }
+
+    Class CustomComponent {
+        +is_input: bool
+        +is_output: bool
+        +field_config: dict
+        +field_order: list[str]
+        +set_attributes(parameters: dict): None
+    }
+
+    Class Component {
+        +inputs: list[InputTypes]
+        +outputs: list[Output]
+        +_parameters: dict
+        +run(): Any
+        +map_inputs(inputs: list): None
+        +map_outputs(): None
+    }
+
+    Class ApiRouter {
+        +register_endpoints()
+        +add_middleware()
+        +include_router()
+    }
+
+    Class FlowController {
+        +create_flow()
+        +get_flow()
+        +update_flow()
+        +delete_flow()
+    }
+
+    Class ComponentController {
+        +get_all_components()
+        +get_component_by_id()
+        +validate_component()
+    }
+
+    Class FlowEngine {
+        +process_graph()
+        +execute_flow()
+        +build_vertex()
+    }
+
+    Interface IComponentFactory {
+        +create_component()
+        +register_component()
+    }
+
+    Interface IAuthProvider {
+        +authenticate()
+        +get_user()
+        +create_token()
+    }
+
+    Interface IStorageProvider {
+        +save()
+        +load()
+        +delete()
+    }
+}
+
+Boundary(frontend_code, "Frontend Core Structures") {
+    Class FlowStore {
+        +nodes: Node[]
+        +edges: Edge[]
+        +updateFlow()
+        +addNode()
+        +removeNode()
+        +addEdge()
+        +saveFlow()
+    }
+
+    Class APIService {
+        +fetchComponents()
+        +saveFlow()
+        +loadFlow()
+        +executeFlow()
+    }
+
+    Class NodeComponent {
+        +data: NodeData
+        +selected: boolean
+        +render()
+        +updateNodeData()
+    }
+
+    Class FlowProvider {
+        +flows: Map
+        +selectedFlow: string
+        +updateFlow()
+        +selectFlow()
+    }
+
+    Interface IComponentProps {
+        +nodeId: string
+        +data: any
+        +onChange()
+    }
+
+    Interface INodeTypeMapping {
+        +[key: string]: ReactComponent
+    }
+}
+
+Boundary(extension_interfaces, "Extension Interfaces") {
+    Interface ICustomComponent {
+        +display_name: string
+        +description: string
+        +inputs: InputType[]
+        +outputs: Output[]
+        +build_config()
+        +build()
+    }
+
+    Interface IFlowSerializer {
+        +serialize_flow()
+        +deserialize_flow()
+    }
+
+    Interface IComponentHook {
+        +before_execution()
+        +after_execution()
+    }
+
+    Interface IAuthMiddleware {
+        +process_request()
+        +validate_token()
+    }
+}
+
+Boundary(testing_interfaces, "Testing Structure") {
+    Class BaseTest {
+        +setup()
+        +teardown()
+        +create_test_client()
+    }
+
+    Class ComponentTestCase {
+        +test_component_build()
+        +test_component_execution()
+        +test_component_validation()
+    }
+
+    Class FlowTestCase {
+        +test_flow_creation()
+        +test_flow_execution()
+        +test_flow_validation()
+    }
+
+    Class ApiTestCase {
+        +test_api_endpoints()
+        +test_authentication()
+        +test_error_handling()
+    }
+
+    Class E2ETestCase {
+        +test_flow_creation_ui()
+        +test_component_interaction()
+        +test_flow_execution_ui()
+    }
+}
+
+BaseComponent <|-- CustomComponent
+CustomComponent <|-- Component
+ICustomComponent <|.. Component
+
+FlowStore --> APIService: uses
+FlowProvider --> FlowStore: manages
+NodeComponent --> IComponentProps: implements
+APIService --> INodeTypeMapping: uses
+
+ApiRouter --> FlowController: routes to
+ApiRouter --> ComponentController: routes to
+FlowController --> FlowEngine: uses
+ComponentController --> IComponentFactory: uses
+FlowEngine --> IStorageProvider: uses
+ApiRouter --> IAuthProvider: uses
+
+ICustomComponent --> IComponentHook: can use
+IFlowSerializer --> FlowEngine: used by
+IAuthMiddleware --> ApiRouter: applied to
+
+BaseTest <|-- ComponentTestCase
+BaseTest <|-- FlowTestCase
+BaseTest <|-- ApiTestCase
+BaseTest <|-- E2ETestCase
+
+@enduml

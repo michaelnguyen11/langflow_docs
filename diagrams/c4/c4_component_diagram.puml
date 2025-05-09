@@ -17,10 +17,18 @@ Container_Boundary(api_server, "Backend API") {
     Component(middleware, "Middleware", "Python", "Handles cross-cutting concerns")
 }
 
+Container_Boundary(component_system, "Component System") {
+    Component(component_registry, "Component Registry", "Python", "Registers and manages component types")
+    Component(component_factory, "Component Factory", "Python", "Creates component instances")
+    Component(component_scanner, "Component Scanner", "Python", "Discovers available components")
+    Component(component_metadata, "Metadata Extractor", "Python", "Extracts component metadata")
+    Component(type_resolver, "Type Resolver", "Python", "Resolves component input/output types")
+    Component(template_manager, "Template Manager", "Python", "Manages component templates")
+}
+
 Container_Boundary(flow_engine, "Flow Engine") {
     Component(flow_parser, "Flow Parser", "Python", "Parses flow definitions")
     Component(graph_manager, "Graph Manager", "Python", "Manages flow graph representation")
-    Component(component_registry, "Component Registry", "Python", "Registers and manages component types")
     Component(executor, "Executor", "Python", "Executes flow components")
     Component(state_manager, "State Manager", "Python", "Manages execution state")
     Component(error_handler, "Error Handler", "Python", "Handles execution errors")
@@ -49,18 +57,24 @@ Rel(file_controller, file_storage, "Stores and retrieves files from")
 Rel(execution_controller, flow_engine, "Executes flows using")
 Rel(execution_controller, queue_service, "Queues long-running executions with")
 
-Rel(flow_engine, component_registry, "Uses components from")
+Rel(flow_engine, component_system, "Uses components from")
 Rel(flow_parser, graph_manager, "Creates graph using")
 Rel(executor, state_manager, "Tracks execution state using")
 Rel(executor, error_handler, "Handles errors using")
+Rel(executor, component_system, "Executes components using")
 
-Rel(executor, llm_provider, "Makes API calls to", "HTTPS/REST")
-Rel(executor, vector_db, "Stores and retrieves vectors from", "HTTPS/REST")
-
-Rel(component_controller, component_registry, "Retrieves component metadata from")
+Rel(component_controller, component_system, "Retrieves component metadata from")
 Rel(flow_controller, flow_parser, "Validates flows using")
 
 Rel_U(auth_service, settings_service, "Uses configuration from")
-Rel_U(component_registry, settings_service, "Uses configuration from")
+Rel_U(component_system, settings_service, "Uses configuration from")
+
+Rel(component_registry, component_scanner, "Discovers components using")
+Rel(component_registry, component_factory, "Creates components using")
+Rel(component_metadata, type_resolver, "Resolves types using")
+Rel(component_factory, template_manager, "Uses templates from")
+
+Rel(component_system, llm_provider, "Integrates with", "HTTPS/REST")
+Rel(component_system, vector_db, "Integrates with", "HTTPS/REST")
 
 @enduml

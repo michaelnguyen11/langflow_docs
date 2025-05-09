@@ -1,0 +1,96 @@
+@startuml C4_Backend_Services
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container diagram for Langflow Backend Services
+
+Container(frontend, "Frontend Application", "React/TypeScript", "User interface for flow creation and execution")
+
+Container_Boundary(backend, "Backend Services") {
+    Component(api_layer, "API Layer", "FastAPI", "Handles HTTP requests and responses")
+    
+    Boundary(component_system_boundary, "Component System") {
+        Component(component_system_core, "Component System Core", "Python", "Central component management system")
+        Component(component_registry, "Component Registry", "Python", "Registers and manages component types")
+        Component(component_factory, "Component Factory", "Python", "Creates component instances")
+        Component(component_scanner, "Component Scanner", "Python", "Discovers available components")
+        Component(type_resolver, "Type Resolver", "Python", "Resolves component input/output types")
+        Component(metadata_extractor, "Metadata Extractor", "Python", "Extracts component metadata")
+    }
+    
+    Boundary(core_services, "Core Services") {
+        Component(flow_service, "Flow Service", "Python", "Manages flow CRUD operations")
+        Component(component_service, "Component Service", "Python", "Manages component API endpoints")
+        Component(auth_service, "Auth Service", "Python", "Handles authentication and authorization")
+        Component(execution_service, "Execution Service", "Python", "Manages flow execution")
+        Component(file_service, "File Service", "Python", "Handles file operations")
+        Component(store_service, "Store Service", "Python", "Manages component marketplace")
+    }
+    
+    Boundary(engine_services, "Engine Services") {
+        Component(flow_engine, "Flow Engine", "Python", "Graph processing and execution")
+        Component(event_manager, "Event Manager", "Python", "System event handling")
+        Component(tracing_service, "Tracing Service", "Python", "Execution tracing and logging")
+    }
+    
+    Boundary(data_services, "Data Services") {
+        Component(database_service, "Database Service", "SQLAlchemy", "Database access layer")
+        Component(cache_service, "Cache Service", "Python", "Caching layer")
+        Component(migration_service, "Migration Service", "Alembic", "Database migrations")
+    }
+    
+    Boundary(integration_services, "Integration Services") {
+        Component(langchain_service, "LangChain Service", "Python", "Integration with LangChain")
+        Component(llm_service, "LLM Service", "Python", "Integration with LLM providers")
+        Component(vector_service, "Vector Service", "Python", "Integration with vector databases")
+        Component(custom_integration, "Custom Integration Service", "Python", "Support for custom integrations")
+    }
+}
+
+ContainerDb(database, "Database", "SQLite/PostgreSQL", "Persistent storage")
+System_Ext(external_services, "External Services", "LLMs, Vector DBs, APIs")
+
+Rel(frontend, api_layer, "Makes API calls to", "REST API")
+
+Rel(api_layer, component_service, "Routes component requests to")
+Rel(component_service, component_system_core, "Interacts with")
+
+Rel(component_system_core, component_registry, "Uses")
+Rel(component_registry, component_scanner, "Populates using")
+Rel(component_system_core, component_factory, "Creates components using")
+Rel(component_factory, component_registry, "Gets definitions from")
+Rel(component_scanner, metadata_extractor, "Extracts metadata using")
+Rel(metadata_extractor, type_resolver, "Resolves types using")
+
+Rel(api_layer, flow_service, "Routes flow requests to")
+Rel(api_layer, auth_service, "Authenticates requests using")
+Rel(api_layer, execution_service, "Routes execution requests to")
+Rel(api_layer, file_service, "Routes file requests to")
+Rel(api_layer, store_service, "Routes store requests to")
+
+Rel(flow_service, database_service, "Uses")
+Rel(auth_service, database_service, "Uses")
+Rel(store_service, database_service, "Uses")
+
+Rel(execution_service, flow_engine, "Executes flows using")
+Rel(flow_service, flow_engine, "Validates flows using")
+
+Rel_R(flow_engine, component_system_core, "Creates and connects components using")
+
+Rel(component_system_core, event_manager, "Publishes events to")
+Rel(flow_engine, event_manager, "Publishes events to")
+Rel(execution_service, tracing_service, "Sends traces to")
+
+Rel(database_service, database, "Reads from and writes to")
+Rel(migration_service, database, "Migrates schema of")
+Rel(cache_service, database_service, "Caches results from")
+
+Rel(component_system_core, langchain_service, "Uses")
+Rel(langchain_service, llm_service, "Uses")
+Rel(langchain_service, vector_service, "Uses")
+Rel(component_system_core, custom_integration, "Uses")
+
+Rel(integration_services, external_services, "Makes API calls to", "HTTPS/REST")
+
+@enduml

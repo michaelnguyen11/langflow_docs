@@ -1,0 +1,51 @@
+@startuml C4_Component_System
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component diagram for Langflow Component System
+
+Container_Boundary(componentSystem, "Component System") {
+    Component(componentRegistry, "Component Registry", "Python", "Stores and manages component definitions")
+    Component(componentScanner, "Component Scanner", "Python", "Discovers and loads components at startup")
+    Component(componentFactory, "Component Factory", "Python", "Creates component instances")
+    Component(typeExtractor, "Type Extractor", "Python", "Analyzes component input/output types")
+    Component(fieldManager, "Field Manager", "Python", "Manages component field definitions")
+    Component(templateEngine, "Template Engine", "Python", "Processes templates for component fields")
+    Component(toolRegistry, "Tool Registry", "Python", "Manages tools available to agents")
+    Component(errorHandler, "Error Handler", "Python", "Handles component errors")
+    Component(customComponentLoader, "Custom Component Loader", "Python", "Loads custom components from file system")
+}
+
+Container_Boundary(componentCategories, "Component Categories") {
+    Component(agentComponents, "Agent Components", "Python", "Components for autonomous AI entities")
+    Component(chainComponents, "Chain Components", "Python", "Components for processing pipelines")
+    Component(llmComponents, "LLM Components", "Python", "Components for language models")
+    Component(toolComponents, "Tool Components", "Python", "Components for specialized tools")
+    Component(memoryComponents, "Memory Components", "Python", "Components for conversation history")
+    Component(vectorStoreComponents, "Vector Store Components", "Python", "Components for vector databases")
+    Component(utilityComponents, "Utility Components", "Python", "General-purpose helper components")
+    Component(customComponents, "Custom Components", "Python", "User-defined components")
+}
+
+Container(flowEngine, "Flow Engine", "Python", "Processes and executes workflow graphs")
+Container(api, "API Layer", "FastAPI", "Provides REST endpoints for frontend interaction")
+
+Rel(componentScanner, componentRegistry, "Registers components in")
+Rel(typeExtractor, componentRegistry, "Provides type information to")
+Rel(componentScanner, typeExtractor, "Uses")
+Rel(componentScanner, fieldManager, "Uses")
+Rel(customComponentLoader, componentRegistry, "Registers custom components in")
+
+Rel(componentFactory, componentRegistry, "Gets component definitions from")
+Rel(componentFactory, componentCategories, "Creates instances of")
+
+Rel(api, componentRegistry, "Gets component metadata from")
+Rel(flowEngine, componentFactory, "Creates components using")
+Rel(flowEngine, componentSystem, "Executes components through")
+
+Rel_R(componentCategories, templateEngine, "Uses")
+Rel_R(componentCategories, errorHandler, "Reports errors to")
+Rel_R(agentComponents, toolRegistry, "Gets available tools from")
+
+@enduml

@@ -1,0 +1,66 @@
+@startuml C4_Developer_Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container diagram for Langflow Development
+
+Person(developer, "Platform Developer", "A developer who is building or extending the Langflow platform")
+
+System_Boundary(dev_environment, "Development Environment") {
+    Container(frontend_dev, "Frontend Codebase", "React, TypeScript, Vite", "Component-based UI development with hot-reloading")
+    Container(backend_dev, "Backend Codebase", "Python, FastAPI", "API endpoints and core business logic")
+    Container(testing_framework, "Testing Framework", "Pytest, React Testing Library", "Unit, integration, and E2E testing")
+    Container(docs_system, "Documentation System", "Markdown, Docusaurus", "API and user documentation")
+    Container(dev_server, "Development Server", "Node.js, Python", "Local development and testing environment")
+    Container(build_system, "Build System", "Poetry, npm, Docker", "Dependency management and containerization")
+}
+
+System_Boundary(ci_cd, "CI/CD Pipeline") {
+    Container(code_repo, "Source Repository", "Git, GitHub", "Version control and code collaboration")
+    Container(ci_system, "CI System", "GitHub Actions", "Automated testing and quality checks")
+    Container(artifact_registry, "Artifact Registry", "Docker Registry", "Built container images")
+    Container(deployment_system, "Deployment System", "GitHub Actions, Docker", "Deployment automation")
+}
+
+System_Boundary(external_dev_tools, "Development Tools") {
+    Container(langchain_sdk, "LangChain SDK", "Python", "LLM application framework")
+    Container(code_quality, "Code Quality Tools", "Linters, Type Checkers", "Ensure code quality and standards")
+    Container(package_manager, "Package Managers", "Poetry, npm", "Dependency management")
+    Container(dev_containers, "Dev Containers", "Docker", "Standardized development environments")
+}
+
+System_Boundary(prod_env, "Production Environment") {
+    Container(prod_deployment, "Production Deployment", "Cloud/On-premise", "End-user accessible system")
+}
+
+Rel(developer, frontend_dev, "Develops UI components using")
+Rel(developer, backend_dev, "Implements backend services using")
+Rel(developer, testing_framework, "Creates and runs tests using")
+Rel(developer, docs_system, "Writes documentation using")
+Rel(developer, dev_server, "Uses for local testing")
+Rel(developer, code_repo, "Commits code to")
+
+Rel(frontend_dev, dev_server, "Served via")
+Rel(backend_dev, dev_server, "Served via")
+Rel(frontend_dev, backend_dev, "Makes API calls to", "REST")
+Rel(frontend_dev, code_quality, "Validated with")
+Rel(backend_dev, code_quality, "Validated with")
+
+Rel(developer, langchain_sdk, "Integrates and extends")
+Rel(backend_dev, langchain_sdk, "Builds upon")
+Rel(backend_dev, package_manager, "Dependencies managed by")
+Rel(frontend_dev, package_manager, "Dependencies managed by")
+
+Rel(code_repo, ci_system, "Triggers on commit/PR")
+Rel(ci_system, testing_framework, "Runs tests using")
+Rel(ci_system, code_quality, "Performs quality checks using")
+Rel(ci_system, build_system, "Builds artifacts using")
+Rel(build_system, artifact_registry, "Publishes artifacts to")
+Rel(deployment_system, artifact_registry, "Pulls artifacts from")
+Rel(deployment_system, prod_deployment, "Deploys to")
+
+Rel(developer, dev_containers, "Uses for consistent development")
+Rel(ci_system, dev_containers, "Uses for consistent testing")
+
+@enduml

@@ -11,11 +11,23 @@ Person(developer, "Developer", "A developer who wants to integrate with Langflow
 
 System_Boundary(langflow_system, "Langflow") {
     Container(web_app, "Frontend", "React, TypeScript", "Provides UI for building and testing flows")
-    Container(api_server, "Backend API", "Python, FastAPI", "Handles API requests and manages flows")
-    Container(flow_engine, "Flow Engine", "Python", "Executes AI workflows")
+    
+    Container_Boundary(backend, "Backend System") {
+        Container(api_server, "API Layer", "Python, FastAPI", "Handles API endpoints for frontend interaction")
+        Container(component_system, "Component System", "Python", "Manages AI components and their interfaces")
+        Container(flow_engine, "Flow Engine", "Python", "Executes AI workflows")
+        
+        Container_Boundary(services, "Services") {
+            Container(settings_service, "Settings Service", "Python", "Manages system configuration")
+            Container(auth_service, "Auth Service", "Python", "Handles authentication and authorization")
+            Container(database_service, "Database Service", "Python", "Manages data persistence")
+            Container(queue_service, "Queue Service", "Python", "Handles background tasks and long-running operations")
+            Container(telemetry_service, "Telemetry Service", "Python", "Tracks usage and system metrics")
+            Container(file_service, "File Service", "Python", "Manages uploaded files and assets")
+        }
+    }
+    
     ContainerDb(database, "Database", "SQLite/PostgreSQL", "Stores flows, users, and configuration")
-    Container(file_storage, "File Storage", "Python", "Manages uploaded files and assets")
-    Container(queue_service, "Queue Service", "Python", "Handles background tasks and long-running operations")
 }
 
 System_Ext(llm_provider, "LLM Provider", "External LLM service (OpenAI, etc.)")
@@ -31,17 +43,25 @@ Rel(external_app, api_server, "Makes API calls to", "HTTPS/REST")
 
 Rel(web_app, api_server, "Makes API calls to", "HTTPS/REST")
 Rel(api_server, flow_engine, "Executes flows using")
-Rel(api_server, database, "Reads from and writes to")
-Rel(api_server, file_storage, "Stores and retrieves files")
-Rel(api_server, queue_service, "Queues background tasks")
-Rel(flow_engine, database, "Reads flow definitions from")
-Rel(flow_engine, file_storage, "Accesses files from")
+Rel(api_server, component_system, "Manages components using")
+Rel(flow_engine, component_system, "Creates and connects components using")
+
+Rel(api_server, auth_service, "Authenticates users via")
+Rel(api_server, file_service, "Manages files via")
+Rel(api_server, queue_service, "Schedules background tasks via")
+
+Rel(auth_service, database_service, "Stores and retrieves users via")
+Rel(database_service, database, "Reads from and writes to")
+Rel(file_service, database, "Stores file metadata in")
+Rel(settings_service, database, "Stores configuration in")
+
 Rel(queue_service, flow_engine, "Executes flows using")
+Rel(telemetry_service, monitoring, "Sends telemetry to", "HTTPS")
 
 Rel(flow_engine, llm_provider, "Makes API calls to", "HTTPS/REST")
 Rel(flow_engine, vector_db, "Stores and retrieves vectors", "HTTPS/REST")
 Rel(flow_engine, data_source, "Loads data from", "Various")
-Rel(api_server, monitoring, "Sends telemetry to", "HTTPS")
-Rel(flow_engine, monitoring, "Sends execution data to", "HTTPS")
+Rel(component_system, llm_provider, "Integrates with", "HTTPS/REST")
+Rel(component_system, vector_db, "Integrates with", "HTTPS/REST")
 
 @enduml

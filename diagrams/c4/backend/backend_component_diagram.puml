@@ -1,0 +1,54 @@
+@startuml C4_Backend_Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component diagram for Langflow Backend Architecture
+
+Person(user, "User", "A user of the Langflow system")
+
+System_Boundary(backend, "Langflow Backend") {
+    Container(frontend, "Frontend Application", "React/TypeScript", "Provides the user interface for flow creation and execution")
+    
+    Container_Boundary(backendServices, "Backend Services") {
+        Component(api, "API Layer", "FastAPI", "Provides REST endpoints for frontend interaction")
+        Component(componentSystem, "Component System", "Python", "Manages and executes all AI components")
+        Component(flowEngine, "Flow Engine", "Python", "Processes and executes workflow graphs")
+        Component(authService, "Authentication Service", "Python", "Handles user authentication and authorization")
+        Component(databaseService, "Database Service", "SQLAlchemy", "Manages data persistence")
+        Component(fileService, "File Service", "Python", "Handles file operations")
+        Component(executionService, "Execution Service", "Python", "Manages flow execution and results")
+        Component(eventManager, "Event Manager", "Python", "Handles system events and notifications")
+    }
+    
+    ContainerDb(database, "Database", "SQLite/PostgreSQL", "Stores flows, users, and other system data")
+}
+
+System_Ext(llmServices, "LLM Services", "External LLM providers like OpenAI, Anthropic, etc.")
+System_Ext(vectorStores, "Vector Stores", "External vector databases for embedding storage")
+System_Ext(externalTools, "External Tools", "External services and APIs that can be integrated")
+
+Rel(user, frontend, "Uses", "HTTPS")
+Rel(frontend, api, "Makes API calls to", "REST API")
+
+Rel(api, componentSystem, "Uses")
+Rel(api, flowEngine, "Uses")
+Rel(api, authService, "Authenticates requests using")
+Rel(api, fileService, "Manages files using")
+Rel(api, executionService, "Executes flows using")
+
+Rel(flowEngine, componentSystem, "Creates and connects components using")
+Rel(executionService, flowEngine, "Executes flows using")
+Rel(componentSystem, eventManager, "Publishes events to")
+Rel(flowEngine, eventManager, "Publishes events to")
+
+Rel(databaseService, database, "Reads from and writes to")
+Rel(authService, databaseService, "Stores and retrieves users using")
+Rel(fileService, databaseService, "Stores and retrieves file metadata using")
+Rel(executionService, databaseService, "Stores execution results using")
+
+Rel(componentSystem, llmServices, "Makes API calls to", "HTTPS/REST")
+Rel(componentSystem, vectorStores, "Stores and retrieves vectors from", "HTTPS/REST")
+Rel(componentSystem, externalTools, "Integrates with", "Various protocols")
+
+@enduml

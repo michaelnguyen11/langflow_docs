@@ -1,0 +1,37 @@
+@startuml Developer_Workflow
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Dynamic.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Dynamic diagram for Langflow Development Workflow
+
+Person(developer, "Platform Developer", "A developer who is building or extending the Langflow platform")
+Container(local_repo, "Local Repository", "Git", "Local copy of the codebase")
+Container(dev_environment, "Development Environment", "Docker, Node.js, Python", "Local development setup")
+Container(ide, "IDE/Code Editor", "VS Code, PyCharm, etc.", "Development tools with extensions")
+Container(github_repo, "GitHub Repository", "Git", "Central code repository")
+Container(ci_pipeline, "CI Pipeline", "GitHub Actions", "Automated testing and checks")
+Container(staging_env, "Staging Environment", "Docker, Cloud", "Pre-production testing environment")
+Container(prod_env, "Production Environment", "Docker, Cloud", "Live deployment environment")
+
+Rel(developer, github_repo, "1. Forks repository")
+Rel(developer, local_repo, "2. Clones repository")
+Rel(developer, dev_environment, "3. Sets up development environment")
+
+Rel(developer, local_repo, "4. Creates feature branch")
+Rel(developer, ide, "5. Develops code")
+Rel(ide, dev_environment, "6. Tests locally")
+
+Rel(developer, local_repo, "7. Commits changes")
+Rel(local_repo, github_repo, "8. Creates Pull Request")
+Rel(github_repo, ci_pipeline, "9. Triggers CI checks")
+
+Rel(ci_pipeline, github_repo, "10. Reports results")
+Rel(developer, github_repo, "11. Addresses review feedback")
+
+Rel(github_repo, staging_env, "12. Merged code deployed to staging")
+Rel(developer, staging_env, "13. Verifies functionality")
+
+Rel(staging_env, prod_env, "14. Deployed to production")
+
+@enduml

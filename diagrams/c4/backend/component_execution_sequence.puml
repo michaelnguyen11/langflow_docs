@@ -1,0 +1,102 @@
+@startuml Component_Execution_Sequence
+title Sequence diagram for Langflow Component Execution
+
+actor "User" as User
+participant "Frontend" as Frontend
+participant "API Layer" as API
+participant "Flow Engine" as FlowEngine
+
+' Highlight Component System by grouping its elements
+box "Component System" #LightBlue
+    participant "Component Registry" as Registry
+    participant "Component Factory" as Factory
+    participant "Component Scanner" as Scanner
+    participant "Type Resolver" as TypeResolver
+    participant "Component Instance" as Component
+end box
+
+participant "Graph Processor" as GraphProcessor
+participant "Event Manager" as EventManager
+participant "External Service" as ExternalService
+
+User -> Frontend: Executes flow
+Frontend -> API: POST /api/v1/flows/{id}/execute
+activate API
+
+API -> FlowEngine: execute_flow(flow_id)
+activate FlowEngine
+
+FlowEngine -> GraphProcessor: process_graph(flow_data)
+activate GraphProcessor
+
+' Component System initialization
+GraphProcessor -> Registry: get_component_classes()
+Registry -> Scanner: ensure_components_loaded()
+Scanner -> Registry: register_components()
+Registry --> GraphProcessor: component_classes
+
+GraphProcessor -> GraphProcessor: topological_sort(nodes)
+
+loop for each node in sorted order
+    ' Component creation through Component System
+    GraphProcessor -> Factory: create_component(node_type, node_data)
+    Factory -> Registry: get_component_class(node_type)
+    Registry --> Factory: component_class
+    Factory -> TypeResolver: resolve_input_types(node_data)
+    TypeResolver --> Factory: resolved_types
+    
+    Factory -> Component: instantiate(node_data, resolved_types)
+    activate Component
+    Component -> Component: initialize_inputs()
+    Component -> Component: _pre_run_setup()
+    
+    loop for each input connected to other nodes
+        Component -> GraphProcessor: get_node_output(source_node_id, output_name)
+        GraphProcessor --> Component: output_value
+        Component -> Component: set_input(input_name, output_value)
+    end
+    
+    Factory --> GraphProcessor: component_instance
+end
+
+GraphProcessor --> FlowEngine: processed_graph
+deactivate GraphProcessor
+
+FlowEngine -> FlowEngine: execute_nodes(processed_graph)
+activate FlowEngine
+
+loop for each node in execution order
+    ' Component execution
+    FlowEngine -> Component: run()
+    activate Component
+    
+    Component -> EventManager: publish_event("component_start")
+    
+    alt External service required
+        Component -> ExternalService: API call
+        ExternalService --> Component: response
+    end
+    
+    Component -> Component: execute_logic()
+    Component -> TypeResolver: validate_outputs(results)
+    TypeResolver --> Component: validated_outputs
+    Component -> Component: set_outputs(validated_outputs)
+    Component -> EventManager: publish_event("component_complete")
+    
+    Component --> FlowEngine: execution_result
+    deactivate Component
+    
+    FlowEngine -> FlowEngine: store_result(node_id, result)
+end
+
+FlowEngine -> Registry: clean_up_resources()
+FlowEngine -> FlowEngine: collect_terminal_results()
+FlowEngine --> API: execution_results
+deactivate FlowEngine
+
+API --> Frontend: Response with results
+deactivate API
+
+Frontend -> User: Display results
+
+@enduml

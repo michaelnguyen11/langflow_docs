@@ -1,0 +1,79 @@
+@startuml Component_System_Architecture
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component diagram for Langflow Component System Architecture
+
+Container_Boundary(component_system, "Component System") {
+    Component(base_components, "Base Component Classes", "Python", "Foundational component abstractions")
+    
+    Boundary(component_types, "Component Types") {
+        Component(llm_components, "LLM Components", "Python", "Language model integration")
+        Component(agent_components, "Agent Components", "Python", "Autonomous AI entities")
+        Component(chain_components, "Chain Components", "Python", "Processing pipelines")
+        Component(embedding_components, "Embedding Components", "Python", "Text embedding models")
+        Component(memory_components, "Memory Components", "Python", "Conversation history")
+        Component(prompt_components, "Prompt Components", "Python", "Template systems")
+        Component(tool_components, "Tool Components", "Python", "Specialized utilities")
+        Component(vectorstore_components, "Vector Store Components", "Python", "Vector databases")
+        Component(docloader_components, "Document Loader Components", "Python", "Document sources")
+        Component(textsplitter_components, "Text Splitter Components", "Python", "Text chunking")
+        Component(outputparser_components, "Output Parser Components", "Python", "Structure LLM outputs")
+        Component(retriever_components, "Retriever Components", "Python", "Information retrieval")
+        Component(utility_components, "Utility Components", "Python", "Helper components")
+        Component(custom_components, "Custom Components", "Python", "User-defined components")
+    }
+    
+    Boundary(component_infrastructure, "Component Infrastructure") {
+        Component(component_registry, "Component Registry", "Python", "Central component repository")
+        Component(component_loader, "Component Loader", "Python", "Loads component definitions")
+        Component(component_factory, "Component Factory", "Python", "Creates component instances")
+        Component(component_validator, "Component Validator", "Python", "Validates components")
+        Component(component_serializer, "Component Serializer", "Python", "Serializes components to JSON")
+    }
+    
+    Boundary(input_output_system, "Input/Output System") {
+        Component(input_types, "Input Types", "Python", "Component input definitions")
+        Component(output_types, "Output Types", "Python", "Component output definitions")
+        Component(field_system, "Field System", "Python", "UI field management")
+        Component(type_system, "Type System", "Python", "Type validation and conversion")
+        Component(template_system, "Template System", "Python", "Variable substitution")
+    }
+    
+    Boundary(execution_system, "Execution System") {
+        Component(component_execution, "Component Execution", "Python", "Runs component logic")
+        Component(error_handling, "Error Handling", "Python", "Manages execution errors")
+        Component(logging_system, "Logging System", "Python", "Records execution details")
+        Component(event_system, "Event System", "Python", "Handles component events")
+    }
+}
+
+Component(langchain_integration, "LangChain Integration", "Python", "Integration with LangChain library")
+Component(flow_engine, "Flow Engine", "Python", "Manages workflow execution")
+Component(api_layer, "API Layer", "FastAPI", "Exposes component capabilities")
+
+Rel(component_infrastructure, base_components, "Manages")
+Rel(component_infrastructure, component_types, "Registers and organizes")
+Rel(component_types, base_components, "Inherit from")
+Rel(component_types, input_output_system, "Define using")
+Rel(execution_system, component_types, "Executes")
+
+Rel(component_registry, component_loader, "Uses")
+Rel(component_factory, component_registry, "Gets definitions from")
+Rel(component_validator, component_registry, "Validates entries in")
+Rel(component_serializer, component_registry, "Serializes from")
+
+Rel(api_layer, component_infrastructure, "Gets component metadata from")
+Rel(flow_engine, component_infrastructure, "Creates components using")
+Rel(flow_engine, execution_system, "Manages execution through")
+
+Rel(component_types, langchain_integration, "Often wrap")
+Rel(input_output_system, type_system, "Uses for validation")
+Rel(field_system, template_system, "Uses for substitution")
+
+Rel(component_execution, error_handling, "Reports errors to")
+Rel(component_execution, logging_system, "Records details in")
+Rel(component_execution, event_system, "Emits events to")
+
+@enduml

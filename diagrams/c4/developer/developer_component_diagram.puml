@@ -1,0 +1,83 @@
+@startuml C4_Developer_Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component diagram for Langflow Developer Architecture
+
+Person(developer, "Platform Developer", "A developer who is building or extending the Langflow platform")
+
+Container_Boundary(frontend_codebase, "Frontend Codebase") {
+    Component(ui_components, "UI Component Library", "React, Tailwind CSS", "Reusable UI components")
+    Component(state_management, "State Management", "React Context", "Application state handling")
+    Component(api_client, "API Client", "TypeScript", "Backend API communication")
+    Component(react_flow, "Flow Editor", "React Flow", "Visual flow editing")
+    Component(form_system, "Form System", "React Hook Form", "Dynamic form generation for components")
+    Component(theming, "Theming System", "Tailwind, CSS", "Appearance customization")
+    Component(i18n, "Internationalization", "i18n", "Multi-language support")
+    Component(frontend_routing, "Routing", "React Router", "Navigation management")
+}
+
+Container_Boundary(backend_codebase, "Backend Codebase") {
+    Component(api_framework, "API Framework", "FastAPI", "RESTful API implementation")
+    Component(component_core, "Component System Core", "Python", "Core component framework")
+    Component(flow_engine_core, "Flow Engine Core", "Python", "Graph processing and execution")
+    Component(langchain_integration, "LangChain Integration", "Python", "Integration with LangChain")
+    Component(auth_system, "Authentication System", "Python", "User authentication and authorization")
+    Component(db_layer, "Database Layer", "SQLAlchemy, Alembic", "Data persistence and migrations")
+    Component(custom_component_loader, "Custom Component Loader", "Python", "Loading custom components")
+    Component(extension_system, "Extension System", "Python", "Platform extension mechanisms")
+}
+
+Container_Boundary(dev_tools, "Development Tools") {
+    Component(dev_server_fe, "Frontend Dev Server", "Vite", "Hot-reloading development server")
+    Component(dev_server_be, "Backend Dev Server", "Uvicorn", "API server for development")
+    Component(unit_testing, "Unit Testing", "Pytest, Jest", "Component and function testing")
+    Component(e2e_testing, "E2E Testing", "Playwright", "End-to-end workflow testing")
+    Component(linting_typing, "Linting & Type Checking", "ESLint, Mypy", "Code quality enforcement")
+    Component(build_tools, "Build Tools", "Poetry, npm scripts", "Build process management")
+    Component(docs_generation, "Documentation Generation", "Docusaurus, Sphinx", "API and user docs")
+}
+
+Container_Boundary(extension_points, "Extension Points") {
+    Component(custom_components, "Custom Components API", "Python", "Create new component types")
+    Component(theme_extensions, "Theming API", "CSS, Tailwind", "Visual customization")
+    Component(plugin_system, "Plugin System", "Python", "Add new capabilities")
+    Component(integration_api, "Integration API", "Python", "Connect with external systems")
+    Component(hooks_system, "Hooks System", "Python", "Intercept and modify behavior")
+}
+
+Rel(developer, frontend_codebase, "Develops")
+Rel(developer, backend_codebase, "Develops")
+Rel(developer, dev_tools, "Uses")
+Rel(developer, extension_points, "Extends platform via")
+
+Rel(frontend_codebase, backend_codebase, "Communicates with", "REST API")
+Rel(ui_components, react_flow, "Used by")
+Rel(ui_components, form_system, "Integrated with")
+Rel(state_management, api_client, "Uses")
+Rel(api_client, api_framework, "Makes requests to")
+Rel(ui_components, theming, "Styled by")
+
+Rel(api_framework, component_core, "Exposes")
+Rel(api_framework, flow_engine_core, "Exposes")
+Rel(api_framework, auth_system, "Uses")
+Rel(component_core, langchain_integration, "Uses")
+Rel(flow_engine_core, component_core, "Orchestrates")
+Rel(component_core, custom_component_loader, "Uses")
+Rel(custom_component_loader, extension_system, "Part of")
+
+Rel(dev_server_fe, frontend_codebase, "Serves")
+Rel(dev_server_be, backend_codebase, "Serves")
+Rel(unit_testing, frontend_codebase, "Tests")
+Rel(unit_testing, backend_codebase, "Tests")
+Rel(e2e_testing, dev_server_fe, "Tests against")
+Rel(e2e_testing, dev_server_be, "Tests against")
+
+Rel(extension_system, custom_components, "Enables")
+Rel(extension_system, plugin_system, "Enables")
+Rel(extension_system, hooks_system, "Enables")
+Rel(theming, theme_extensions, "Configurable via")
+Rel(langchain_integration, integration_api, "Provides")
+
+@enduml

@@ -1,59 +1,83 @@
-# Diagrams
+# Langflow Architecture Diagrams
 
-This directory contains various diagrams used to visualize the Langflow architecture and components.
+This directory contains a collection of C4 architecture diagrams that document the Langflow system's architecture, with a focus on the Backend Component System.
 
-## Rendering PlantUML Diagrams
+## Diagram Types
 
-There are two ways to render the PlantUML diagrams:
+The architecture is documented through several complementary diagrams:
 
-### 1. Using VSCode Extension (Recommended for C4 Diagrams)
+### Backend Architecture
 
-The VSCode PlantUML extension can render the C4 diagrams correctly, as it has built-in support for the C4 PlantUML macros.
+1. [**Backend Component Diagram**](docs/backend_component_diagram.md)
+   - High-level view of the major components in the Langflow backend
+   - Shows relationships between the API, Component System, Flow Engine, and supporting services
 
-1. Install the "PlantUML" extension for VSCode
-2. Open any .puml file
-3. Use Alt+D (or Option+D on Mac) to preview the diagram
+2. [**Backend Services Diagram**](docs/backend_services_diagram.md)
+   - Detailed organization of backend services into functional groups
+   - Illustrates dependencies and interactions between service groups
 
-### 2. Using the Rendering Scripts
+### Component System
 
-For standard UML diagrams (sequence, class, etc.), you can use the included rendering scripts:
+3. [**Component System Diagram**](docs/component_system_diagram.md)
+   - Focused view of the Component System's internal structure
+   - Shows key elements like Registry, Scanner, Factory, and Type Extractor
 
-```bash
-# Render a specific diagram
-./render_plantuml.sh diagrams/sequence/user_flow.puml
+4. [**Component System Architecture**](docs/component_system_architecture.md)
+   - Comprehensive view of the Component System architecture
+   - Detailed organization of component types and supporting infrastructure
 
-# Render all diagrams
-./render_plantuml.sh
-```
+### Implementation Details
 
-For C4 diagrams specifically, use the dedicated script:
+5. [**Component Class Diagram**](docs/component_class_diagram.md)
+   - Code-level view of the Component System class structure
+   - Shows inheritance relationships and key methods
 
-```bash
-# Render C4 diagrams
-./render_c4_diagrams.sh
-```
+6. [**Component Execution Sequence**](docs/component_execution_sequence.md)
+   - Dynamic sequence showing the flow of component execution
+   - Illustrates interactions between different parts of the system during execution
 
-## Issues with C4 PlantUML
+## Viewing the Diagrams
 
-The C4 diagrams in this repository use C4 PlantUML macros. There are known issues with rendering these diagrams using the command-line PlantUML renderer:
+These diagrams are created using PlantUML. To render them:
 
-1. The C4 PlantUML library needs to be imported, which can cause issues with GitHub access
-2. The renderer may not find the required dependencies
+1. **Online Rendering**: Use the PlantUML online server at http://www.plantuml.com/plantuml/
+2. **Local Installation**: Run `java -jar plantuml.jar filename.puml` with a local PlantUML installation
+3. **IDE Integration**: Use VS Code with the PlantUML extension or other IDE plugins
+4. **CI/CD Tools**: Many CI/CD pipelines support automatic PlantUML rendering
 
-The `render_c4_diagrams.sh` script provides a workaround by using standard UML notation instead of C4-specific macros.
+## Diagram Organization
 
-## Viewing Diagrams
+The diagrams follow the C4 model hierarchy, providing views at different levels of abstraction:
 
-You can view the rendered diagrams:
+- **Context Level**: System context and external interactions
+- **Container Level**: Major system components and their relationships
+- **Component Level**: Internal structure of specific components
+- **Code Level**: Class relationships and implementation details
 
-1. Directly as PNG files in the filesystem
-2. Using the documentation viewer (index.html)
-3. In VSCode's preview (for .puml files)
+## Documentation
 
-## Troubleshooting
+Each diagram has accompanying documentation that explains:
 
-If you encounter issues rendering diagrams:
+- The diagram's purpose and scope
+- Key elements and their functions
+- Important relationships illustrated
+- How to interpret and use the diagram
 
-1. Make sure you have Java installed
-2. For C4 diagrams, use the VSCode extension or the `render_c4_diagrams.sh` script
-3. Check for network connectivity issues if imports are failing
+This documentation can be found in the [docs](docs/) directory.
+
+## Keeping Diagrams Updated
+
+These diagrams should be updated when significant architectural changes are made. When updating:
+
+1. Modify the PlantUML source files
+2. Update the corresponding documentation
+3. Re-render the diagrams to generate new images
+4. Update any related documentation that references the diagrams
+
+## Related Documentation
+
+These diagrams are part of the larger Langflow documentation:
+
+- [Backend Component System Documentation](../backend/backend_component_system.md)
+- [Flow Engine Documentation](../architecture/flow_engine.md)
+- [Architecture Overview](../architecture/architecture_overview.md)

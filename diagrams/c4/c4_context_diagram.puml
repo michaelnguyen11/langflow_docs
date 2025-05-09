@@ -9,7 +9,11 @@ Person(user, "User", "A user who wants to create and deploy AI workflows")
 Person(admin, "Administrator", "A system administrator who manages users and configurations")
 Person(developer, "Developer", "A developer who wants to integrate with Langflow APIs")
 
-System(langflow, "Langflow", "A platform for building and deploying AI-powered agents and workflows")
+System_Boundary(langflow, "Langflow") {
+    System(component_system, "Component System", "The core system managing all AI components and their interfaces")
+    System(flow_engine, "Flow Engine", "Executes workflow graphs built with components")
+    System(api, "API Layer", "Provides REST endpoints for frontend interaction")
+}
 
 System_Ext(llm_provider, "LLM Provider", "External LLM service (OpenAI, etc.)")
 System_Ext(vector_db, "Vector Database", "External vector storage (Pinecone, etc.)")
@@ -17,14 +21,18 @@ System_Ext(data_source, "External Data Source", "Source of documents and data")
 System_Ext(monitoring, "Monitoring Tools", "LangSmith, LangFuse, etc.")
 System_Ext(external_app, "External Application", "Application using Langflow APIs")
 
-Rel(user, langflow, "Creates AI workflows using")
-Rel(admin, langflow, "Administers and configures")
-Rel(developer, langflow, "Integrates with APIs")
+Rel(user, api, "Creates AI workflows using")
+Rel(admin, api, "Administers and configures")
+Rel(developer, api, "Integrates with APIs")
 
-Rel(langflow, llm_provider, "Uses for text generation")
-Rel(langflow, vector_db, "Stores and retrieves vectors")
-Rel(langflow, data_source, "Loads and processes data from")
+Rel(api, component_system, "Manages components using")
+Rel(api, flow_engine, "Executes flows using")
+Rel(flow_engine, component_system, "Creates and connects components using")
+
+Rel(component_system, llm_provider, "Uses for text generation")
+Rel(component_system, vector_db, "Stores and retrieves vectors")
+Rel(component_system, data_source, "Loads and processes data from")
 Rel(langflow, monitoring, "Sends telemetry and logs to")
-Rel(external_app, langflow, "Consumes APIs from")
+Rel(external_app, api, "Consumes APIs from")
 
 @enduml
