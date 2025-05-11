@@ -13,15 +13,27 @@
             --sidebar-width: 280px;
             --header-height: 60px;
             --primary-color: #0066cc;
+            --primary-dark: #004c99;
+            --primary-light: #e6f0fa;
             --secondary-color: #f8f9fa;
             --border-color: #dee2e6;
+            --text-color: #333;
+            --text-muted: #6c757d;
+            --box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            --border-radius: 5px;
+            --transition-speed: 0.3s;
+            --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            --code-font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-family);
             margin: 0;
             padding: 0;
             overflow-x: hidden;
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: #fdfdfd;
         }
         
         #header {
@@ -30,14 +42,185 @@
             left: 0;
             right: 0;
             height: var(--header-height);
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
             display: flex;
             align-items: center;
             padding: 0 20px;
             z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: var(--box-shadow);
         }
+        
+        #header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        #header h1 {
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        
+        #header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header-button {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 5px 12px;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+        }
+        
+        .header-button:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        
+        /* Search functionality */
+        #search-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-left: 20px;
+            width: 300px;
+        }
+        
+        #search-input {
+            width: 100%;
+            padding: 8px 12px 8px 35px;
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: rgba(255,255,255,0.15);
+            color: white;
+            font-size: 0.9rem;
+            transition: background-color var(--transition-speed);
+        }
+        
+        #search-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        #search-input:focus {
+            background-color: rgba(255,255,255,0.25);
+            outline: none;
+        }
+        
+        #search-icon {
+            position: absolute;
+            left: 10px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+        
+        #search-results {
+            position: absolute;
+            top: 45px;
+            width: 100%;
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: none;
+            z-index: 1010;
+        }
+        
+        .search-result-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+        }
+        
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .search-result-item:hover {
+            background-color: var(--primary-light);
+        }
+        
+        .search-result-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+        
+        .search-result-path {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .search-result-snippet {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            color: var(--text-color);
+        }
+        
+        .highlight {
+            background-color: rgba(255, 230, 0, 0.4);
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+        
+        #search-results-count {
+            padding: 8px 15px;
+            background-color: var(--primary-light);
+            font-size: 0.85rem;
+            color: var(--primary-dark);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        /* Dark mode styles for search */
+        body.dark-mode #search-results {
+            background-color: #252536;
+            border: 1px solid #333345;
+        }
+        
+        body.dark-mode .search-result-item {
+            border-bottom-color: #333345;
+        }
+        
+        body.dark-mode .search-result-item:hover {
+            background-color: rgba(0,102,204,0.25);
+        }
+        
+        body.dark-mode .search-result-title {
+            color: #6699ff;
+        }
+        
+        body.dark-mode .search-result-path {
+            color: #a0a0f0;
+        }
+        
+        body.dark-mode .search-result-snippet {
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .highlight {
+            background-color: rgba(255, 204, 0, 0.3);
+        }
+        
+        body.dark-mode #search-results-count {
+            background-color: #333345;
+            color: #a0a0f0;
+            border-bottom-color: #333345;
+        }
+        
+        /* End search styles */
         
         #sidebar {
             position: fixed;
@@ -50,6 +233,26 @@
             overflow-y: auto;
             z-index: 900;
             padding-bottom: 20px;
+            transition: transform var(--transition-speed) ease;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--secondary-color);
+        }
+        
+        #sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        #sidebar::-webkit-scrollbar-track {
+            background: var(--secondary-color);
+        }
+        
+        #sidebar::-webkit-scrollbar-thumb {
+            background-color: var(--border-color);
+            border-radius: 6px;
+        }
+        
+        #sidebar::-webkit-scrollbar-thumb:hover {
+            background-color: var(--primary-color);
         }
         
         #content {
@@ -57,42 +260,120 @@
             margin-top: var(--header-height);
             padding: 0;
             min-height: calc(100vh - var(--header-height));
+            transition: margin-left var(--transition-speed) ease;
         }
         
         .nav-link {
-            color: #212529;
+            color: var(--text-color);
             display: flex;
             align-items: center;
             padding: 8px 16px;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            transition: all var(--transition-speed);
+            font-size: 0.95rem;
         }
         
         .nav-link:hover {
             background-color: rgba(0,0,0,0.05);
+            border-left-color: var(--primary-color);
         }
         
         .nav-link.active {
-            background-color: rgba(0,102,204,0.1);
+            background-color: var(--primary-light);
             border-left: 3px solid var(--primary-color);
+            font-weight: 500;
         }
         
         .nav-link i {
             margin-right: 10px;
             width: 20px;
             text-align: center;
+            color: #555;
+        }
+        
+        .nav-link.active i {
+            color: var(--primary-color);
         }
         
         .section-header {
-            font-weight: 600;
-            padding: 10px 16px;
+            font-weight: 700;
+            padding: 15px 16px 5px;
             margin-top: 10px;
-            color: #495057;
+            color: var(--text-muted);
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .section-header::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background-color: var(--border-color);
+            margin-left: 10px;
+        }
+        
+        .section-header::before {
+            content: '›';
+            margin-right: 8px;
+            color: var(--primary-color);
+            transition: transform 0.3s;
+            display: inline-block;
+            transform: rotate(90deg);
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        
+        .section-header.collapsed::before {
+            transform: rotate(0deg);
+        }
+        
+        .section-content {
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        
+        .section-content.collapsed {
+            max-height: 0;
         }
         
         .subsection {
             margin-left: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding: 7px 16px 3px;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .subsection::before {
+            content: '›';
+            margin-right: 5px;
+            color: var(--primary-color);
+            transition: transform 0.3s;
+            display: inline-block;
+        }
+        
+        .subsection.collapsed::before {
+            transform: rotate(-90deg);
+        }
+        
+        .subsection-content {
+            margin-left: 20px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .subsection-content.collapsed {
+            max-height: 0;
         }
         
         #hamburger {
@@ -112,7 +393,7 @@
             
             #sidebar {
                 transform: translateX(-100%);
-                transition: transform 0.3s ease;
+                box-shadow: var(--box-shadow);
             }
             
             #sidebar.show {
@@ -121,11 +402,24 @@
             
             #content {
                 margin-left: 0;
-                transition: margin-left 0.3s ease;
             }
             
             #content.sidebar-visible {
                 margin-left: var(--sidebar-width);
+            }
+            
+            #search-container {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #search-container {
+                width: 150px;
+            }
+            
+            .d-none {
+                display: none !important;
             }
         }
 
@@ -133,65 +427,285 @@
             width: 100%;
             height: calc(100vh - var(--header-height));
             border: none;
-            padding: 20px;
             overflow: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) var(--secondary-color);
+        }
+
+        #content-display::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #content-display::-webkit-scrollbar-track {
+            background: #f5f5f5;
+        }
+
+        #content-display::-webkit-scrollbar-thumb {
+            background-color: var(--border-color);
+            border-radius: 6px;
+        }
+
+        #content-display::-webkit-scrollbar-thumb:hover {
+            background-color: var(--text-muted);
         }
 
         #markdown-content {
             width: 100%;
             max-width: 900px;
             margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
+            padding: 30px;
+            line-height: 1.7;
+            color: var(--text-color);
+            font-size: 16px;
+            position: relative;
+        }
+
+        /* Breadcrumbs */
+        .breadcrumbs {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 15px 30px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .breadcrumbs a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumbs .separator {
+            margin: 0 8px;
+            color: #ccc;
+        }
+
+        .breadcrumbs .current {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        /* Table of contents */
+        .toc {
+            position: fixed;
+            top: calc(var(--header-height) + 30px);
+            right: 20px;
+            width: 250px;
+            max-height: calc(100vh - var(--header-height) - 60px);
+            overflow-y: auto;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            font-size: 0.85rem;
+            box-shadow: var(--box-shadow);
+            display: block;
+        }
+
+        .toc.visible {
+            display: block;
+        }
+
+        .toc-header {
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toc-close {
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .toc-close:hover {
+            color: var(--text-color);
+        }
+
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .toc ul ul {
+            padding-left: 15px;
+        }
+
+        .toc li {
+            margin-bottom: 5px;
+        }
+
+        .toc a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: block;
+            padding: 3px 0;
+            transition: all 0.2s;
+            border-left: 2px solid transparent;
+            padding-left: 8px;
+        }
+
+        .toc a:hover, .toc a.active {
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+        }
+
+        /* Content typography */
+        #markdown-content h1 {
+            font-size: 2.2rem;
+            margin-top: 0.5em;
+            margin-bottom: 0.8em;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.3em;
+        }
+
+        #markdown-content h2 {
+            font-size: 1.8rem;
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+            font-weight: 600;
+            color: #404040;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.3em;
+        }
+
+        #markdown-content h3 {
+            font-size: 1.4rem;
+            margin-top: 1.3em;
+            margin-bottom: 0.6em;
+            font-weight: 600;
+            color: #505050;
+        }
+
+        #markdown-content h4 {
+            font-size: 1.2rem;
+            margin-top: 1.3em;
+            margin-bottom: 0.6em;
+            font-weight: 600;
+            color: #606060;
+        }
+
+        #markdown-content p {
+            margin-bottom: 1.2em;
+        }
+
+        #markdown-content strong {
+            font-weight: 600;
+        }
+
+        #markdown-content em {
+            font-style: italic;
+        }
+
+        #markdown-content blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin-left: 0;
+            padding-left: 1em;
+            color: #555;
+            background-color: #f8f9fa;
+            padding: 1em;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
         }
 
         #markdown-content img {
             max-width: 100%;
             display: block;
-            margin: 1rem auto;
+            margin: 1.5rem auto;
             border: 1px solid #eee;
-            border-radius: 4px;
+            border-radius: var(--border-radius);
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
-        #markdown-content h1, #markdown-content h2 {
-            border-bottom: 1px solid #eaeaea;
-            padding-bottom: 0.3em;
-            margin-top: 1.5em;
+        #markdown-content a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        #markdown-content a:hover {
+            text-decoration: underline;
         }
 
         #markdown-content code {
             background-color: rgba(0,0,0,0.05);
             padding: 0.2em 0.4em;
             border-radius: 3px;
-            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            font-family: var(--code-font-family);
+            font-size: 0.9em;
         }
 
         #markdown-content pre {
             background-color: #f6f8fa;
-            border-radius: 6px;
+            border-radius: var(--border-radius);
             padding: 16px;
             overflow: auto;
+            position: relative;
         }
 
         #markdown-content pre code {
             background-color: transparent;
             padding: 0;
+            display: block;
+            line-height: 1.5;
+        }
+
+        .code-header {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #e8e8e8;
+            padding: 3px 8px;
+            border-radius: 0 0 0 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .code-header:hover {
+            background-color: #ddd;
         }
 
         #markdown-content table {
             border-collapse: collapse;
             width: 100%;
-            margin: 1em 0;
+            margin: 1.5em 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        #markdown-content th {
+            background-color: var(--primary-light);
+            font-weight: 600;
         }
 
         #markdown-content th, #markdown-content td {
             border: 1px solid #dfe2e5;
-            padding: 6px 13px;
+            padding: 8px 13px;
+            text-align: left;
         }
 
         #markdown-content tr:nth-child(2n) {
             background-color: #f6f8fa;
+        }
+
+        #markdown-content ul, #markdown-content ol {
+            padding-left: 2em;
+            margin-bottom: 1.2em;
+        }
+
+        #markdown-content li {
+            margin-bottom: 0.5em;
         }
 
         #image-viewer {
@@ -201,13 +715,44 @@
             justify-content: center;
             align-items: center;
             background-color: #f8f9fa;
+            position: relative;
         }
 
         #image-viewer img {
-            max-width: 95%;
-            max-height: 95%;
+            max-width: 90%;
+            max-height: 90%;
             object-fit: contain;
             box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            border-radius: var(--border-radius);
+        }
+
+        #image-viewer .image-controls {
+            position: fixed;
+            bottom: 20px;
+            background-color: rgba(0,0,0,0.7);
+            padding: 10px 15px;
+            border-radius: 50px;
+            display: flex;
+            gap: 15px;
+        }
+
+        #image-viewer .image-control-button {
+            color: white;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+
+        #image-viewer .image-control-button:hover {
+            background-color: rgba(255,255,255,0.2);
         }
 
         /* Simple note about using a server */
@@ -230,289 +775,507 @@
                 left: 0;
             }
         }
+
+        /* Styles for embedded diagrams */
+        .embedded-diagram {
+            margin-top: 60px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: #fff;
+            box-shadow: var(--box-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .embedded-diagram:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .embedded-diagram h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.4rem;
+        }
+
+        .embedded-diagram img {
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #eee;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+            cursor: zoom-in;
+        }
+
+        .embedded-diagram img:hover {
+            box-shadow: 0 0 25px rgba(0,0,0,0.15);
+        }
+
+        .diagram-caption {
+            text-align: center;
+            margin-top: 15px;
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #1e1e2e;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode #sidebar {
+            background-color: #252536;
+            border-right-color: #333345;
+        }
+
+        body.dark-mode .nav-link {
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .nav-link i {
+            color: #a0a0f0;
+        }
+
+        body.dark-mode .nav-link:hover {
+            background-color: rgba(255,255,255,0.08);
+        }
+
+        body.dark-mode .nav-link.active {
+            background-color: rgba(0,102,204,0.25);
+        }
+
+        body.dark-mode .section-header {
+            color: #c0c0f0;
+        }
+
+        body.dark-mode .subsection {
+            color: #d0d0f0;
+        }
+
+        body.dark-mode .section-header::after {
+            background-color: #333345;
+        }
+
+        body.dark-mode #markdown-content h1,
+        body.dark-mode #markdown-content h2,
+        body.dark-mode #markdown-content h3,
+        body.dark-mode #markdown-content h4 {
+            color: #f0f0f0;
+            border-bottom-color: #333345;
+        }
+
+        body.dark-mode #markdown-content a {
+            color: #6699ff;
+        }
+
+        body.dark-mode #markdown-content code {
+            background-color: rgba(255,255,255,0.1);
+            color: #ffcc00;
+        }
+
+        body.dark-mode #markdown-content pre {
+            background-color: #2a2a3a;
+        }
+
+        body.dark-mode #markdown-content blockquote {
+            border-left-color: #6699ff;
+            background-color: #252536;
+        }
+
+        body.dark-mode #markdown-content table th {
+            background-color: #2a2a3a;
+        }
+
+        body.dark-mode #markdown-content table td,
+        body.dark-mode #markdown-content table th {
+            border-color: #333345;
+        }
+
+        body.dark-mode #markdown-content tr:nth-child(2n) {
+            background-color: #252536;
+        }
+
+        body.dark-mode .breadcrumbs {
+            background-color: #252536;
+            border-bottom-color: #333345;
+        }
+
+        body.dark-mode .breadcrumbs a {
+            color: #6699ff;
+        }
+
+        body.dark-mode .breadcrumbs .current {
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .toc {
+            background-color: #252536;
+            border-color: #333345;
+        }
+
+        body.dark-mode .toc-header {
+            color: #f0f0f0;
+            border-bottom-color: #333345;
+        }
+
+        body.dark-mode .toc a {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .toc a:hover, 
+        body.dark-mode .toc a.active {
+            color: #6699ff;
+        }
+
+        body.dark-mode .embedded-diagram {
+            background-color: #252536;
+            border-color: #333345;
+        }
+
+        body.dark-mode .embedded-diagram h3 {
+            color: #6699ff;
+        }
+
+        body.dark-mode #image-viewer {
+            background-color: #1a1a2a;
+        }
+
+        /* Toggle button */
+        #dark-mode-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+
+        #dark-mode-toggle:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        /* Print styles */
+        @media print {
+            #header, #sidebar, .breadcrumbs, .toc, .server-note {
+                display: none !important;
+            }
+
+            #content {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            #markdown-content {
+                max-width: 100% !important;
+            }
+
+            .embedded-diagram {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+            }
+
+            .embedded-diagram img {
+                max-width: 90% !important;
+                box-shadow: none !important;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="header">
-        <button id="hamburger">
-            <i class="fas fa-bars"></i>
-        </button>
-        <h1>Langflow Documentation</h1>
+        <div id="header-content">
+            <div style="display: flex; align-items: center;">
+                <button id="hamburger">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>Langflow Documentation</h1>
+            </div>
+            <div style="display: flex; flex-grow: 1; justify-content: center; align-items: center;">
+                <div id="search-container">
+                    <i id="search-icon" class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Search documentation...">
+                    <div id="search-results"></div>
+                </div>
+            </div>
+            <div id="header-controls">
+                <button class="header-button" id="toc-toggle">
+                    <i class="fas fa-list"></i>
+                    <span class="d-none d-md-inline">Contents</span>
+                </button>
+                <button id="dark-mode-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
     </div>
     
     <div id="sidebar">
-        <div class="section-header">Documentation</div>
-        <a href="README.md" class="nav-link active" data-type="markdown">
-            <i class="fas fa-home"></i> Main Documentation
-        </a>
-        <a href="docs/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-book"></i> Documentation Guide
-        </a>
-        <a href="images/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-images"></i> Images Guide
-        </a>
+        <div class="section-header">Getting Started</div>
+        <div class="section-content">
+            <a href="README.md" class="nav-link active" data-type="markdown">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="docs/README.md" class="nav-link" data-type="markdown">
+                <i class="fas fa-book"></i> Documentation Guide
+            </a>
+        </div>
         
         <div class="section-header">Architecture</div>
-        <a href="docs/architecture/architecture_overview.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-sitemap"></i> Architecture Overview
-        </a>
-        <a href="docs/architecture/component_system.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-puzzle-piece"></i> Component System
-        </a>
-        <a href="docs/architecture/flow_engine.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-cogs"></i> Flow Engine
-        </a>
-        <a href="docs/architecture/api_and_services.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-plug"></i> API and Services
-        </a>
-        <a href="docs/architecture/component_class_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-project-diagram"></i> Component Class Structure
-        </a>
-        <a href="docs/architecture/component_system_architecture.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-project-diagram"></i> Component System Architecture
-        </a>
-        <a href="docs/architecture/langflow_class_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-project-diagram"></i> Langflow Class Structure
-        </a>
-        
-        <div class="subsection">Developer Documentation</div>
-        <a href="docs/architecture/developer_architecture.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-drafting-compass"></i> Developer Architecture
-        </a>
-        <a href="docs/architecture/developer_workflow_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-code-branch"></i> Developer Workflow
-        </a>
-        <a href="docs/architecture/developer_component_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-project-diagram"></i> Developer Component Diagram
-        </a>
-        <a href="docs/architecture/developer_container_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-cubes"></i> Developer Container Diagram
-        </a>
-        <a href="docs/architecture/developer_code_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-code"></i> Developer Code Diagram
-        </a>
-        
-        <div class="subsection">C4 Model Diagrams</div>
-        <a href="docs/architecture/c4/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-info-circle"></i> C4 Model Overview
-        </a>
-        <a href="docs/architecture/c4/c4_context_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-sitemap"></i> Context (Level 1)
-        </a>
-        <a href="docs/architecture/c4/c4_container_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-cubes"></i> Container (Level 2)
-        </a>
-        <a href="docs/architecture/c4/c4_component_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-puzzle-piece"></i> Component (Level 3)
-        </a>
-        <a href="docs/architecture/c4/c4_code_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-code"></i> Code (Level 4)
-        </a>
-        <a href="docs/architecture/c4/c4_frontend_component_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-desktop"></i> Frontend Component
-        </a>
+        <div class="section-content">
+            <a href="docs/architecture/architecture_overview.md" class="nav-link" data-type="markdown">
+                <i class="fas fa-sitemap"></i> Architecture Overview
+            </a>
+            <a href="docs/architecture/component_system.md" class="nav-link" data-type="markdown">
+                <i class="fas fa-puzzle-piece"></i> Component System
+            </a>
+            <a href="docs/architecture/flow_engine.md" class="nav-link" data-type="markdown">
+                <i class="fas fa-cogs"></i> Flow Engine
+            </a>
+            <a href="docs/architecture/api_and_services.md" class="nav-link" data-type="markdown">
+                <i class="fas fa-plug"></i> API and Services
+            </a>
+            
+            <div class="subsection">Class Diagrams</div>
+            <div class="subsection-content">
+                <a href="docs/architecture/component_class_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-project-diagram"></i> Component Class Structure
+                </a>
+                <a href="docs/architecture/component_system_architecture.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-project-diagram"></i> Component System Architecture
+                </a>
+                <a href="docs/architecture/langflow_class_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-project-diagram"></i> Langflow Class Structure
+                </a>
+            </div>
+            
+            <div class="subsection">C4 Model</div>
+            <div class="subsection-content">
+                <a href="docs/architecture/c4/README.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-info-circle"></i> C4 Model Overview
+                </a>
+                <a href="docs/architecture/c4/c4_context_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-sitemap"></i> Context (Level 1)
+                </a>
+                <a href="docs/architecture/c4/c4_container_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-cubes"></i> Container (Level 2)
+                </a>
+                <a href="docs/architecture/c4/c4_component_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-puzzle-piece"></i> Component (Level 3)
+                </a>
+                <a href="docs/architecture/c4/c4_code_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-code"></i> Code (Level 4)
+                </a>
+                <a href="docs/architecture/c4/c4_frontend_component_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-desktop"></i> Frontend Component
+                </a>
+            </div>
+            
+            <div class="subsection">Developer Documentation</div>
+            <div class="subsection-content">
+                <a href="docs/architecture/developer_architecture.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-drafting-compass"></i> Developer Architecture
+                </a>
+                <a href="docs/architecture/developer_workflow_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-code-branch"></i> Developer Workflow
+                </a>
+                <a href="docs/architecture/developer_component_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-project-diagram"></i> Developer Component Diagram
+                </a>
+                <a href="docs/architecture/developer_container_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-cubes"></i> Developer Container Diagram
+                </a>
+                <a href="docs/architecture/developer_code_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-code"></i> Developer Code Diagram
+                </a>
+            </div>
+        </div>
         
         <div class="section-header">Implementation</div>
-        <a href="docs/backend/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-server"></i> Backend Documentation
-        </a>
-        <div class="subsection">Backend Components</div>
-        <a href="docs/backend/backend_architecture.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-server"></i> Backend Architecture
-        </a>
-        <a href="docs/backend/backend_component_system.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-cubes"></i> Component System
-        </a>
-        <a href="docs/backend/backend_component_discovery.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-search"></i> Component Discovery
-        </a>
-        <a href="docs/backend/backend_component_lifecycle.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-sync"></i> Component Lifecycle
-        </a>
-        <a href="docs/backend/backend_event_system.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-bell"></i> Event System
-        </a>
-        <a href="docs/backend/backend_flow_validation.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-check-circle"></i> Flow Validation
-        </a>
-        <a href="docs/backend/backend_flow_persistence.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-database"></i> Flow Persistence
-        </a>
-        <a href="docs/backend/backend_services_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-network-wired"></i> Backend Services
-        </a>
-        <a href="docs/backend/backend_component_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-sitemap"></i> Backend Component Structure
-        </a>
-        
-        <div class="subsection">Backend Sequences</div>
-        <a href="docs/backend/flow_validation_sequence.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-check-double"></i> Flow Validation Process
-        </a>
-        <a href="docs/backend/flow_persistence_sequence.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-save"></i> Flow Persistence Process
-        </a>
-        <a href="docs/backend/flow_execution_sequence.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-play-circle"></i> Flow Execution Process
-        </a>
-        <a href="docs/backend/api_request_lifecycle_sequence.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-exchange-alt"></i> API Request Lifecycle
-        </a>
-        <a href="docs/backend/event_system_sequence.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-bullhorn"></i> Event System
-        </a>
-        <a href="docs/backend/auth_middleware_sequence.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-shield-alt"></i> Authentication Process
-        </a>
-        <a href="docs/backend/error_handling_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-exclamation-triangle"></i> Error Handling
-        </a>
-        <a href="docs/backend/component_discovery_sequence.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-search"></i> Component Discovery
-        </a>
-        <a href="docs/backend/component_execution_sequence.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-cog"></i> Component Execution
-        </a>
-        
-        <div class="subsection">Frontend Components</div>
-        <a href="docs/frontend/frontend_architecture.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-desktop"></i> Frontend Architecture
-        </a>
-        <a href="docs/frontend/frontend_state_management.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-th-large"></i> State Management
-        </a>
+        <div class="section-content">
+            <div class="subsection">Backend</div>
+            <div class="subsection-content">
+                <a href="docs/backend/README.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-server"></i> Backend Overview
+                </a>
+                <a href="docs/backend/backend_architecture.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-server"></i> Backend Architecture
+                </a>
+                <a href="docs/backend/backend_component_system.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-cubes"></i> Component System
+                </a>
+                <a href="docs/backend/backend_component_discovery.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-search"></i> Component Discovery
+                </a>
+                <a href="docs/backend/backend_component_lifecycle.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-sync"></i> Component Lifecycle
+                </a>
+                <a href="docs/backend/backend_event_system.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-bell"></i> Event System
+                </a>
+                <a href="docs/backend/backend_flow_validation.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-check-circle"></i> Flow Validation
+                </a>
+                <a href="docs/backend/backend_flow_persistence.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-database"></i> Flow Persistence
+                </a>
+                <a href="docs/backend/backend_services_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-network-wired"></i> Backend Services
+                </a>
+                <a href="docs/backend/backend_component_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-sitemap"></i> Backend Component Structure
+                </a>
+            </div>
+            
+            <div class="subsection">Backend Processes</div>
+            <div class="subsection-content">
+                <a href="docs/backend/flow_validation_sequence.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-check-double"></i> Flow Validation Process
+                </a>
+                <a href="docs/backend/flow_persistence_sequence.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-save"></i> Flow Persistence Process
+                </a>
+                <a href="docs/backend/flow_execution_sequence.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-play-circle"></i> Flow Execution Process
+                </a>
+                <a href="docs/backend/api_request_lifecycle_sequence.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-exchange-alt"></i> API Request Lifecycle
+                </a>
+                <a href="docs/backend/event_system_sequence.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-bullhorn"></i> Event System
+                </a>
+                <a href="docs/backend/auth_middleware_sequence.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-shield-alt"></i> Authentication Process
+                </a>
+                <a href="docs/backend/error_handling_diagram.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-exclamation-triangle"></i> Error Handling
+                </a>
+                <a href="docs/backend/component_discovery_sequence.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-search"></i> Component Discovery
+                </a>
+                <a href="docs/backend/component_execution_sequence.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-cog"></i> Component Execution
+                </a>
+            </div>
+            
+            <div class="subsection">Frontend</div>
+            <div class="subsection-content">
+                <a href="docs/frontend/frontend_architecture.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-desktop"></i> Frontend Architecture
+                </a>
+                <a href="docs/frontend/frontend_state_management.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-th-large"></i> State Management
+                </a>
+            </div>
+        </div>
         
         <div class="section-header">Deployment</div>
-        <a href="docs/deployment/deployment_architecture.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-cloud"></i> Deployment Architecture
-        </a>
-        <a href="docs/deployment/aws_deployment_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-aws"></i> AWS Deployment
-        </a>
-        
-        <div class="section-header">Diagram Sources</div>
-        <a href="diagrams/c4/c4_model/context/c4_context_diagram.puml" class="nav-link" data-type="markdown">
-            <i class="fas fa-file-code"></i> Context PUML
-        </a>
-        <a href="diagrams/c4/c4_model/container/c4_container_diagram.puml" class="nav-link" data-type="markdown">
-            <i class="fas fa-file-code"></i> Container PUML
-        </a>
-        <a href="diagrams/c4/c4_model/component/backend_component_diagram.puml" class="nav-link" data-type="markdown">
-            <i class="fas fa-file-code"></i> Backend Component PUML
-        </a>
-        <a href="diagrams/c4/c4_model/component/frontend_component_diagram.puml" class="nav-link" data-type="markdown">
-            <i class="fas fa-file-code"></i> Frontend Component PUML
-        </a>
-        <a href="diagrams/c4/c4_model/code/c4_code_diagram.puml" class="nav-link" data-type="markdown">
-            <i class="fas fa-file-code"></i> Code PUML
-        </a>
-        
-        <div class="subsection">Rendered Diagrams</div>
-        <a href="images/diagrams/c4/c4_model/context/c4_context_diagram.svg" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Context Diagram
-        </a>
-        <a href="images/diagrams/c4/c4_model/container/c4_container_diagram.svg" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Container Diagram
-        </a>
-        <a href="images/diagrams/c4/c4_model/component/backend_component_diagram.svg" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Backend Component
-        </a>
-        <a href="images/diagrams/c4/c4_model/component/frontend_component_diagram.svg" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Frontend Component
-        </a>
-        <a href="images/diagrams/c4/c4_model/code/c4_code_diagram.svg" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Code Diagram
-        </a>
+        <div class="section-content">
+            <a href="docs/deployment/deployment_architecture.md" class="nav-link" data-type="markdown">
+                <i class="fas fa-cloud"></i> Deployment Architecture
+            </a>
+            <a href="docs/deployment/aws_deployment_diagram.md" class="nav-link" data-type="markdown">
+                <i class="fab fa-aws"></i> AWS Deployment
+            </a>
+        </div>
         
         <div class="section-header">Banking Journeys</div>
-        <a href="diagrams/banking_journeys/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-university"></i> Banking Journeys Overview
-        </a>
-        
-        <div class="subsection">IT Users</div>
-        <a href="diagrams/banking_journeys/it_users/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-info-circle"></i> IT Users Overview
-        </a>
-        <a href="diagrams/banking_journeys/it_users/platform_engineering_integration.puml" class="nav-link" data-type="markdown">
-            <i class="fas fa-file-code"></i> Platform Engineering (PUML)
-        </a>
-        <a href="images/diagrams/banking_journeys/it_users/platform_engineering_integration.svg" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Platform Engineering (SVG)
-        </a>
-        
-        <div class="subsection">Digital Users</div>
-        <a href="diagrams/banking_journeys/digital_users/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-info-circle"></i> Digital Users Overview
-        </a>
-        <a href="diagrams/banking_journeys/digital_users/ai_solution_design_implementation.puml" class="nav-link" data-type="markdown">
-            <i class="fas fa-file-code"></i> AI Solution Design (PUML)
-        </a>
-        <a href="images/diagrams/banking_journeys/digital_users/ai_solution_design_implementation.svg" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> AI Solution Design (SVG)
-        </a>
-        
-        <div class="subsection">Retail Users</div>
-        <a href="diagrams/banking_journeys/retail_users/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-info-circle"></i> Retail Users Overview
-        </a>
-        <a href="diagrams/banking_journeys/retail_users/ai_assisted_customer_service.puml" class="nav-link" data-type="markdown">
-            <i class="fas fa-file-code"></i> AI-Assisted Customer Service (PUML)
-        </a>
-        <a href="images/diagrams/banking_journeys/retail_users/ai_assisted_customer_service.svg" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> AI-Assisted Customer Service (SVG)
-        </a>
-        
-        <div class="subsection">Legacy Journeys</div>
-        <a href="diagrams/banking_journeys/legacy_journeys/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-info-circle"></i> Legacy Journeys Overview
-        </a>
-        
-        <div class="subsection">Customer Service</div>
-        <a href="diagrams/banking_journeys/customer_service/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-info-circle"></i> Customer Service Overview
-        </a>
-        <a href="diagrams/banking_journeys/customer_service/ai_assisted_customer_service.puml" class="nav-link" data-type="markdown">
-            <i class="fas fa-file-code"></i> AI-Assisted Customer Service (PUML)
-        </a>
-        <a href="images/diagrams/banking_journeys/customer_service/ai_assisted_customer_service.svg" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> AI-Assisted Customer Service (SVG)
-        </a>
-        
-        <div class="subsection">Compliance</div>
-        <a href="diagrams/banking_journeys/compliance/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-info-circle"></i> Compliance Overview
-        </a>
-        <a href="diagrams/banking_journeys/compliance/regulatory_compliance_monitoring.puml" class="nav-link" data-type="markdown">
-            <i class="fas fa-file-code"></i> Regulatory Compliance Monitoring (PUML)
-        </a>
-        <a href="images/diagrams/banking_journeys/compliance/regulatory_compliance_monitoring.svg" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Regulatory Compliance Monitoring (SVG)
-        </a>
-        
-        <div class="subsection">Development</div>
-        <a href="diagrams/banking_journeys/development/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-info-circle"></i> Development Overview
-        </a>
-        <a href="diagrams/banking_journeys/development/banking_component_development.puml" class="nav-link" data-type="markdown">
-            <i class="fas fa-file-code"></i> Banking Component Development (PUML)
-        </a>
-        <a href="images/diagrams/banking_journeys/development/banking_component_development.svg" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Banking Component Development (SVG)
-        </a>
+        <div class="section-content">
+            <a href="diagrams/banking_journeys/README.md" class="nav-link" data-type="markdown">
+                <i class="fas fa-university"></i> Banking Journeys Overview
+            </a>
+            
+            <div class="subsection">Core User Journeys</div>
+            <div class="subsection-content">
+                <a href="diagrams/banking_journeys/core_journeys/README.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-info-circle"></i> Core Journeys Overview
+                </a>
+                <a href="images/banking_journeys/core_journeys/Flow Designer Journey.png" class="nav-link" data-type="image">
+                    <i class="fas fa-image"></i> Flow Designer Journey (Diagram)
+                </a>
+                <a href="images/banking_journeys/core_journeys/API Integration Journey.png" class="nav-link" data-type="image">
+                    <i class="fas fa-image"></i> API Integration Journey (Diagram)
+                </a>
+            </div>
+            
+            <div class="subsection">Domain-Specific Implementations</div>
+            <div class="subsection-content">
+                <a href="diagrams/banking_journeys/domain_specific/README.md" class="nav-link" data-type="markdown">
+                    <i class="fas fa-info-circle"></i> Domain-Specific Overview
+                </a>
+                
+                <div class="subsection">→ Retail Banking</div>
+                <div class="subsection-content">
+                    <a href="diagrams/banking_journeys/domain_specific/retail_banking/README.md" class="nav-link" data-type="markdown">
+                        <i class="fas fa-info-circle"></i> Retail Banking Overview
+                    </a>
+                    <a href="images/banking_journeys/domain_specific/retail_banking/AI-Assisted Customer Service.png" class="nav-link" data-type="image">
+                        <i class="fas fa-image"></i> AI-Assisted Customer Service (Diagram)
+                    </a>
+                </div>
+                
+                <div class="subsection">→ Corporate Banking</div>
+                <div class="subsection-content">
+                    <a href="diagrams/banking_journeys/domain_specific/corporate_banking/README.md" class="nav-link" data-type="markdown">
+                        <i class="fas fa-info-circle"></i> Corporate Banking Overview
+                    </a>
+                    <a href="images/banking_journeys/domain_specific/corporate_banking/AI Solution Design and Implementation.png" class="nav-link" data-type="image">
+                        <i class="fas fa-image"></i> Corporate Banking: AI Solution Design (Diagram)
+                    </a>
+                </div>
+                
+                <div class="subsection">→ Regulatory Compliance</div>
+                <div class="subsection-content">
+                    <a href="diagrams/banking_journeys/domain_specific/regulatory_compliance/README.md" class="nav-link" data-type="markdown">
+                        <i class="fas fa-info-circle"></i> Regulatory Compliance Overview
+                    </a>
+                    <a href="images/banking_journeys/domain_specific/regulatory_compliance/Regulatory Compliance Monitoring System Development.png" class="nav-link" data-type="image">
+                        <i class="fas fa-image"></i> Regulatory Compliance Monitoring (Diagram)
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
     
     <div id="content">
+        <div class="breadcrumbs">
+            <a href="index.html">Home</a>
+            <span class="separator">/</span>
+            <span class="current">Documentation</span>
+        </div>
+        
         <div id="content-display">
             <div id="markdown-content"></div>
             <div id="image-viewer" style="display:none;"></div>
         </div>
+        
+        <div class="toc">
+            <div class="toc-header">
+                <span>Table of Contents</span>
+                <span class="toc-close"><i class="fas fa-times"></i></span>
+            </div>
+            <div id="toc-content"></div>
+        </div>
     </div>
     
-    <div class="server-note">
+    <!-- <div class="server-note">
         Note: For properly rendered markdown files, please serve this documentation using a local web server. 
         <button onclick="showServerInstructions()" class="btn btn-sm btn-warning">How?</button>
     </div>
-    
+     -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const navLinks = document.querySelectorAll('.nav-link');
@@ -521,9 +1284,222 @@
             const content = document.getElementById('content');
             const markdownContent = document.getElementById('markdown-content');
             const imageViewer = document.getElementById('image-viewer');
+            const breadcrumbs = document.querySelector('.breadcrumbs');
+            const tocToggle = document.getElementById('toc-toggle');
+            const toc = document.querySelector('.toc');
+            const tocClose = document.querySelector('.toc-close');
+            const tocContent = document.getElementById('toc-content');
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const searchInput = document.getElementById('search-input');
+            const searchResults = document.getElementById('search-results');
+            
+            // Store all searchable content
+            let searchableContent = [];
+            
+            // Function to gather all searchable content
+            async function gatherSearchableContent() {
+                searchableContent = [];
+                // Get all navigation links
+                const links = document.querySelectorAll('.nav-link[data-type="markdown"]');
+                
+                for (const link of links) {
+                    const href = link.getAttribute('href');
+                    const title = link.textContent.trim();
+                    
+                    try {
+                        const response = await fetch(href);
+                        if (response.ok) {
+                            const text = await response.text();
+                            searchableContent.push({
+                                title: title,
+                                path: href,
+                                content: text
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error fetching content for search:', error);
+                    }
+                }
+                
+                console.log(`Indexed ${searchableContent.length} documents for search.`);
+            }
+            
+            // Initialize search functionality
+            gatherSearchableContent();
+            
+            // Search function
+            function performSearch(query) {
+                if (!query || query.trim().length < 2) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+                
+                const results = [];
+                const lowerQuery = query.toLowerCase();
+                
+                for (const item of searchableContent) {
+                    const lowerContent = item.content.toLowerCase();
+                    const lowerTitle = item.title.toLowerCase();
+                    
+                    if (lowerTitle.includes(lowerQuery) || lowerContent.includes(lowerQuery)) {
+                        // Get a snippet of content around the match
+                        let snippetIndex = lowerContent.indexOf(lowerQuery);
+                        let start = Math.max(0, snippetIndex - 50);
+                        let end = Math.min(lowerContent.length, snippetIndex + query.length + 100);
+                        let snippet = item.content.substring(start, end);
+                        
+                        // If we trimmed the start, add ellipsis
+                        if (start > 0) {
+                            snippet = '...' + snippet;
+                        }
+                        
+                        // If we trimmed the end, add ellipsis
+                        if (end < item.content.length) {
+                            snippet += '...';
+                        }
+                        
+                        // Highlight the matched text
+                        const highlightedSnippet = snippet.replace(
+                            new RegExp(query, 'gi'), 
+                            match => `<span class="highlight">${match}</span>`
+                        );
+                        
+                        results.push({
+                            title: item.title,
+                            path: item.path,
+                            snippet: highlightedSnippet
+                        });
+                    }
+                }
+                
+                // Display results
+                if (results.length > 0) {
+                    let resultsHTML = `<div id="search-results-count">${results.length} result${results.length === 1 ? '' : 's'} found</div>`;
+                    
+                    for (const result of results) {
+                        resultsHTML += `
+                            <div class="search-result-item" data-path="${result.path}">
+                                <div class="search-result-title">${result.title}</div>
+                                <div class="search-result-path">${result.path}</div>
+                                <div class="search-result-snippet">${result.snippet}</div>
+                            </div>
+                        `;
+                    }
+                    
+                    searchResults.innerHTML = resultsHTML;
+                    searchResults.style.display = 'block';
+                    
+                    // Add event listeners to result items
+                    document.querySelectorAll('.search-result-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const path = this.getAttribute('data-path');
+                            loadContent(path, 'markdown');
+                            
+                            // Find the corresponding link in the sidebar and set it active
+                            const sidebarLink = Array.from(navLinks).find(link => link.getAttribute('href') === path);
+                            if (sidebarLink) {
+                                setActiveLink(sidebarLink);
+                                const linkText = sidebarLink.textContent.trim();
+                                updateBreadcrumbs(path, linkText);
+                            }
+                            
+                            // Clear search
+                            searchInput.value = '';
+                            searchResults.style.display = 'none';
+                        });
+                    });
+                } else {
+                    searchResults.innerHTML = '<div id="search-results-count">No results found</div>';
+                    searchResults.style.display = 'block';
+                }
+            }
+            
+            // Search input event listener
+            searchInput.addEventListener('input', function() {
+                performSearch(this.value);
+            });
+            
+            // Close search results when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.style.display = 'none';
+                }
+            });
+            
+            // Check for dark mode preference
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
             
             // Initial load
             loadContent('README.md', 'markdown');
+            
+            // Setup collapsible section headers
+            const sectionHeaders = document.querySelectorAll('.section-header');
+            sectionHeaders.forEach(header => {
+                const content = header.nextElementSibling;
+                if (content && content.classList.contains('section-content')) {
+                    header.addEventListener('click', function(e) {
+                        header.classList.toggle('collapsed');
+                        content.classList.toggle('collapsed');
+                        e.stopPropagation();
+                    });
+                }
+            });
+            
+            // Setup collapsible subsections
+            const subsections = document.querySelectorAll('.subsection');
+            subsections.forEach(subsection => {
+                const content = subsection.nextElementSibling;
+                if (content && content.classList.contains('subsection-content')) {
+                    // Find nested subsections and avoid triggering them
+                    if (!subsection.closest('.subsection-content')) {
+                        subsection.addEventListener('click', function(e) {
+                            subsection.classList.toggle('collapsed');
+                            content.classList.toggle('collapsed');
+                            
+                            // If we're expanding, make sure all parent subsections are also expanded
+                            if (!content.classList.contains('collapsed')) {
+                                let parent = subsection.parentElement;
+                                while (parent) {
+                                    if (parent.classList.contains('subsection-content')) {
+                                        parent.classList.remove('collapsed');
+                                        const parentHeader = parent.previousElementSibling;
+                                        if (parentHeader && parentHeader.classList.contains('subsection')) {
+                                            parentHeader.classList.remove('collapsed');
+                                        }
+                                    }
+                                    parent = parent.parentElement;
+                                }
+                            }
+                            
+                            e.stopPropagation();
+                        });
+                    } else {
+                        // For nested subsections, stop propagation to parent
+                        subsection.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            subsection.classList.toggle('collapsed');
+                            content.classList.toggle('collapsed');
+                        });
+                    }
+                }
+            });
+            
+            // Handle dark mode toggle
+            darkModeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('darkMode', isDark);
+                
+                if (isDark) {
+                    darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    darkModeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            });
             
             // Handle hamburger menu
             hamburger.addEventListener('click', function() {
@@ -545,7 +1521,9 @@
                     
                     const href = this.getAttribute('href');
                     const type = this.getAttribute('data-type');
+                    const text = this.textContent.trim();
                     
+                    updateBreadcrumbs(href, text);
                     loadContent(href, type);
                     
                     if (window.innerWidth <= 992) {
@@ -554,6 +1532,179 @@
                     }
                 });
             });
+            
+            // Update breadcrumbs
+            function updateBreadcrumbs(path, currentPageTitle) {
+                let pathParts = path.split('/');
+                let breadcrumbsHTML = '<a href="index.html">Home</a>';
+                
+                // Only add breadcrumbs if we have a deeper path
+                if (pathParts.length > 1) {
+                    let currentPath = '';
+                    
+                    for (let i = 0; i < pathParts.length - 1; i++) {
+                        const part = pathParts[i];
+                        if (part === '.' || part === '') continue;
+                        
+                        currentPath += part + '/';
+                        
+                        // Format for display (capitalize, replace underscores)
+                        const displayName = part
+                            .replace(/_/g, ' ')
+                            .split(' ')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
+                        
+                        breadcrumbsHTML += '<span class="separator">/</span>';
+                        breadcrumbsHTML += `<a href="${currentPath}">${displayName}</a>`;
+                    }
+                    
+                    breadcrumbsHTML += '<span class="separator">/</span>';
+                }
+                
+                breadcrumbsHTML += `<span class="current">${currentPageTitle}</span>`;
+                breadcrumbs.innerHTML = breadcrumbsHTML;
+            }
+            
+            // Generate table of contents
+            function generateTOC(htmlContent) {
+                const headings = markdownContent.querySelectorAll('h1, h2, h3, h4');
+                if (headings.length === 0) {
+                    toc.classList.remove('visible');
+                    return;
+                }
+                
+                const tocList = document.createElement('ul');
+                const headingMap = {
+                    1: { element: tocList, items: [] },
+                    2: { element: null, items: [] },
+                    3: { element: null, items: [] },
+                    4: { element: null, items: [] }
+                };
+                
+                headings.forEach((heading, index) => {
+                    // Add ID to heading if it doesn't have one
+                    if (!heading.id) {
+                        heading.id = 'heading-' + index;
+                    }
+                    
+                    const level = parseInt(heading.tagName.charAt(1));
+                    const item = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.href = '#' + heading.id;
+                    link.textContent = heading.textContent;
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        heading.scrollIntoView({ behavior: 'smooth' });
+                        
+                        // Highlight current TOC item
+                        document.querySelectorAll('.toc a').forEach(a => a.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                    item.appendChild(link);
+                    
+                    // Handle hierarchy
+                    if (level === 1) {
+                        headingMap[1].element.appendChild(item);
+                        headingMap[1].items.push(item);
+                    } else {
+                        if (headingMap[level-1].items.length === 0) {
+                            // If no parent exists, add directly to the highest available parent
+                            let parentLevel = level - 1;
+                            while (parentLevel >= 1) {
+                                if (headingMap[parentLevel].items.length > 0) {
+                                    break;
+                                }
+                                parentLevel--;
+                            }
+                            
+                            if (parentLevel >= 1) {
+                                const parentItem = headingMap[parentLevel].items[headingMap[parentLevel].items.length - 1];
+                                let subList = parentItem.querySelector('ul');
+                                if (!subList) {
+                                    subList = document.createElement('ul');
+                                    parentItem.appendChild(subList);
+                                }
+                                subList.appendChild(item);
+                            } else {
+                                headingMap[1].element.appendChild(item);
+                            }
+                        } else {
+                            const parentItem = headingMap[level-1].items[headingMap[level-1].items.length - 1];
+                            let subList = parentItem.querySelector('ul');
+                            if (!subList) {
+                                subList = document.createElement('ul');
+                                parentItem.appendChild(subList);
+                            }
+                            subList.appendChild(item);
+                        }
+                        headingMap[level].items.push(item);
+                    }
+                });
+                
+                tocContent.innerHTML = '';
+                tocContent.appendChild(tocList);
+            }
+            
+            // Add copy button to code blocks
+            function addCodeBlockButtons() {
+                const codeBlocks = markdownContent.querySelectorAll('pre');
+                
+                codeBlocks.forEach((block, index) => {
+                    const copyButton = document.createElement('div');
+                    copyButton.className = 'code-header';
+                    copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                    copyButton.addEventListener('click', function() {
+                        const code = block.querySelector('code').innerText;
+                        navigator.clipboard.writeText(code).then(() => {
+                            copyButton.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                            setTimeout(() => {
+                                copyButton.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                            }, 2000);
+                        });
+                    });
+                    
+                    // Position the button properly
+                    block.style.position = 'relative';
+                    block.insertBefore(copyButton, block.firstChild);
+                });
+            }
+            
+            // Make diagrams zoomable
+            function makeDiagramsZoomable() {
+                const diagrams = document.querySelectorAll('.embedded-diagram img');
+                
+                diagrams.forEach(img => {
+                    img.addEventListener('click', function() {
+                        // Show image in lightbox
+                        const lightbox = document.createElement('div');
+                        lightbox.style.position = 'fixed';
+                        lightbox.style.top = '0';
+                        lightbox.style.left = '0';
+                        lightbox.style.width = '100%';
+                        lightbox.style.height = '100%';
+                        lightbox.style.backgroundColor = 'rgba(0,0,0,0.9)';
+                        lightbox.style.display = 'flex';
+                        lightbox.style.alignItems = 'center';
+                        lightbox.style.justifyContent = 'center';
+                        lightbox.style.zIndex = '9999';
+                        lightbox.style.cursor = 'zoom-out';
+                        
+                        const zoomedImg = document.createElement('img');
+                        zoomedImg.src = img.src;
+                        zoomedImg.style.maxWidth = '90%';
+                        zoomedImg.style.maxHeight = '90%';
+                        zoomedImg.style.objectFit = 'contain';
+                        
+                        lightbox.appendChild(zoomedImg);
+                        document.body.appendChild(lightbox);
+                        
+                        lightbox.addEventListener('click', function() {
+                            document.body.removeChild(lightbox);
+                        });
+                    });
+                });
+            }
             
             // Load content based on type
             function loadContent(url, type) {
@@ -585,6 +1736,18 @@
                             // Render the markdown
                             const html = DOMPurify.sanitize(marked.parse(text));
                             markdownContent.innerHTML = html;
+                            
+                            // Generate TOC 
+                            generateTOC();
+                            
+                            // Add code block buttons
+                            addCodeBlockButtons();
+                            
+                            // Add corresponding diagram after a short delay to ensure markdown is rendered
+                            setTimeout(() => {
+                                findAndEmbedDiagram(url);
+                                makeDiagramsZoomable();
+                            }, 100);
                         })
                         .catch(e => {
                             console.error('Error fetching markdown:', e);
@@ -600,8 +1763,278 @@
                     markdownContent.style.display = 'none';
                     imageViewer.style.display = 'flex';
                     
-                    imageViewer.innerHTML = `<img src="${url}" alt="Diagram">`;
+                    // Get filename for title
+                    const filename = url.split('/').pop();
+                    const title = filename.replace(/\.[^/.]+$/, "");
+                    
+                    imageViewer.innerHTML = `
+                        <div style="text-align: center;">
+                            <h2 style="margin-bottom: 20px; color: var(--primary-color);">${title}</h2>
+                            <img src="${url}" alt="${title}">
+                            <div class="image-controls">
+                                <button class="image-control-button" id="zoom-in"><i class="fas fa-search-plus"></i></button>
+                                <button class="image-control-button" id="zoom-out"><i class="fas fa-search-minus"></i></button>
+                                <button class="image-control-button" id="reset-zoom"><i class="fas fa-sync"></i></button>
+                                <button class="image-control-button" id="download-image"><i class="fas fa-download"></i></button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Initialize zoom controls
+                    const img = imageViewer.querySelector('img');
+                    let zoomLevel = 1;
+                    
+                    document.getElementById('zoom-in').addEventListener('click', function() {
+                        zoomLevel *= 1.2;
+                        img.style.transform = `scale(${zoomLevel})`;
+                    });
+                    
+                    document.getElementById('zoom-out').addEventListener('click', function() {
+                        zoomLevel /= 1.2;
+                        img.style.transform = `scale(${zoomLevel})`;
+                    });
+                    
+                    document.getElementById('reset-zoom').addEventListener('click', function() {
+                        zoomLevel = 1;
+                        img.style.transform = `scale(${zoomLevel})`;
+                    });
+                    
+                    document.getElementById('download-image').addEventListener('click', function() {
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    });
                 }
+            }
+            
+            // Function to find and embed corresponding diagram
+            function findAndEmbedDiagram(markdownUrl) {
+                console.log("Finding diagram for:", markdownUrl);
+                
+                // Clear any previously embedded diagrams
+                const existingDiagrams = document.querySelectorAll('.embedded-diagram');
+                existingDiagrams.forEach(diagram => diagram.remove());
+                
+                // C4 Architecture Diagrams
+                if (markdownUrl.includes('/architecture/c4/')) {
+                    const fileName = markdownUrl.split('/').pop().replace('.md', '');
+                    
+                    if (fileName === 'c4_context_diagram') {
+                        embedDiagram('images/c4/c4_model/context/C4_Context.png', 'C4 Context Diagram');
+                    } 
+                    else if (fileName === 'c4_container_diagram') {
+                        embedDiagram('images/c4/c4_model/container/C4_Container.png', 'C4 Container Diagram');
+                    }
+                    else if (fileName === 'c4_component_diagram') {
+                        embedDiagram('images/c4/c4_model/component/C4_Component.png', 'C4 Component Diagram');
+                    }
+                    else if (fileName === 'c4_code_diagram') {
+                        embedDiagram('images/c4/c4_model/code/C4_Code.png', 'C4 Code Diagram');
+                    }
+                    else if (fileName === 'c4_frontend_component_diagram') {
+                        embedDiagram('images/c4/c4_model/component/C4_Frontend_Component.png', 'C4 Frontend Component Diagram');
+                    }
+                }
+                // Other Architecture Documentation
+                else if (markdownUrl.includes('/architecture/') && !markdownUrl.includes('/architecture/c4/')) {
+                    const fileName = markdownUrl.split('/').pop().replace('.md', '');
+                    
+                    if (fileName === 'langflow_class_diagram') {
+                        embedDiagram('images/c4/c4_model/code/Langflow_Classes.png', 'Langflow Class Diagram');
+                    }
+                    else if (fileName === 'component_system_architecture') {
+                        embedDiagram('images/c4/backend/component_system/Component_System_Architecture.png', 'Component System Architecture');
+                    }
+                }
+                
+                // Backend Documentation
+                else if (markdownUrl.includes('/backend/')) {
+                    const fileName = markdownUrl.split('/').pop().replace('.md', '');
+                    
+                    if (fileName.includes('component_diagram')) {
+                        checkAndEmbedImage('images/c4/backend/component_system/C4_Backend_Component.png', 'Backend Component Diagram');
+                    }
+                    else if (fileName.includes('services_diagram')) {
+                        checkAndEmbedImage('images/c4/backend/component_system/C4_Backend_Services.png', 'Backend Services Diagram');
+                    }
+                    else if (fileName === 'backend_component_system') {
+                        checkAndEmbedImage('images/c4/backend/component_system/C4_Component_System.png', 'Component System Architecture');
+                    }
+                    // Handle sequence diagrams
+                    else if (fileName.includes('sequence') || fileName.includes('lifecycle')) {
+                        // Special handling for auth middleware
+                        if (fileName === 'auth_middleware_sequence') {
+                            checkAndEmbedImage('images/c4/backend/sequences/Backend_Auth_Middleware.png', 'Authentication Middleware Sequence');
+                        }
+                        // API request lifecycle
+                        else if (fileName === 'api_request_lifecycle_sequence') {
+                            checkAndEmbedImage('images/c4/backend/sequences/API_Request_Lifecycle.png', 'API Request Lifecycle');
+                        }
+                        // Component execution sequence 
+                        else if (fileName === 'component_execution_sequence') {
+                            checkAndEmbedImage('images/c4/backend/sequences/Component_Execution_Sequence.png', 'Component Execution Sequence');
+                        }
+                        // Component discovery sequence
+                        else if (fileName === 'component_discovery_sequence') {
+                            checkAndEmbedImage('images/c4/backend/sequences/Component_Discovery_Sequence.png', 'Component Discovery Sequence');
+                        }
+                        // Component lifecycle sequence
+                        else if (fileName === 'component_lifecycle_sequence') {
+                            checkAndEmbedImage('images/c4/backend/sequences/Component_Lifecycle_Sequence.png', 'Component Lifecycle Sequence');
+                        }
+                        // Event system sequence
+                        else if (fileName === 'event_system_sequence') {
+                            checkAndEmbedImage('images/c4/backend/sequences/Event_System_Sequence.png', 'Event System Sequence');
+                        }
+                    }
+                    // Handle error handling diagram
+                    else if (fileName.includes('error_handling')) {
+                        checkAndEmbedImage('images/c4/backend/sequences/Error_Handling_System.png', 'Error Handling System Diagram');
+                    }
+                    // Handle flow diagrams
+                    else if (fileName.includes('flow')) {
+                        // Check for flow execution, validation, persistence
+                        if (fileName === 'flow_execution_sequence') {
+                            checkAndEmbedImage('images/c4/backend/flows/Backend_Flow_Execution.png', 'Flow Execution Sequence');
+                        } 
+                        else if (fileName === 'flow_validation_sequence') {
+                            checkAndEmbedImage('images/c4/backend/flows/Flow_Validation_Sequence.png', 'Flow Validation Sequence');
+                        }
+                        else if (fileName === 'flow_persistence_sequence') {
+                            checkAndEmbedImage('images/c4/backend/flows/Flow_Persistence_Sequence.png', 'Flow Persistence Sequence');
+                        }
+                    }
+                }
+                
+                // Frontend Documentation
+                else if (markdownUrl.includes('/frontend/')) {
+                    const fileName = markdownUrl.split('/').pop().replace('.md', '');
+                    
+                    if (fileName.includes('architecture')) {
+                        checkAndEmbedImage('images/c4/frontend/components/Frontend_Component_Architecture.png', 'Frontend Component Architecture');
+                    }
+                }
+                
+                // Deployment Documentation
+                else if (markdownUrl.includes('/deployment/')) {
+                    const fileName = markdownUrl.split('/').pop().replace('.md', '');
+                    
+                    if (fileName.includes('aws')) {
+                        checkAndEmbedImage('images/c4/deployment/aws/AWS_Deployment.png', 'AWS Deployment Diagram');
+                    }
+                }
+                
+                // Banking Journeys Documentation
+                else if (markdownUrl.includes('/banking_journeys/')) {
+                    if (markdownUrl.includes('/core_journeys/')) {
+                        // Handle core journeys
+                        if (markdownUrl.endsWith('README.md')) {
+                            // For the README, embed both diagrams
+                            embedDiagram('images/banking_journeys/core_journeys/Flow Designer Journey.png', 'Flow Designer Journey');
+                            embedDiagram('images/banking_journeys/core_journeys/API Integration Journey.png', 'API Integration Journey');
+                        }
+                        else if (markdownUrl.includes('flow_designer')) {
+                            embedDiagram('images/banking_journeys/core_journeys/Flow Designer Journey.png', 'Flow Designer Journey');
+                        }
+                        else if (markdownUrl.includes('api_integration')) {
+                            embedDiagram('images/banking_journeys/core_journeys/API Integration Journey.png', 'API Integration Journey');
+                        }
+                    }
+                    else if (markdownUrl.includes('/domain_specific/')) {
+                        // Handle domain-specific examples
+                        if (markdownUrl.includes('/retail_banking/')) {
+                            if (markdownUrl.endsWith('README.md')) {
+                                embedDiagram('images/banking_journeys/domain_specific/retail_banking/AI-Assisted Customer Service.png', 'AI-Assisted Customer Service');
+                            }
+                            else if (markdownUrl.includes('ai_assisted_customer_service')) {
+                                embedDiagram('images/banking_journeys/domain_specific/retail_banking/AI-Assisted Customer Service.png', 'AI-Assisted Customer Service');
+                            }
+                        }
+                        else if (markdownUrl.includes('/corporate_banking/')) {
+                            if (markdownUrl.endsWith('README.md')) {
+                                embedDiagram('images/banking_journeys/domain_specific/corporate_banking/AI Solution Design and Implementation.png', 'AI Solution Design and Implementation');
+                            }
+                            else if (markdownUrl.includes('ai_solution_design')) {
+                                embedDiagram('images/banking_journeys/domain_specific/corporate_banking/AI Solution Design and Implementation.png', 'AI Solution Design and Implementation');
+                            }
+                        }
+                        else if (markdownUrl.includes('/regulatory_compliance/')) {
+                            if (markdownUrl.endsWith('README.md')) {
+                                embedDiagram('images/banking_journeys/domain_specific/regulatory_compliance/Regulatory Compliance Monitoring System Development.png', 'Regulatory Compliance Monitoring System');
+                            }
+                            else if (markdownUrl.includes('regulatory_compliance_monitoring')) {
+                                embedDiagram('images/banking_journeys/domain_specific/regulatory_compliance/Regulatory Compliance Monitoring System Development.png', 'Regulatory Compliance Monitoring System');
+                            }
+                        }
+                        // For the domain-specific root README, embed one of each type
+                        else if (markdownUrl.endsWith('domain_specific/README.md')) {
+                            embedDiagram('images/banking_journeys/domain_specific/retail_banking/AI-Assisted Customer Service.png', 'Retail Banking: AI-Assisted Customer Service');
+                            embedDiagram('images/banking_journeys/domain_specific/corporate_banking/AI Solution Design and Implementation.png', 'Corporate Banking: AI Solution Design');
+                            embedDiagram('images/banking_journeys/domain_specific/regulatory_compliance/Regulatory Compliance Monitoring System Development.png', 'Regulatory Compliance: Monitoring System');
+                        }
+                    }
+                    // For the root banking_journeys README, embed representative diagrams
+                    else if (markdownUrl.endsWith('banking_journeys/README.md')) {
+                        embedDiagram('images/banking_journeys/core_journeys/Flow Designer Journey.png', 'Core: Flow Designer Journey');
+                        embedDiagram('images/banking_journeys/domain_specific/retail_banking/AI-Assisted Customer Service.png', 'Domain: AI-Assisted Customer Service');
+                    }
+                }
+            }
+            
+            // Format title from filename
+            function formatTitle(fileName) {
+                return fileName
+                    .replace(/_/g, ' ')
+                    .split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+            }
+            
+            // Check if image exists and embed it
+            function checkAndEmbedImage(imagePath, title) {
+                console.log(`Checking image: ${imagePath}`);
+                fetch(imagePath, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log(`✅ Image found: ${imagePath}`);
+                            embedDiagram(imagePath, title);
+                        } else {
+                            console.log(`❌ Image not found: ${imagePath} (${response.status} ${response.statusText})`);
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`❌ Error checking image ${imagePath}:`, error);
+                    });
+            }
+            
+            // Embed a diagram into the current markdown
+            function embedDiagram(imagePath, title) {
+                console.log(`Embedding diagram: ${imagePath} - ${title}`);
+                
+                const diagramDiv = document.createElement('div');
+                diagramDiv.className = 'embedded-diagram';
+                
+                const heading = document.createElement('h3');
+                heading.textContent = title;
+                diagramDiv.appendChild(heading);
+                
+                const img = document.createElement('img');
+                img.src = imagePath;
+                img.alt = title;
+                diagramDiv.appendChild(img);
+                
+                const caption = document.createElement('div');
+                caption.className = 'diagram-caption';
+                caption.textContent = title;
+                diagramDiv.appendChild(caption);
+                
+                markdownContent.appendChild(diagramDiv);
+                
+                // Make the new diagram zoomable
+                makeDiagramsZoomable();
             }
         });
         

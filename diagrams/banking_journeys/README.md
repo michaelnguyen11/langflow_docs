@@ -1,58 +1,66 @@
-# Banking-Specific AI Journeys
+# Langflow User Journeys
 
-This directory contains sequence diagrams showing how different functional divisions within a banking organization interact with the Langflow platform as an internal Generative AI solution.
+This directory contains sequence diagrams showing how different types of users interact with the Langflow platform, with a special focus on application in banking contexts.
 
-## Purpose
+## New Two-Layered Structure
 
-These diagrams illustrate end-to-end workflows that map to the components defined in the C4 architecture model, showing how they work together to solve banking-specific challenges across different user types.
+The documentation is organized using a two-layered approach:
+
+### Layer 1: Core User Types
+- **Flow Designer Journey** - End-to-end process for users creating, testing, and deploying AI agents
+- **API Integration Journey** - Complete developer workflow for integrating Langflow into applications
+
+### Layer 2: Domain-Specific Examples
+- Banking-specific implementations that build on the core journeys
+- Examples showing how different banking roles utilize the platform
 
 ## Directory Structure
 
-### Functional Division Organization
+```
+banking_journeys/
+├── core_journeys/                 # Core user type journeys
+│   ├── flow_designer_journey.puml # Journey for creating AI agents
+│   └── api_integration_journey.puml # Journey for API integration
+│
+└── domain_specific/              # Domain-specific examples
+    ├── retail_banking/           # Retail banking implementations
+    ├── corporate_banking/        # Corporate banking implementations
+    └── regulatory_compliance/    # Compliance-specific implementations
+```
 
-- **it_users/** - Sequence diagrams for IT division employees (technical banking staff)
-- **digital_users/** - Sequence diagrams for Digital division employees (bridge between business and IT)
-- **retail_users/** - Sequence diagrams for Retail Banking employees (customer-facing branch staff)
+## Core User Journeys
 
-### Legacy Organization (For Reference)
+### Flow Designer Journey
+This journey illustrates the end-to-end process for users who want to create AI agents:
+- Designing and building flows
+- Testing agent functionality
+- Deploying agents to production
+- Monitoring and improving performance
 
-- **customer_service/** - Sequence diagrams related to AI-enabled customer service
-- **compliance/** - Sequence diagrams for regulatory compliance and risk management
-- **development/** - Sequence diagrams for bank-specific AI solution development
+### API Integration Journey
+This journey illustrates the process for developers integrating with Langflow's APIs:
+- API authentication and access
+- Component and flow management via API
+- Running flows through the API
+- Monitoring and managing deployment
 
-## Key Banking Roles by Division
+## Banking-Specific Examples
 
-### IT Users
-- Backend developers
-- Infrastructure specialists
-- Security engineers
-- DevOps engineers
-- System administrators
-- Integration specialists
+The domain-specific examples demonstrate how the core journeys are implemented in banking contexts, including:
 
-### Digital Users
-- Product owners
-- Business analysts
-- Digital experience designers
-- Digital channel managers
-- Innovation specialists
-- Agile coaches
-
-### Retail Users
-- Branch customer service representatives
-- Relationship managers
-- Financial advisors
-- Tellers
-- Branch managers
-- Call center representatives
+- Customer service assistants for retail banking
+- Regulatory compliance monitoring systems
+- Financial product recommendation engines
+- Fraud detection and prevention systems
+- Transaction monitoring and anomaly detection
 
 ## Recommended Reading Sequence
 
-1. First review the division-specific journeys to understand the complete workflow for each user type
-2. Then examine the detailed sequences for specific aspects of each workflow
+1. First review the core user journeys to understand the general workflow patterns
+2. Then explore domain-specific examples relevant to your specific use case
 3. Reference the C4 architecture diagrams to understand the underlying system components
 
 ## Related Documentation
 
 - See main C4 architecture diagrams in `/diagrams/c4/` for component references
-- See implementation details in `/backend/` and `/frontend/` directories 
+- See implementation details in `/docs/backend/` and `/docs/frontend/` directories 

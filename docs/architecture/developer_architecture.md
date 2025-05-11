@@ -8,7 +8,7 @@ The Langflow architecture is designed with extensibility and modularity in mind.
 
 ## Container Architecture
 
-![Developer Container Diagram](../c4/developer/developer_container_diagram.png)
+![Developer Container Diagram](./images/c4/developer/guides/C4_Developer_Container.png)
 
 The container architecture diagram illustrates the high-level organization of the development environment for Langflow:
 
@@ -37,7 +37,7 @@ The container architecture diagram illustrates the high-level organization of th
 
 ## Component Architecture
 
-![Developer Component Diagram](../c4/developer/developer_component_diagram.png)
+![Developer Component Diagram](../../images/c4/developer/guides/C4_Developer_Component.png)
 
 The component architecture diagram details the internal structure of the Langflow codebase:
 
@@ -79,7 +79,7 @@ The component architecture diagram details the internal structure of the Langflo
 
 ## Code Architecture
 
-![Developer Code Diagram](../c4/developer/developer_code_diagram.png)
+![Developer Code Diagram](../../images/c4/developer/guides/C4_Developer_Code.png)
 
 The code architecture diagram provides a detailed view of the class structure and interfaces:
 
@@ -115,7 +115,7 @@ The code architecture diagram provides a detailed view of the class structure an
 
 ## Development Workflow
 
-![Developer Workflow Diagram](../c4/developer/developer_workflow_diagram.png)
+![Developer Workflow Diagram](../../images/c4/developer/workflows/Developer_Workflow.png)
 
 The development workflow diagram illustrates the process for developing and deploying changes to Langflow:
 
