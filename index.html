@@ -241,207 +241,263 @@
     </div>
     
     <div id="sidebar">
-        <div class="section-header">Overview</div>
+        <div class="section-header">Documentation</div>
         <a href="README.md" class="nav-link active" data-type="markdown">
-            <i class="fas fa-home"></i> Home
+            <i class="fas fa-home"></i> Main Documentation
+        </a>
+        <a href="docs/README.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-book"></i> Documentation Guide
+        </a>
+        <a href="images/README.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-images"></i> Images Guide
         </a>
         
         <div class="section-header">Architecture</div>
-        <a href="architecture/architecture_overview.md" class="nav-link" data-type="markdown">
+        <a href="docs/architecture/architecture_overview.md" class="nav-link" data-type="markdown">
             <i class="fas fa-sitemap"></i> Architecture Overview
         </a>
-        <a href="architecture/component_system.md" class="nav-link" data-type="markdown">
+        <a href="docs/architecture/component_system.md" class="nav-link" data-type="markdown">
             <i class="fas fa-puzzle-piece"></i> Component System
         </a>
-        <a href="architecture/flow_engine.md" class="nav-link" data-type="markdown">
+        <a href="docs/architecture/flow_engine.md" class="nav-link" data-type="markdown">
             <i class="fas fa-cogs"></i> Flow Engine
         </a>
-        <a href="architecture/api_and_services.md" class="nav-link" data-type="markdown">
+        <a href="docs/architecture/api_and_services.md" class="nav-link" data-type="markdown">
             <i class="fas fa-plug"></i> API and Services
+        </a>
+        <a href="docs/architecture/component_class_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-project-diagram"></i> Component Class Structure
+        </a>
+        <a href="docs/architecture/component_system_architecture.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-project-diagram"></i> Component System Architecture
+        </a>
+        <a href="docs/architecture/langflow_class_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-project-diagram"></i> Langflow Class Structure
+        </a>
+        
+        <div class="subsection">Developer Documentation</div>
+        <a href="docs/architecture/developer_architecture.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-drafting-compass"></i> Developer Architecture
+        </a>
+        <a href="docs/architecture/developer_workflow_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-code-branch"></i> Developer Workflow
+        </a>
+        <a href="docs/architecture/developer_component_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-project-diagram"></i> Developer Component Diagram
+        </a>
+        <a href="docs/architecture/developer_container_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-cubes"></i> Developer Container Diagram
+        </a>
+        <a href="docs/architecture/developer_code_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-code"></i> Developer Code Diagram
+        </a>
+        
+        <div class="subsection">C4 Model Diagrams</div>
+        <a href="docs/architecture/c4/README.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-info-circle"></i> C4 Model Overview
+        </a>
+        <a href="docs/architecture/c4/c4_context_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-sitemap"></i> Context (Level 1)
+        </a>
+        <a href="docs/architecture/c4/c4_container_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-cubes"></i> Container (Level 2)
+        </a>
+        <a href="docs/architecture/c4/c4_component_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-puzzle-piece"></i> Component (Level 3)
+        </a>
+        <a href="docs/architecture/c4/c4_code_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-code"></i> Code (Level 4)
+        </a>
+        <a href="docs/architecture/c4/c4_frontend_component_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-desktop"></i> Frontend Component
         </a>
         
         <div class="section-header">Implementation</div>
-        <a href="backend/backend_architecture.md" class="nav-link" data-type="markdown">
+        <a href="docs/backend/README.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-server"></i> Backend Documentation
+        </a>
+        <div class="subsection">Backend Components</div>
+        <a href="docs/backend/backend_architecture.md" class="nav-link" data-type="markdown">
             <i class="fas fa-server"></i> Backend Architecture
         </a>
-        <a href="frontend/frontend_architecture.md" class="nav-link" data-type="markdown">
+        <a href="docs/backend/backend_component_system.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-cubes"></i> Component System
+        </a>
+        <a href="docs/backend/backend_component_discovery.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-search"></i> Component Discovery
+        </a>
+        <a href="docs/backend/backend_component_lifecycle.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-sync"></i> Component Lifecycle
+        </a>
+        <a href="docs/backend/backend_event_system.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-bell"></i> Event System
+        </a>
+        <a href="docs/backend/backend_flow_validation.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-check-circle"></i> Flow Validation
+        </a>
+        <a href="docs/backend/backend_flow_persistence.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-database"></i> Flow Persistence
+        </a>
+        <a href="docs/backend/backend_services_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-network-wired"></i> Backend Services
+        </a>
+        <a href="docs/backend/backend_component_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-sitemap"></i> Backend Component Structure
+        </a>
+        
+        <div class="subsection">Backend Sequences</div>
+        <a href="docs/backend/flow_validation_sequence.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-check-double"></i> Flow Validation Process
+        </a>
+        <a href="docs/backend/flow_persistence_sequence.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-save"></i> Flow Persistence Process
+        </a>
+        <a href="docs/backend/flow_execution_sequence.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-play-circle"></i> Flow Execution Process
+        </a>
+        <a href="docs/backend/api_request_lifecycle_sequence.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-exchange-alt"></i> API Request Lifecycle
+        </a>
+        <a href="docs/backend/event_system_sequence.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-bullhorn"></i> Event System
+        </a>
+        <a href="docs/backend/auth_middleware_sequence.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-shield-alt"></i> Authentication Process
+        </a>
+        <a href="docs/backend/error_handling_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-exclamation-triangle"></i> Error Handling
+        </a>
+        <a href="docs/backend/component_discovery_sequence.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-search"></i> Component Discovery
+        </a>
+        <a href="docs/backend/component_execution_sequence.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-cog"></i> Component Execution
+        </a>
+        
+        <div class="subsection">Frontend Components</div>
+        <a href="docs/frontend/frontend_architecture.md" class="nav-link" data-type="markdown">
             <i class="fas fa-desktop"></i> Frontend Architecture
+        </a>
+        <a href="docs/frontend/frontend_state_management.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-th-large"></i> State Management
         </a>
         
         <div class="section-header">Deployment</div>
-        <a href="deployment/deployment_architecture.md" class="nav-link" data-type="markdown">
+        <a href="docs/deployment/deployment_architecture.md" class="nav-link" data-type="markdown">
             <i class="fas fa-cloud"></i> Deployment Architecture
         </a>
-        
-        <div class="section-header">C4 Diagrams</div>
-
-        <div class="subsection">Main Architecture</div>
-        <a href="diagrams/docs/c4_context_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-project-diagram"></i> Context Diagram (Doc)
-        </a>
-        <a href="images/c4/C4_Context.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Context Diagram (PNG)
-        </a>
-        <a href="diagrams/docs/c4_container_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-box"></i> Container Diagram (Doc)
-        </a>
-        <a href="images/c4/C4_Container.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Container Diagram (PNG)
-        </a>
-        <a href="diagrams/docs/c4_component_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-cog"></i> Component Diagram (Doc)
-        </a>
-        <a href="images/c4/C4_Component.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Component Diagram (PNG)
-        </a>
-        <a href="diagrams/docs/c4_frontend_component_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-laptop-code"></i> Frontend Component (Doc)
-        </a>
-        <a href="images/c4/C4_Frontend_Component.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Frontend Component (PNG)
-        </a>
-        <a href="diagrams/docs/c4_code_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-code"></i> Code Diagram (Doc)
-        </a>
-        <a href="images/c4/C4_Code.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Code Diagram (PNG)
-        </a>
-        <a href="diagrams/docs/langflow_class_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-project-diagram"></i> Class Diagram (Doc)
-        </a>
-        <a href="images/c4/Langflow_Classes.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Class Diagram (PNG)
-        </a>
-        <a href="diagrams/docs/aws_deployment_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fab fa-aws"></i> AWS Deployment (Doc)
-        </a>
-        <a href="images/c4/AWS_Deployment.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> AWS Deployment (PNG)
+        <a href="docs/deployment/aws_deployment_diagram.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-aws"></i> AWS Deployment
         </a>
         
-        <div class="subsection">Backend Diagrams</div>
-        <a href="diagrams/docs/backend_component_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-server"></i> Backend Component (Doc)
+        <div class="section-header">Diagram Sources</div>
+        <a href="diagrams/c4/c4_model/context/c4_context_diagram.puml" class="nav-link" data-type="markdown">
+            <i class="fas fa-file-code"></i> Context PUML
         </a>
-        <a href="images/c4/backend/C4_Backend_Component.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Backend Component (PNG)
+        <a href="diagrams/c4/c4_model/container/c4_container_diagram.puml" class="nav-link" data-type="markdown">
+            <i class="fas fa-file-code"></i> Container PUML
         </a>
-        <a href="diagrams/docs/backend_services_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-network-wired"></i> Backend Services (Doc)
+        <a href="diagrams/c4/c4_model/component/backend_component_diagram.puml" class="nav-link" data-type="markdown">
+            <i class="fas fa-file-code"></i> Backend Component PUML
         </a>
-        <a href="images/c4/backend/C4_Backend_Services.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Backend Services (PNG)
+        <a href="diagrams/c4/c4_model/component/frontend_component_diagram.puml" class="nav-link" data-type="markdown">
+            <i class="fas fa-file-code"></i> Frontend Component PUML
         </a>
-        <a href="diagrams/docs/component_system_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-puzzle-piece"></i> Component System (Doc)
-        </a>
-        <a href="images/c4/backend/C4_Component_System.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Component System (PNG)
-        </a>
-        <a href="diagrams/docs/component_system_architecture.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-sitemap"></i> Component Architecture (Doc)
-        </a>
-        <a href="images/c4/backend/Component_System_Architecture.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Component Architecture (PNG)
-        </a>
-        <a href="diagrams/docs/component_class_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-project-diagram"></i> Component Classes (Doc)
-        </a>
-        <a href="diagrams/docs/component_execution_sequence.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-exchange-alt"></i> Execution Sequence (Doc)
-        </a>
-        <a href="images/c4/backend/Component_Execution_Sequence.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Execution Sequence (PNG)
-        </a>
-
-        <div class="subsection">Developer Diagrams</div>
-        <a href="diagrams/docs/developer_container_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-cube"></i> Developer Container (Doc)
-        </a>
-        <a href="images/c4/developer/C4_Developer_Container.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Developer Container (PNG)
-        </a>
-        <a href="diagrams/docs/developer_component_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-tools"></i> Developer Component (Doc)
-        </a>
-        <a href="images/c4/developer/C4_Developer_Component.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Developer Component (PNG)
-        </a>
-        <a href="diagrams/docs/developer_code_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-file-code"></i> Developer Code (Doc)
-        </a>
-        <a href="images/c4/developer/C4_Developer_Code.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Developer Code (PNG)
-        </a>
-        <a href="diagrams/docs/developer_workflow_diagram.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-project-diagram"></i> Developer Workflow (Doc)
-        </a>
-        <a href="images/c4/developer/Developer_Workflow.png" class="nav-link" data-type="image">
-            <i class="fas fa-image"></i> Developer Workflow (PNG)
+        <a href="diagrams/c4/c4_model/code/c4_code_diagram.puml" class="nav-link" data-type="markdown">
+            <i class="fas fa-file-code"></i> Code PUML
         </a>
         
-        <div class="section-header">Integration</div>
-        <a href="images/integration/Integration_Architecture.png" class="nav-link" data-type="image">
-            <i class="fas fa-network-wired"></i> Integration Architecture
+        <div class="subsection">Rendered Diagrams</div>
+        <a href="images/diagrams/c4/c4_model/context/c4_context_diagram.svg" class="nav-link" data-type="image">
+            <i class="fas fa-image"></i> Context Diagram
         </a>
-        <a href="images/integration/Confluence_Integration.png" class="nav-link" data-type="image">
-            <i class="fab fa-confluence"></i> Confluence Integration
+        <a href="images/diagrams/c4/c4_model/container/c4_container_diagram.svg" class="nav-link" data-type="image">
+            <i class="fas fa-image"></i> Container Diagram
         </a>
-        
-        <div class="section-header">Sequence Diagrams</div>
-        
-        <div class="subsection">Frontend</div>
-        <a href="images/sequence/frontend/Frontend_Authentication.png" class="nav-link" data-type="image">
-            <i class="fas fa-sign-in-alt"></i> Authentication
+        <a href="images/diagrams/c4/c4_model/component/backend_component_diagram.svg" class="nav-link" data-type="image">
+            <i class="fas fa-image"></i> Backend Component
         </a>
-        <a href="images/sequence/frontend/Frontend_Flow_Creation.png" class="nav-link" data-type="image">
-            <i class="fas fa-plus-circle"></i> Flow Creation
+        <a href="images/diagrams/c4/c4_model/component/frontend_component_diagram.svg" class="nav-link" data-type="image">
+            <i class="fas fa-image"></i> Frontend Component
         </a>
-        <a href="images/sequence/frontend/Frontend_Flow_Execution.png" class="nav-link" data-type="image">
-            <i class="fas fa-play-circle"></i> Flow Execution
+        <a href="images/diagrams/c4/c4_model/code/c4_code_diagram.svg" class="nav-link" data-type="image">
+            <i class="fas fa-image"></i> Code Diagram
         </a>
         
-        <div class="subsection">Backend</div>
-        <a href="images/sequence/backend/Backend_Flow_Execution.png" class="nav-link" data-type="image">
-            <i class="fas fa-cogs"></i> Flow Execution
-        </a>
-        <a href="images/sequence/backend/Backend_Component_Loading.png" class="nav-link" data-type="image">
-            <i class="fas fa-cubes"></i> Component Loading
-        </a>
-        <a href="images/sequence/backend/Backend_Auth_Middleware.png" class="nav-link" data-type="image">
-            <i class="fas fa-shield-alt"></i> Auth Middleware
+        <div class="section-header">Banking Journeys</div>
+        <a href="diagrams/banking_journeys/README.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-university"></i> Banking Journeys Overview
         </a>
         
-        <div class="subsection">User Perspective</div>
-        <a href="images/sequence/user/User_Flow_Creation.png" class="nav-link" data-type="image">
-            <i class="fas fa-user-plus"></i> Flow Creation
+        <div class="subsection">IT Users</div>
+        <a href="diagrams/banking_journeys/it_users/README.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-info-circle"></i> IT Users Overview
         </a>
-        <a href="images/sequence/user/User_API_Usage.png" class="nav-link" data-type="image">
-            <i class="fas fa-user-cog"></i> API Usage
+        <a href="diagrams/banking_journeys/it_users/platform_engineering_integration.puml" class="nav-link" data-type="markdown">
+            <i class="fas fa-file-code"></i> Platform Engineering (PUML)
         </a>
-        
-        <div class="subsection">Developer Perspective</div>
-        <a href="images/sequence/developer/Developer_Custom_Component.png" class="nav-link" data-type="image">
-            <i class="fas fa-tools"></i> Custom Component
-        </a>
-        <a href="images/sequence/developer/Developer_API_Integration.png" class="nav-link" data-type="image">
-            <i class="fas fa-code-branch"></i> API Integration
+        <a href="images/diagrams/banking_journeys/it_users/platform_engineering_integration.svg" class="nav-link" data-type="image">
+            <i class="fas fa-image"></i> Platform Engineering (SVG)
         </a>
         
-        <div class="subsection">Admin Perspective</div>
-        <a href="images/sequence/admin/Admin_User_Management.png" class="nav-link" data-type="image">
-            <i class="fas fa-users-cog"></i> User Management
+        <div class="subsection">Digital Users</div>
+        <a href="diagrams/banking_journeys/digital_users/README.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-info-circle"></i> Digital Users Overview
         </a>
-        <a href="images/sequence/admin/Admin_System_Configuration.png" class="nav-link" data-type="image">
-            <i class="fas fa-sliders-h"></i> System Configuration
+        <a href="diagrams/banking_journeys/digital_users/ai_solution_design_implementation.puml" class="nav-link" data-type="markdown">
+            <i class="fas fa-file-code"></i> AI Solution Design (PUML)
         </a>
-        <a href="images/sequence/admin/Admin_Monitoring.png" class="nav-link" data-type="image">
-            <i class="fas fa-chart-line"></i> Monitoring
+        <a href="images/diagrams/banking_journeys/digital_users/ai_solution_design_implementation.svg" class="nav-link" data-type="image">
+            <i class="fas fa-image"></i> AI Solution Design (SVG)
         </a>
         
-        <div class="section-header">Documentation</div>
-        <a href="diagrams/README.md" class="nav-link" data-type="markdown">
-            <i class="fas fa-info-circle"></i> Diagram Guide
+        <div class="subsection">Retail Users</div>
+        <a href="diagrams/banking_journeys/retail_users/README.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-info-circle"></i> Retail Users Overview
+        </a>
+        <a href="diagrams/banking_journeys/retail_users/ai_assisted_customer_service.puml" class="nav-link" data-type="markdown">
+            <i class="fas fa-file-code"></i> AI-Assisted Customer Service (PUML)
+        </a>
+        <a href="images/diagrams/banking_journeys/retail_users/ai_assisted_customer_service.svg" class="nav-link" data-type="image">
+            <i class="fas fa-image"></i> AI-Assisted Customer Service (SVG)
+        </a>
+        
+        <div class="subsection">Legacy Journeys</div>
+        <a href="diagrams/banking_journeys/legacy_journeys/README.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-info-circle"></i> Legacy Journeys Overview
+        </a>
+        
+        <div class="subsection">Customer Service</div>
+        <a href="diagrams/banking_journeys/customer_service/README.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-info-circle"></i> Customer Service Overview
+        </a>
+        <a href="diagrams/banking_journeys/customer_service/ai_assisted_customer_service.puml" class="nav-link" data-type="markdown">
+            <i class="fas fa-file-code"></i> AI-Assisted Customer Service (PUML)
+        </a>
+        <a href="images/diagrams/banking_journeys/customer_service/ai_assisted_customer_service.svg" class="nav-link" data-type="image">
+            <i class="fas fa-image"></i> AI-Assisted Customer Service (SVG)
+        </a>
+        
+        <div class="subsection">Compliance</div>
+        <a href="diagrams/banking_journeys/compliance/README.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-info-circle"></i> Compliance Overview
+        </a>
+        <a href="diagrams/banking_journeys/compliance/regulatory_compliance_monitoring.puml" class="nav-link" data-type="markdown">
+            <i class="fas fa-file-code"></i> Regulatory Compliance Monitoring (PUML)
+        </a>
+        <a href="images/diagrams/banking_journeys/compliance/regulatory_compliance_monitoring.svg" class="nav-link" data-type="image">
+            <i class="fas fa-image"></i> Regulatory Compliance Monitoring (SVG)
+        </a>
+        
+        <div class="subsection">Development</div>
+        <a href="diagrams/banking_journeys/development/README.md" class="nav-link" data-type="markdown">
+            <i class="fas fa-info-circle"></i> Development Overview
+        </a>
+        <a href="diagrams/banking_journeys/development/banking_component_development.puml" class="nav-link" data-type="markdown">
+            <i class="fas fa-file-code"></i> Banking Component Development (PUML)
+        </a>
+        <a href="images/diagrams/banking_journeys/development/banking_component_development.svg" class="nav-link" data-type="image">
+            <i class="fas fa-image"></i> Banking Component Development (SVG)
         </a>
     </div>
     
@@ -518,6 +574,9 @@
                             text = text.replace(/!\[([^\]]*)\]\((?!http|https)([^)]+)\)/g, function(match, alt, path) {
                                 if (path.startsWith('/')) {
                                     return `![${alt}](${path})`;
+                                } else if (path.startsWith('../')) {
+                                    // Handle relative paths that go up a directory
+                                    return `![${alt}](${baseUrl}${path})`;
                                 } else {
                                     return `![${alt}](${baseUrl}${path})`;
                                 }

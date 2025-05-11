@@ -1,0 +1,85 @@
+@startuml Component_Discovery_Sequence
+title Sequence diagram for Langflow Component Discovery
+
+participant "Application Startup" as App
+participant "Component Discovery" as Discovery
+participant "Component Scanner" as Scanner
+participant "File System" as FS
+participant "Component Registry" as Registry
+participant "Type Extractor" as TypeExtractor
+
+App -> Discovery: initialize_component_discovery()
+activate Discovery
+
+Discovery -> Discovery: load_discovery_config()
+Discovery -> FS: scan_component_directories()
+activate FS
+
+== Built-in Component Discovery ==
+FS -> FS: find_built_in_component_dirs()
+FS --> Discovery: built_in_component_paths
+deactivate FS
+
+Discovery -> Scanner: scan_components(built_in_paths)
+activate Scanner
+
+loop For each component type directory
+    Scanner -> FS: list_module_files()
+    FS --> Scanner: module_files
+    
+    loop For each module file
+        Scanner -> Scanner: import_module(file_path)
+        Scanner -> Scanner: inspect_module_for_components()
+        
+        alt Component class found
+            Scanner -> TypeExtractor: extract_component_metadata(component_class)
+            TypeExtractor -> TypeExtractor: analyze_class_attributes()
+            TypeExtractor -> TypeExtractor: identify_input_fields()
+            TypeExtractor -> TypeExtractor: identify_output_types()
+            TypeExtractor -> TypeExtractor: extract_documentation()
+            TypeExtractor --> Scanner: component_metadata
+            
+            Scanner -> Registry: register_component(component_class, metadata)
+            Registry -> Registry: validate_component()
+            Registry -> Registry: store_in_registry()
+            Registry --> Scanner: registration_result
+        end
+    end
+end
+
+Scanner --> Discovery: built_in_components_count
+deactivate Scanner
+
+== Custom Component Discovery ==
+Discovery -> FS: scan_custom_component_dirs()
+FS --> Discovery: custom_component_paths
+
+Discovery -> Scanner: scan_custom_components(custom_paths)
+activate Scanner
+
+loop For each custom component file
+    Scanner -> FS: read_component_file()
+    FS --> Scanner: component_code
+    
+    Scanner -> Scanner: validate_component_code()
+    Scanner -> Scanner: create_dynamic_module()
+    Scanner -> Scanner: extract_component_class()
+    
+    Scanner -> TypeExtractor: extract_component_metadata(component_class)
+    TypeExtractor --> Scanner: component_metadata
+    
+    Scanner -> Registry: register_custom_component(component_class, metadata)
+    Registry --> Scanner: registration_result
+end
+
+Scanner --> Discovery: custom_components_count
+deactivate Scanner
+
+Discovery -> Registry: get_all_components()
+Registry --> Discovery: all_registered_components
+
+Discovery -> Discovery: log_discovery_summary()
+Discovery --> App: discovery_complete(components_count)
+deactivate Discovery
+
+@enduml

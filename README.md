@@ -6,104 +6,137 @@ This directory contains comprehensive reverse engineering documentation for the 
 
 ```
 reverse_docs/
-├── architecture/            # High-level architectural documentation
-│   ├── architecture_overview.md
-│   ├── component_system.md
-│   ├── flow_engine.md
-│   └── api_and_services.md
+├── docs/                  # Markdown documentation
+│   ├── architecture/      # High-level architectural documentation
+│   │   ├── component_system.md     # Component system architecture
+│   │   ├── flow_engine.md          # Flow execution engine
+│   │   ├── api_and_services.md     # API and services documentation
+│   │   ├── component_class_diagram.md  # Component class structure
+│   │   ├── langflow_class_diagram.md   # Langflow class structure
+│   │   ├── developer_*.md          # Developer-focused documentation
+│   │   └── c4/                # C4 model diagram documentation
+│   │       └── c4_*.md        # C4 model diagrams at different levels
+│   │
+│   ├── backend/           # Backend-specific documentation
+│   │   ├── backend_*.md           # Backend component documentation
+│   │   ├── flow_*.md              # Flow process documentation
+│   │   ├── component_*.md         # Component documentation
+│   │   ├── api_*.md               # API process documentation
+│   │   └── auth_*.md              # Authentication documentation
+│   │
+│   ├── frontend/          # Frontend-specific documentation
+│   │   ├── frontend_architecture.md    # Frontend architecture
+│   │   └── frontend_state_management.md # State management
+│   │
+│   ├── deployment/        # Deployment documentation
+│   │   ├── deployment_architecture.md  # Deployment options
+│   │   └── aws_deployment_diagram.md   # AWS deployment architecture
+│   │
+│   └── README.md          # Documentation structure overview
 │
-├── backend/                 # Backend-specific documentation
-│   └── backend_architecture.md
+├── diagrams/              # Architecture and sequence diagrams (PlantUML)
+│   ├── c4/                # C4 model diagrams
+│   │   ├── c4_model/      # Core C4 diagrams (context, container, component, code)
+│   │   ├── backend/       # Backend-specific diagrams
+│   │   ├── frontend/      # Frontend-specific diagrams
+│   │   ├── deployment/    # Deployment diagrams
+│   │   └── developer/     # Developer-focused diagrams
+│   │
+│   ├── banking_journeys/  # Domain-specific journey diagrams
+│   ├── sequence/          # Sequence diagrams by perspective
+│   ├── integration/       # Integration diagrams
+│   └── README.md          # Diagram structure overview
 │
-├── frontend/                # Frontend-specific documentation
-│   └── frontend_architecture.md
+├── images/                # Rendered diagram images and screenshots
+│   ├── diagrams/          # Rendered diagrams (SVG format)
+│   │   └── ... (mirrors diagrams/ structure)
+│   ├── screenshots/       # Application screenshots (if any)
+│   └── README.md          # Image organization overview
 │
-├── deployment/              # Deployment documentation
-│   └── deployment_architecture.md
-│
-├── integration/             # Integration documentation
-│   ├── integration_architecture.puml
-│   └── confluence_integration_flow.puml
-│
-└── diagrams/                # Architecture and sequence diagrams
-    ├── c4/                  # C4 model diagrams
-    │   ├── c4_context_diagram.puml
-    │   ├── c4_container_diagram.puml
-    │   ├── c4_component_diagram.puml
-    │   ├── c4_frontend_component_diagram.puml
-    │   ├── c4_code_diagram.puml
-    │   └── aws_deployment_diagram.puml
-    │
-    └── sequence/            # Sequence diagrams by perspective
-        ├── frontend/        # Frontend sequence diagrams
-        ├── backend/         # Backend sequence diagrams
-        ├── user/            # User perspective diagrams
-        ├── developer/       # Developer perspective diagrams
-        └── admin/           # Administrator perspective diagrams
+├── index.html             # Interactive documentation portal
+├── render_plantuml.sh     # Script to render PlantUML diagrams
+├── plantuml.jar           # PlantUML executable JAR
+└── markdown-viewer.html   # Standalone markdown viewer
 ```
 
-## Architecture Documentation
+## Key Documentation Resources
 
-* [Architecture Overview](architecture/architecture_overview.md) - High-level overview of the Langflow architecture
-* [Component System](architecture/component_system.md) - Analysis of the component system
-* [Flow Engine](architecture/flow_engine.md) - Documentation of the flow execution engine
-* [API and Services](architecture/api_and_services.md) - Details of the API endpoints and backend services
+### Interactive Documentation Portal
 
-## Implementation Documentation
+The `index.html` file provides an interactive documentation portal with:
+- Navigation sidebar for all documentation files
+- Markdown rendering capability
+- Diagram viewer for SVG images
+- Responsive design for different screen sizes
 
-* [Backend Architecture](backend/backend_architecture.md) - Details of the Python/FastAPI backend
-* [Frontend Architecture](frontend/frontend_architecture.md) - Details of the React/TypeScript frontend
+To use the portal:
+1. Open `index.html` in a web browser
+2. For proper Markdown rendering, serve the files with a local web server (see note in the portal)
 
-## Deployment and Integration
+### Documentation Categories
 
-* [Deployment Architecture](deployment/deployment_architecture.md) - AWS deployment architecture and integrations
+* **Architecture Documentation** - High-level system architecture and C4 model diagrams
+* **Implementation Documentation** - Backend and frontend implementation details, including sequence diagrams
+* **Component System Documentation** - Detailed analysis of the component architecture
+* **Flow Engine Documentation** - Flow execution engine design and implementation
+* **API Documentation** - API endpoints and services
+* **Deployment Documentation** - Deployment options and configurations
 
-## C4 Model Diagrams
+### Visual Documentation
 
-The C4 model provides a way to visualize software architecture at different levels of abstraction:
+The documentation includes several types of diagrams:
 
-* [Context Diagram](diagrams/c4/c4_context_diagram.puml) - System context (Level 1)
-* [Container Diagram](diagrams/c4/c4_container_diagram.puml) - Containers within the system (Level 2)
-* [Component Diagram - Backend](diagrams/c4/c4_component_diagram.puml) - Backend components (Level 3)
-* [Component Diagram - Frontend](diagrams/c4/c4_frontend_component_diagram.puml) - Frontend components (Level 3)
-* [Code Diagram](diagrams/c4/c4_code_diagram.puml) - Key classes and relationships (Level 4)
-* [AWS Deployment Diagram](diagrams/c4/aws_deployment_diagram.puml) - AWS deployment architecture
+* **C4 Model Diagrams** - Multi-level architectural views (context, container, component, code)
+* **Sequence Diagrams** - Dynamic interactions from various perspectives
+* **Banking Journey Diagrams** - Domain-specific application examples
+* **Integration Diagrams** - External system integrations
 
-## Sequence Diagrams
+## Using the Documentation
 
-Sequence diagrams show the dynamic behavior of the system from different perspectives:
+### Getting Started
 
-### Frontend Sequence Diagrams
-* [Authentication](diagrams/sequence/frontend/frontend_auth_sequence.puml) - User authentication flow
-* [Flow Creation](diagrams/sequence/frontend/frontend_flow_create_sequence.puml) - Creating a new flow
-* [Flow Execution](diagrams/sequence/frontend/frontend_flow_execution_sequence.puml) - Executing a flow in the playground
+1. Open `index.html` in your browser for the interactive portal
+2. Follow links to different documentation sections
+3. Use the sidebar navigation to explore content
+4. View diagrams alongside their documentation
 
-### Backend Sequence Diagrams
-* [Flow Execution](diagrams/sequence/backend/backend_flow_execution_sequence.puml) - Backend flow execution process
-* [Component Loading](diagrams/sequence/backend/backend_component_loading_sequence.puml) - Component discovery and registration
-* [Auth Middleware](diagrams/sequence/backend/backend_auth_middleware_sequence.puml) - Authentication and authorization process
+### Viewing and Rendering Diagrams
 
-### User Perspective Diagrams
-* [Flow Creation and Testing](diagrams/sequence/user/user_flow_creation_sequence.puml) - User's journey creating and testing a flow
-* [API Usage](diagrams/sequence/user/user_api_usage_sequence.puml) - Using Langflow APIs in applications
+To view PlantUML diagrams:
 
-### Developer Perspective Diagrams
-* [Custom Component](diagrams/sequence/developer/developer_custom_component_sequence.puml) - Creating and using custom components
-* [API Integration](diagrams/sequence/developer/developer_api_integration_sequence.puml) - Integrating with Langflow APIs
+1. **Pre-rendered SVGs**: Browse the `images/diagrams/` directory
+2. **Render Yourself**: Use the included `render_plantuml.sh` script:
+   ```
+   ./render_plantuml.sh
+   ```
+3. **External Tools**:
+   - [PlantUML Online Server](https://www.plantuml.com/plantuml/uml/)
+   - VS Code with the PlantUML extension
+   - IntelliJ IDEA with the PlantUML plugin
 
-### Administrator Perspective Diagrams
-* [User Management](diagrams/sequence/admin/admin_user_management_sequence.puml) - Managing users and permissions
-* [System Configuration](diagrams/sequence/admin/admin_system_configuration_sequence.puml) - Configuring system settings
-* [Monitoring](diagrams/sequence/admin/admin_monitoring_sequence.puml) - Monitoring system performance and activity
+### Local Web Server
 
-## Viewing PlantUML Diagrams
+For optimal viewing, serve these files with a local web server:
 
-To view the PlantUML diagrams, you can use:
+```bash
+# Using Python
+python -m http.server 8000
 
-1. [PlantUML Online Server](https://www.plantuml.com/plantuml/uml/)
-2. VS Code with the PlantUML extension
-3. IntelliJ IDEA with the PlantUML plugin
-4. Command line using the PlantUML JAR
+# Using Node.js
+npx http-server
+```
+
+Then access the documentation at http://localhost:8000 (or 8080 for http-server).
+
+## Documentation Purpose
+
+This documentation serves to:
+
+1. **Understand the Architecture** - Reveal the high-level design and component relationships
+2. **Explore the Implementation** - Document key implementation details
+3. **Enable Extension** - Provide guidance for extending and customizing Langflow
+4. **Support Deployment** - Document deployment options and configurations
+5. **Facilitate Maintenance** - Aid developers in maintaining and enhancing the codebase
 
 ## Key Architectural Insights
 
@@ -113,12 +146,22 @@ To view the PlantUML diagrams, you can use:
 4. **Service-Oriented Backend** - Well-defined services with specific responsibilities
 5. **Modern Frontend** - React/TypeScript application with component-based UI
 
-## Extending Langflow
+## Documentation Organization
 
-The documentation provides insights for:
+The documentation is organized with diagram documentation placed alongside their related implementation documentation:
 
-1. Adding new component types
-2. Customizing the execution engine
-3. Extending the API
-4. Modifying the frontend interface
-5. Integrating with external systems
+1. **Architecture Diagrams** - Located in the architecture directory with related implementation details
+2. **Backend Sequence Diagrams** - Located in the backend directory with corresponding implementation
+3. **Frontend Diagrams** - Located in the frontend directory with related component documentation
+4. **Deployment Diagrams** - Located in the deployment directory with deployment configuration information
+
+## Contributing to Documentation
+
+When extending this documentation:
+
+1. Follow the established directory structure
+2. Place diagram documentation in the same directory as related implementation documentation
+3. Create new PlantUML diagrams in the appropriate `diagrams/` subdirectory
+4. Render diagrams to the `images/` directory using the script
+5. Update `index.html` if adding new top-level sections
+6. Create or update README.md files in relevant directories

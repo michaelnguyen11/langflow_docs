@@ -1,0 +1,40 @@
+@startuml C4_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context diagram for Langflow
+
+Person(user, "User", "A user who wants to create and deploy AI workflows")
+Person(admin, "Administrator", "A system administrator who manages users and configurations")
+Person(developer, "Developer", "A developer who wants to integrate with Langflow APIs")
+
+System_Boundary(langflow, "Langflow") {
+    System(frontend_system, "Frontend System", "React/TypeScript-based UI for workflow building and testing")
+    System(backend_system, "Backend System", "Python/FastAPI-based backend for AI component management and execution")
+    System(data_storage, "Data Storage", "Persistence layer for flows, users, files, and cache")
+}
+
+System_Ext(llm_provider, "LLM Provider", "External LLM service (OpenAI, etc.)")
+System_Ext(vector_db, "Vector Database", "External vector storage (Pinecone, etc.)")
+System_Ext(data_source, "External Data Source", "Source of documents and data")
+System_Ext(monitoring, "Monitoring Tools", "LangSmith, LangFuse, etc.")
+System_Ext(external_app, "External Application", "Application using Langflow APIs")
+
+' User interactions
+Rel(user, frontend_system, "Creates and tests AI workflows using")
+Rel(admin, frontend_system, "Administers and configures")
+Rel(developer, backend_system, "Integrates with APIs")
+Rel(external_app, backend_system, "Makes API calls to")
+
+' Internal interactions
+Rel(frontend_system, backend_system, "Makes API calls to")
+Rel(backend_system, data_storage, "Stores and retrieves data from")
+
+' External integrations
+Rel(backend_system, llm_provider, "Uses for text generation")
+Rel(backend_system, vector_db, "Stores and retrieves vectors")
+Rel(backend_system, data_source, "Loads and processes data from")
+Rel(backend_system, monitoring, "Sends telemetry and logs to")
+
+@enduml

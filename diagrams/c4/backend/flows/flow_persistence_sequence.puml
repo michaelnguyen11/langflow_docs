@@ -1,0 +1,180 @@
+@startuml Flow_Persistence_Sequence
+title Sequence diagram for Langflow Flow Persistence
+
+actor "Backend User" as User
+participant "Flow Controller" as Controller
+participant "Flow Service" as Service
+participant "Flow Validator" as Validator
+participant "Flow Repository" as Repository
+participant "Database" as DB
+participant "Event Manager" as EventManager
+participant "User Service" as UserService
+
+== Flow Creation ==
+User -> Controller: POST /api/v1/flows (flow_data)
+activate Controller
+
+Controller -> UserService: get_current_user()
+UserService --> Controller: current_user
+
+Controller -> Service: create_flow(flow_data, user_id)
+activate Service
+
+Service -> Service: generate_flow_id()
+Service -> Service: set_creation_timestamp()
+Service -> Service: set_default_access_control()
+
+Service -> Validator: validate_flow(flow_data)
+Validator -> Validator: check_flow_structure()
+Validator -> Validator: validate_components()
+Validator -> Validator: check_connections()
+Validator --> Service: validation_result
+
+alt Validation Failed
+    Service --> Controller: ValidationError
+    Controller --> User: 400 Bad Request (validation errors)
+else Validation Passed
+    Service -> Repository: save_flow(flow_data)
+    activate Repository
+    
+    Repository -> Repository: prepare_db_model(flow_data)
+    Repository -> DB: insert_flow(flow_model)
+    DB --> Repository: insertion_result
+    
+    Repository --> Service: saved_flow
+    deactivate Repository
+    
+    Service -> EventManager: publish("flow.created", flow_id)
+    EventManager -> EventManager: dispatch_event()
+    
+    Service --> Controller: created_flow
+    Controller --> User: 201 Created (flow details)
+end
+
+deactivate Service
+deactivate Controller
+
+== Flow Retrieval ==
+User -> Controller: GET /api/v1/flows/{flow_id}
+activate Controller
+
+Controller -> UserService: get_current_user()
+UserService --> Controller: current_user
+
+Controller -> Service: get_flow(flow_id, user_id)
+activate Service
+
+Service -> Repository: find_flow_by_id(flow_id)
+Repository -> DB: select_flow(flow_id)
+DB --> Repository: flow_data
+Repository --> Service: flow_or_none
+
+alt Flow Not Found
+    Service --> Controller: NotFoundError
+    Controller --> User: 404 Not Found
+else Flow Found
+    Service -> Service: check_access_permissions(flow, user_id)
+    
+    alt Permission Denied
+        Service --> Controller: PermissionError
+        Controller --> User: 403 Forbidden
+    else Permission Granted
+        Service -> EventManager: publish("flow.accessed", flow_id)
+        Service --> Controller: flow_data
+        Controller --> User: 200 OK (flow details)
+    end
+end
+
+deactivate Service
+deactivate Controller
+
+== Flow Update ==
+User -> Controller: PUT /api/v1/flows/{flow_id} (updated_flow)
+activate Controller
+
+Controller -> UserService: get_current_user()
+UserService --> Controller: current_user
+
+Controller -> Service: update_flow(flow_id, updated_flow, user_id)
+activate Service
+
+Service -> Repository: find_flow_by_id(flow_id)
+Repository -> DB: select_flow(flow_id)
+DB --> Repository: existing_flow
+Repository --> Service: existing_flow_data
+
+alt Flow Not Found
+    Service --> Controller: NotFoundError
+    Controller --> User: 404 Not Found
+else Flow Found
+    Service -> Service: check_edit_permissions(flow, user_id)
+    
+    alt Permission Denied
+        Service --> Controller: PermissionError
+        Controller --> User: 403 Forbidden
+    else Permission Granted
+        Service -> Validator: validate_flow(updated_flow)
+        Validator --> Service: validation_result
+        
+        alt Validation Failed
+            Service --> Controller: ValidationError
+            Controller --> User: 400 Bad Request (validation errors)
+        else Validation Passed
+            Service -> Service: set_update_timestamp()
+            Service -> Service: merge_flow_data(existing, updated)
+            
+            Service -> Repository: update_flow(flow_id, merged_flow)
+            Repository -> DB: update_flow(flow_id, flow_data)
+            DB --> Repository: update_result
+            Repository --> Service: updated_flow
+            
+            Service -> EventManager: publish("flow.updated", flow_id)
+            Service --> Controller: updated_flow_data
+            Controller --> User: 200 OK (updated flow)
+        end
+    end
+end
+
+deactivate Service
+deactivate Controller
+
+== Flow Deletion ==
+User -> Controller: DELETE /api/v1/flows/{flow_id}
+activate Controller
+
+Controller -> UserService: get_current_user()
+UserService --> Controller: current_user
+
+Controller -> Service: delete_flow(flow_id, user_id)
+activate Service
+
+Service -> Repository: find_flow_by_id(flow_id)
+Repository -> DB: select_flow(flow_id)
+DB --> Repository: flow_data
+Repository --> Service: flow_or_none
+
+alt Flow Not Found
+    Service --> Controller: NotFoundError
+    Controller --> User: 404 Not Found
+else Flow Found
+    Service -> Service: check_delete_permissions(flow, user_id)
+    
+    alt Permission Denied
+        Service --> Controller: PermissionError
+        Controller --> User: 403 Forbidden
+    else Permission Granted
+        Service -> Repository: delete_flow(flow_id)
+        Repository -> DB: delete_flow(flow_id)
+        DB --> Repository: deletion_result
+        Repository --> Service: deleted_flow_id
+        
+        Service -> EventManager: publish("flow.deleted", flow_id)
+        Service --> Controller: deletion_success
+        Controller --> User: 204 No Content
+    end
+end
+
+deactivate Service
+deactivate Controller
+
+@enduml

@@ -1,0 +1,261 @@
+@startuml C4_Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component diagram for Langflow Backend
+
+Container_Boundary(api_layer, "API Layer (/src/backend/base/langflow/api)") {
+    Component(router, "Router", "FastAPI Router", "Base API router\n/api/router.py")
+    Component(v1_router, "V1 Router", "FastAPI Router", "API v1 endpoints\n/api/v1")
+    Component(v2_router, "V2 Router", "FastAPI Router", "API v2 endpoints\n/api/v2")
+    Component(health_check, "Health Check", "FastAPI Router", "Health check endpoints\n/api/health_check_router.py")
+    Component(log_router, "Log Router", "FastAPI Router", "Log endpoints\n/api/log_router.py")
+    Component(bg_tasks, "Background Tasks", "Python", "Limited background tasks\n/api/limited_background_tasks.py")
+    
+    Component(flow_endpoints, "Flow Endpoints", "FastAPI", "Flow management\n/api/v1/flows.py")
+    Component(user_endpoints, "User Endpoints", "FastAPI", "User management\n/api/v1/users.py")
+    Component(auth_endpoints, "Auth Endpoints", "FastAPI", "Authentication\n/api/v1/login.py")
+    Component(component_endpoints, "Component Endpoints", "FastAPI", "Component metadata\n/api/v1/endpoints.py")
+    Component(chat_endpoints, "Chat Endpoints", "FastAPI", "Chat interface\n/api/v1/chat.py")
+    Component(file_endpoints, "File Endpoints", "FastAPI", "File management\n/api/v1/files.py")
+}
+
+Container_Boundary(component_system, "Component System (/src/backend/base/langflow/components)") {
+    Component(component_module, "Component Modules", "Python", "Various component types (LLMs, Retrievers, etc.)")
+    Component(custom_component, "Custom Component", "Python", "Custom component handling\n/components/custom_component")
+    Component(component_helpers, "Component Helpers", "Python", "Helper functions for components\n/components/helpers")
+    Component(component_inputs, "Component Inputs", "Python", "Input handling for components\n/components/inputs")
+    Component(component_outputs, "Component Outputs", "Python", "Output handling for components\n/components/outputs")
+    Component(component_interfaces, "Component Interfaces", "Python", "Interface definitions\n/interface")
+    
+    Component(agents_components, "Agents", "Python", "Agent implementations\n/components/agents")
+    Component(chains_components, "Chains", "Python", "Chain implementations\n/components/chains")
+    Component(llms_components, "LLMs", "Python", "Language model integrations\n/components/llms")
+    Component(memories_components, "Memories", "Python", "Memory implementations\n/components/memories")
+    Component(prompts_components, "Prompts", "Python", "Prompt implementations\n/components/prompts")
+    Component(tools_components, "Tools", "Python", "Tool implementations\n/components/tools")
+    Component(vectorstores_components, "Vector Stores", "Python", "Vector database integrations\n/components/vectorstores")
+}
+
+Container_Boundary(flow_engine, "Flow Engine (/src/backend/base/langflow/graph)") {
+    Component(graph_module, "Graph Module", "Python", "Graph implementation\n/graph/graph")
+    Component(edge_module, "Edge Module", "Python", "Edge implementation\n/graph/edge")
+    Component(vertex_module, "Vertex Module", "Python", "Vertex implementation\n/graph/vertex")
+    Component(graph_state, "Graph State", "Python", "State management\n/graph/state")
+    Component(graph_utils, "Graph Utils", "Python", "Utility functions\n/graph/utils.py")
+    Component(graph_schema, "Graph Schema", "Python", "Graph schema definitions\n/graph/schema.py")
+    Component(graph_executor, "Graph Executor", "Python", "Executes flow components")
+    Component(error_handler, "Error Handler", "Python", "Handles execution errors")
+    Component(graph_data, "Graph Data", "Python", "Manages data flow\n/graph/data")
+    Component(graph_validation, "Graph Validation", "Python", "Validates graph structure\n/graph/validation")
+}
+
+Container_Boundary(core_system, "Core System (/src/backend/base/langflow/core)") {
+    Component(security, "Security", "Python", "Authentication, authorization, CORS")
+    Component(middleware, "Middleware", "Python", "Request/response middleware\n/middleware.py")
+    Component(settings_manager, "Settings Manager", "Python", "Application configuration\n/settings.py")
+    Component(startup, "Startup Manager", "Python", "Application initialization\n/main.py, server.py")
+    Component(logging_module, "Logging", "Python", "Logging configuration\n/logging")
+    Component(exception_handlers, "Exception Handlers", "Python", "Global exception handling")
+    Component(error_codes, "Error Codes", "Python", "Standardized error codes\n/core/errors.py")
+    Component(app_config, "App Configuration", "Python", "Application settings\n/core/config.py")
+}
+
+Container_Boundary(component_discovery, "Component Discovery (/src/backend/base/langflow/interface)") {
+    Component(component_loader, "Component Loader", "Python", "Loads component implementations\n/interface/components.py")
+    Component(component_cache, "Component Cache", "Python", "Caches component metadata\n/interface/components.py:ComponentCache")
+    Component(type_extractor, "Type Extractor", "Python", "Extracts type information\n/interface/type_extraction.py")
+    Component(metadata_extractor, "Metadata Extractor", "Python", "Extracts component metadata\n/interface/metadata.py")
+    Component(llm_caching, "LLM Caching", "Python", "Configures LLM response caching\n/interface/utils.py")
+}
+
+Container_Boundary(event_system, "Event System (/src/backend/base/langflow/events)") {
+    Component(event_handler, "Event Handler", "Python", "Processes application events\n/events/handlers.py")
+    Component(event_types, "Event Types", "Python", "Defines event types\n/events/types.py")
+    Component(event_emitter, "Event Emitter", "Python", "Emits events\n/events/emitter.py")
+    Component(event_listener, "Event Listener", "Python", "Listens for events\n/events/listener.py")
+}
+
+Container_Boundary(data_processing, "Data Processing (/src/backend/base/langflow/processing)") {
+    Component(data_transformer, "Data Transformer", "Python", "Transforms data formats\n/processing/transformers.py")
+    Component(data_cleaner, "Data Cleaner", "Python", "Cleans input data\n/processing/cleaners.py")
+    Component(data_validator, "Data Validator", "Python", "Validates input data\n/processing/validators.py")
+    Component(data_formatter, "Data Formatter", "Python", "Formats output data\n/processing/formatters.py")
+}
+
+Container_Boundary(services_module, "Services (/src/backend/base/langflow/services)") {
+    Component(auth, "Auth Service", "Python", "Authentication services\n/services/auth")
+    Component(database, "Database Service", "Python", "Database management\n/services/database")
+    Component(flow_service, "Flow Service", "Python", "Flow management\n/services/flow")
+    Component(settings, "Settings Service", "Python", "Settings management\n/services/settings")
+    Component(cache, "Cache Service", "Python", "Cache management\n/services/cache")
+    Component(storage, "Storage Service", "Python", "File storage\n/services/storage")
+    Component(job_queue, "Job Queue", "Python", "Background tasks\n/services/job_queue")
+    Component(telemetry, "Telemetry", "Python", "Usage tracking\n/services/telemetry")
+    Component(chat_service, "Chat Service", "Python", "Chat functionality\n/services/chat")
+    Component(session_service, "Session Service", "Python", "Session management\n/services/session")
+    Component(service_deps, "Service Dependencies", "Python", "Dependency injection\n/services/deps.py")
+    
+    ' Auth service components
+    Component(jwt_handler, "JWT Handler", "Python", "Manages JWT tokens\n/services/auth/jwt.py")
+    Component(password_manager, "Password Manager", "Python", "Handles password hashing\n/services/auth/password.py")
+    Component(permissions, "Permissions", "Python", "Role-based access control\n/services/auth/permissions.py")
+    
+    ' Flow service components
+    Component(flow_validator, "Flow Validator", "Python", "Validates flow structure\n/services/flow/validator.py")
+    Component(flow_loader, "Flow Loader", "Python", "Loads flow definitions\n/services/flow/loader.py")
+    Component(flow_serializer, "Flow Serializer", "Python", "Serializes flows\n/services/flow/serializer.py")
+}
+
+Container_Boundary(db_integration, "Database Integration (/src/backend/base/langflow/schema)") {
+    Component(orm_models, "ORM Models", "Python, SQLAlchemy", "Database models\n/schema")
+    Component(migrations, "Migrations", "Alembic", "Database migrations\n/alembic")
+    Component(schemas, "API Schemas", "Pydantic", "Data validation models")
+    Component(serialization, "Serialization", "Python", "Object serialization\n/serialization")
+    
+    Component(flow_model, "Flow Model", "SQLAlchemy", "Flow database model\n/schema/flow.py")
+    Component(user_model, "User Model", "SQLAlchemy", "User database model\n/schema/user.py")
+    Component(api_token_model, "API Token Model", "SQLAlchemy", "API token model\n/schema/api_token.py")
+    Component(transaction_model, "Transaction Model", "SQLAlchemy", "Transaction records\n/schema/transaction.py")
+}
+
+Container(web_app, "Frontend", "React, TypeScript", "Provides UI for building and testing flows\n/src/frontend")
+ContainerDb(database_container, "Database", "SQLite/PostgreSQL", "Stores flows, users, and configuration")
+ContainerDb(file_storage, "File Storage", "Local/S3/Azure", "Stores uploaded files and artifacts")
+ContainerDb(cache_storage, "Cache", "In-memory/Redis", "Caches responses and computation results")
+
+System_Ext(llm_provider, "LLM Provider", "External LLM service")
+System_Ext(vector_db, "Vector Database", "External vector storage")
+
+' API Layer relationships
+Rel(web_app, router, "Makes API calls to", "HTTPS/REST")
+Rel(router, v1_router, "Routes v1 requests to")
+Rel(router, v2_router, "Routes v2 requests to")
+Rel(router, health_check, "Routes health check requests to")
+Rel(router, log_router, "Routes log requests to")
+Rel(router, bg_tasks, "Uses for background tasks")
+
+Rel(v1_router, flow_endpoints, "Contains")
+Rel(v1_router, user_endpoints, "Contains")
+Rel(v1_router, auth_endpoints, "Contains")
+Rel(v1_router, component_endpoints, "Contains")
+Rel(v1_router, chat_endpoints, "Contains")
+Rel(v1_router, file_endpoints, "Contains")
+
+' Service dependencies
+Rel(v1_router, service_deps, "Uses dependencies from")
+Rel(v2_router, service_deps, "Uses dependencies from")
+Rel(router, middleware, "Uses")
+Rel(router, security, "Uses for authentication")
+
+Rel(service_deps, auth, "Uses")
+Rel(service_deps, database, "Uses")
+Rel(service_deps, settings, "Uses")
+Rel(service_deps, job_queue, "Uses")
+Rel(service_deps, chat_service, "Uses")
+Rel(service_deps, session_service, "Uses")
+
+' Core API functionality
+Rel(flow_endpoints, component_system, "Gets component metadata from")
+Rel(flow_endpoints, flow_engine, "Validates and executes flows using")
+Rel(component_endpoints, component_discovery, "Gets component types from")
+Rel(chat_endpoints, chat_service, "Uses for chat functionality")
+Rel(file_endpoints, storage, "Uses for file management")
+
+' Component system internals
+Rel(component_module, component_helpers, "Uses")
+Rel(component_module, component_inputs, "Uses")
+Rel(component_module, component_outputs, "Uses")
+Rel(component_module, component_interfaces, "Implements")
+Rel(component_module, custom_component, "Supports")
+
+Rel(component_module, agents_components, "Contains")
+Rel(component_module, chains_components, "Contains")
+Rel(component_module, llms_components, "Contains")
+Rel(component_module, memories_components, "Contains")
+Rel(component_module, prompts_components, "Contains")
+Rel(component_module, tools_components, "Contains")
+Rel(component_module, vectorstores_components, "Contains")
+
+' Flow engine internals
+Rel(graph_module, edge_module, "Uses")
+Rel(graph_module, vertex_module, "Uses")
+Rel(graph_module, graph_state, "Manages state using")
+Rel(graph_module, graph_utils, "Uses utilities from")
+Rel(graph_module, graph_validation, "Validates using")
+Rel(graph_module, graph_data, "Manages data using")
+Rel(graph_executor, graph_module, "Executes graphs using")
+Rel(graph_executor, error_handler, "Handles errors with")
+Rel(graph_module, component_system, "Creates components using")
+
+' Component discovery
+Rel(component_discovery, component_loader, "Uses")
+Rel(component_discovery, component_cache, "Uses")
+Rel(component_discovery, type_extractor, "Uses")
+Rel(component_discovery, metadata_extractor, "Uses")
+Rel(component_discovery, llm_caching, "Configures")
+
+' Event system
+Rel(event_system, event_handler, "Uses")
+Rel(event_system, event_types, "Defines")
+Rel(event_system, event_emitter, "Uses")
+Rel(event_system, event_listener, "Uses")
+
+' Data processing
+Rel(data_processing, data_transformer, "Uses")
+Rel(data_processing, data_cleaner, "Uses")
+Rel(data_processing, data_validator, "Uses")
+Rel(data_processing, data_formatter, "Uses")
+
+' Core system interactions
+Rel(startup, settings_manager, "Configures using")
+Rel(startup, logging_module, "Sets up")
+Rel(startup, app_config, "Uses")
+Rel(security, auth, "Uses")
+Rel(exception_handlers, error_handler, "Uses")
+Rel(exception_handlers, error_codes, "Uses")
+
+' Service components
+Rel(auth, jwt_handler, "Uses")
+Rel(auth, password_manager, "Uses")
+Rel(auth, permissions, "Uses")
+
+Rel(flow_service, flow_validator, "Uses")
+Rel(flow_service, flow_loader, "Uses")
+Rel(flow_service, flow_serializer, "Uses")
+
+' Database integration
+Rel(orm_models, migrations, "Evolves through")
+Rel(orm_models, schemas, "Maps to/from")
+Rel(orm_models, serialization, "Uses for serialization")
+Rel(database, orm_models, "Uses")
+Rel(database, database_container, "Connects to")
+
+Rel(orm_models, flow_model, "Contains")
+Rel(orm_models, user_model, "Contains")
+Rel(orm_models, api_token_model, "Contains")
+Rel(orm_models, transaction_model, "Contains")
+
+' Service interactions with database
+Rel(auth, orm_models, "Uses")
+Rel(flow_service, orm_models, "Uses")
+Rel(storage, orm_models, "Uses")
+Rel(settings, orm_models, "Uses")
+
+' Storage interactions
+Rel(storage, file_storage, "Manages files in")
+Rel(cache, cache_storage, "Stores cached data in")
+
+' External integrations
+Rel(flow_engine, llm_provider, "Integrates with", "HTTPS/REST")
+Rel(flow_engine, vector_db, "Integrates with", "HTTPS/REST")
+Rel(component_system, llm_provider, "Integrates with", "HTTPS/REST")
+Rel(component_system, vector_db, "Integrates with", "HTTPS/REST")
+
+' Event publishing
+Rel(flow_engine, event_system, "Publishes events to")
+Rel(api_layer, event_system, "Publishes events to")
+Rel(component_system, event_system, "Publishes events to")
+
+@enduml

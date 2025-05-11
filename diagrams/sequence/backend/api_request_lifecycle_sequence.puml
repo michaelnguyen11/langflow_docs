@@ -1,0 +1,83 @@
+@startuml API_Request_Lifecycle
+title Langflow Backend - API Request Lifecycle Sequence
+
+participant "Client" as Client
+participant "FastAPI App" as FastAPI
+participant "Middleware Stack" as Middleware
+participant "Auth Middleware" as AuthMiddleware
+participant "Request Validation" as Validation
+participant "Rate Limiting" as RateLimit
+participant "Route Handler" as RouteHandler
+participant "Service Layer" as Service
+participant "Repository" as Repository
+database "Database" as DB
+participant "Cache" as Cache
+participant "Response Formatter" as Formatter
+
+Client -> FastAPI: HTTP Request
+activate FastAPI
+
+FastAPI -> Middleware: Process Request
+activate Middleware
+
+Middleware -> AuthMiddleware: Authenticate Request
+AuthMiddleware -> AuthMiddleware: Validate Token
+AuthMiddleware --> Middleware: Authentication Result
+
+Middleware -> RateLimit: Check Rate Limits
+RateLimit -> RateLimit: Verify Request Quota
+RateLimit --> Middleware: Rate Limit Status
+
+Middleware -> Validation: Validate Request Data
+Validation -> Validation: Parse & Validate Input
+Validation --> Middleware: Validation Result
+
+alt Authentication/Validation Fails
+    Middleware --> FastAPI: Error Response
+    FastAPI --> Client: HTTP Error (401/403/422)
+else Authentication/Validation Success
+    Middleware -> RouteHandler: Forward Request
+    activate RouteHandler
+    
+    RouteHandler -> Cache: Check Cache
+    
+    alt Cache Hit
+        Cache --> RouteHandler: Cached Response
+    else Cache Miss
+        RouteHandler -> Service: Process Request
+        activate Service
+        
+        Service -> Repository: Data Access
+        Repository -> DB: Query
+        DB --> Repository: Data
+        Repository --> Service: Domain Objects
+        
+        alt External Services Required
+            Service -> Service: Call External APIs
+        end
+        
+        Service -> Service: Business Logic
+        Service --> RouteHandler: Operation Result
+        deactivate Service
+        
+        RouteHandler -> Cache: Update Cache
+    end
+    
+    RouteHandler -> Formatter: Format Response
+    Formatter -> Formatter: Transform Data
+    Formatter --> RouteHandler: Formatted Response
+    
+    RouteHandler -> RouteHandler: Add Response Headers
+    RouteHandler --> Middleware: Response
+    deactivate RouteHandler
+end
+
+Middleware -> Middleware: Add Global Headers
+Middleware -> Middleware: Log Request
+Middleware --> FastAPI: Final Response
+deactivate Middleware
+
+FastAPI --> Client: HTTP Response
+deactivate FastAPI
+
+@enduml

@@ -1,0 +1,135 @@
+@startuml Flow_Editor_Lifecycle_Sequence
+title Sequence diagram for Langflow Frontend Flow Editor Lifecycle
+
+actor "User" as User
+participant "Flow Page" as FlowPage
+participant "Flow State" as FlowState
+participant "Flow Editor" as FlowEditor
+participant "Component Library" as ComponentLib
+participant "React Flow" as ReactFlow
+participant "Node Components" as NodeComponents
+participant "API Service" as APIService
+participant "Backend API" as BackendAPI
+
+== Initialization ==
+User -> FlowPage: Open flow editor
+activate FlowPage
+
+FlowPage -> FlowState: Initialize flow state
+FlowState -> FlowState: Create empty flow / Load from URL
+
+alt New Flow
+    FlowState -> FlowState: Create empty flow
+else Load Existing Flow
+    FlowState -> APIService: Request flow data
+    APIService -> BackendAPI: GET /api/v1/flows/{id}
+    BackendAPI --> APIService: Flow data
+    APIService --> FlowState: Flow data
+end
+
+FlowPage -> ComponentLib: Load component types
+ComponentLib -> APIService: Fetch component types
+APIService -> BackendAPI: GET /api/v1/components
+BackendAPI --> APIService: Component type data
+APIService --> ComponentLib: Available components
+
+FlowPage -> FlowEditor: Initialize editor
+FlowEditor -> ReactFlow: Initialize canvas
+ReactFlow -> ReactFlow: Set up event handlers
+ReactFlow -> FlowState: Subscribe to state changes
+
+FlowEditor -> NodeComponents: Register custom node types
+FlowEditor -> ReactFlow: Register custom edge types
+
+FlowState -> ReactFlow: Provide initial flow data
+ReactFlow -> ReactFlow: Render nodes and edges
+ReactFlow --> FlowPage: Editor ready
+
+FlowPage --> User: Display flow editor
+deactivate FlowPage
+
+== Component Addition ==
+User -> ComponentLib: Drag component to canvas
+ComponentLib -> FlowEditor: Start drag operation
+FlowEditor -> ReactFlow: Handle drag over canvas
+
+User -> ReactFlow: Drop component
+ReactFlow -> FlowState: Request node creation
+FlowState -> FlowState: Generate node ID
+FlowState -> FlowState: Create node with default data
+FlowState -> ReactFlow: Update flow data
+ReactFlow -> NodeComponents: Render new node
+NodeComponents --> User: Display new node
+
+== Component Configuration ==
+User -> NodeComponents: Select node
+NodeComponents -> FlowEditor: Node selected
+FlowEditor -> FlowEditor: Show side panel with node properties
+
+User -> FlowEditor: Edit node properties
+FlowEditor -> FlowState: Update node data
+FlowState -> ReactFlow: Update node
+ReactFlow -> NodeComponents: Re-render node with new data
+NodeComponents --> User: Display updated node
+
+== Connection Creation ==
+User -> NodeComponents: Drag from output handle
+NodeComponents -> ReactFlow: Start connection
+ReactFlow -> ReactFlow: Show connection line
+
+User -> NodeComponents: Drop on input handle
+NodeComponents -> ReactFlow: End connection
+ReactFlow -> FlowState: Validate connection
+
+alt Valid Connection
+    FlowState -> FlowState: Create edge
+    FlowState -> ReactFlow: Update flow with new edge
+    ReactFlow -> ReactFlow: Render edge
+    ReactFlow --> User: Display edge
+else Invalid Connection
+    FlowState -> FlowEditor: Connection invalid
+    FlowEditor -> User: Show validation error
+end
+
+== Flow Validation ==
+User -> FlowEditor: Validate flow
+FlowEditor -> FlowState: Request validation
+FlowState -> APIService: Send flow for validation
+APIService -> BackendAPI: POST /api/v1/validate
+BackendAPI --> APIService: Validation results
+APIService --> FlowState: Validation status
+
+alt Invalid Flow
+    FlowState -> FlowEditor: Show validation errors
+    FlowEditor -> NodeComponents: Highlight problem nodes
+    FlowEditor -> User: Display error messages
+else Valid Flow
+    FlowState -> FlowEditor: Flow is valid
+    FlowEditor --> User: Show success message
+end
+
+== Flow Saving ==
+User -> FlowEditor: Save flow
+FlowEditor -> FlowState: Request flow data
+FlowState -> APIService: Send flow data
+APIService -> BackendAPI: POST/PUT /api/v1/flows
+BackendAPI --> APIService: Save confirmation
+APIService --> FlowState: Update saved status
+FlowState -> FlowEditor: Confirm save
+FlowEditor --> User: Show save confirmation
+
+== Flow Export ==
+User -> FlowEditor: Request export
+FlowEditor -> FlowState: Get flow data
+FlowState -> FlowEditor: Flow data
+FlowEditor -> FlowEditor: Format for export
+FlowEditor -> User: Provide export file
+
+== Flow Cleanup ==
+User -> FlowPage: Close flow
+FlowPage -> FlowEditor: Cleanup
+FlowEditor -> ReactFlow: Unsubscribe events
+FlowEditor -> FlowState: Clean up flow state
+FlowPage -> FlowPage: Navigate away
+
+@enduml

@@ -1,0 +1,41 @@
+@startuml Database_Schema_Simple
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Database Schema Diagram for Langflow
+
+ContainerDb(database, "Langflow Database", "PostgreSQL/SQLite", "Stores application data")
+
+Component(user_table, "User Table", "Database Table", "Stores user accounts")
+Component(flow_table, "Flow Table", "Database Table", "Stores flow definitions")
+Component(apikey_table, "API Key Table", "Database Table", "Stores API keys")
+Component(component_template_table, "Component Template Table", "Database Table", "Stores component templates")
+Component(flow_execution_table, "Flow Execution Table", "Database Table", "Stores execution records")
+Component(custom_component_table, "Custom Component Table", "Database Table", "Stores custom components")
+Component(settings_table, "Settings Table", "Database Table", "Stores system settings")
+Component(user_settings_table, "User Settings Table", "Database Table", "Stores user preferences")
+
+Rel(user_table, flow_table, "1 to N")
+Rel(user_table, apikey_table, "1 to N")
+Rel(user_table, component_template_table, "1 to N")
+Rel(user_table, flow_execution_table, "1 to N")
+Rel(user_table, custom_component_table, "1 to N")
+Rel(user_table, user_settings_table, "1 to 1")
+Rel(flow_table, flow_execution_table, "1 to N")
+
+Component(component_system, "Component System", "Python", "Manages and executes all AI components")
+Component(flow_engine, "Flow Engine", "Python", "Processes and executes workflow graphs")
+Component(auth_service, "Authentication Service", "Python", "Handles user authentication and authorization")
+Component(db_service, "Database Service", "SQLAlchemy", "Manages data persistence")
+
+' Component relationships with the database
+Rel(db_service, database, "Manages")
+Rel(auth_service, user_table, "Authenticates against")
+Rel(auth_service, apikey_table, "Validates")
+Rel(component_system, custom_component_table, "Loads")
+Rel(component_system, component_template_table, "Uses")
+Rel(flow_engine, flow_table, "Loads & executes")
+Rel(flow_engine, flow_execution_table, "Records")
+
+@enduml

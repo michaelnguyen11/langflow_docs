@@ -1,0 +1,197 @@
+@startuml C4_Frontend_Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component diagram for Langflow Frontend
+
+Container_Boundary(frontend, "Frontend (/src/frontend/src)") {
+    Component(main, "Main App", "React", "Main application entry point\n/App.tsx")
+    Component(routes, "Routes", "React Router", "Application routing\n/routes.tsx")
+    
+    Container_Boundary(pages, "Pages") {
+        Component(flow_page, "Flow Page", "React", "Flow editor page\n/pages/FlowPage")
+        Component(playground, "Playground", "React", "Testing environment\n/pages/Playground")
+        Component(login_page, "Login Page", "React", "Authentication page\n/pages/LoginPage")
+        Component(signup_page, "SignUp Page", "React", "Registration page\n/pages/SignUpPage")
+        Component(admin_page, "Admin Page", "React", "Admin interface\n/pages/AdminPage")
+        Component(settings_page, "Settings Page", "React", "Settings interface\n/pages/SettingsPage")
+        Component(view_page, "View Page", "React", "Read-only view\n/pages/ViewPage")
+        Component(store_page, "Store Page", "React", "Marketplace\n/pages/StorePage")
+        Component(app_wrapper, "App Wrapper", "React", "Application container\n/pages/AppWrapperPage")
+        Component(dashboard_wrapper, "Dashboard Wrapper", "React", "Dashboard layout\n/pages/DashboardWrapperPage")
+        Component(app_authenticated, "App Authenticated", "React", "Authentication wrapper\n/pages/AppAuthenticatedPage")
+        Component(app_init, "App Init", "React", "Application initialization\n/pages/AppInitPage")
+        Component(loading_page, "Loading Page", "React", "Loading screens\n/pages/LoadingPage")
+        Component(main_page, "Main Page", "React", "Main landing page\n/pages/MainPage")
+    }
+    
+    Container_Boundary(components, "Components") {
+        Component(ui_components, "UI Components", "React", "Basic UI components\n/components/ui")
+        Component(core_components, "Core Components", "React", "Core functionality components\n/components/core")
+        Component(common_components, "Common Components", "React", "Shared components\n/components/common")
+        Component(auth_components, "Authentication Components", "React", "Auth-related components\n/components/authorization")
+        Component(custom_nodes, "Custom Nodes", "React", "Flow graph node components\n/CustomNodes")
+        Component(generic_node, "Generic Node", "React", "Base node implementation\n/CustomNodes/GenericNode")
+        Component(custom_edges, "Custom Edges", "React", "Flow graph edge components\n/CustomEdges")
+        Component(search_components, "Search Components", "React", "Component search functionality\n/components/core/search")
+    }
+    
+    Container_Boundary(flow_editor, "Flow Editor Components") {
+        Component(flow_canvas, "Flow Canvas", "React", "Main editing area\n/pages/FlowPage/components/FlowCanvas.tsx")
+        Component(side_panel, "Side Panel", "React", "Component configuration\n/pages/FlowPage/components/SidePanel")
+        Component(left_sidebar, "Component Library", "React", "Available components\n/pages/FlowPage/components/LeftSidebar")
+        Component(toolbar, "Toolbar", "React", "Actions and utilities\n/pages/FlowPage/components/Toolbar")
+    }
+    
+    Container_Boundary(playground_components, "Playground Components") {
+        Component(chat_interface, "Chat Interface", "React", "Conversation UI\n/pages/Playground/components/Chat")
+        Component(input_form, "Input Form", "React", "Flow parameters\n/pages/Playground/components/InputForm")
+        Component(results_display, "Results Display", "React", "Output visualization\n/pages/Playground/components/Results")
+        Component(execution_controls, "Execution Controls", "React", "Run, stop, reset actions\n/pages/Playground/components/Controls")
+        Component(conversation_history, "Conversation History", "React", "Previous interactions\n/pages/Playground/components/History")
+        Component(debug_info, "Debug Information", "React", "Execution details\n/pages/Playground/components/Debug")
+    }
+    
+    Container_Boundary(state, "State Management") {
+        Component(auth_context, "Auth Context", "React Context", "Authentication state\n/contexts/authContext.tsx")
+        Component(tabs_context, "Tabs Context", "React Context", "Flow editor tabs\n/contexts/tabsContext.tsx")
+        Component(types_context, "Types Context", "React Context", "Component definitions\n/contexts/typesContext.tsx")
+        Component(flows_context, "Flows Context", "React Context", "Flow management\n/contexts/flowsContext.tsx")
+        Component(location_store, "Location Store", "Zustand", "Navigation state\n/stores/locationStore.tsx")
+        Component(alert_store, "Alert Store", "Zustand", "Notifications\n/stores/alertStore.tsx")
+        Component(settings_store, "Settings Store", "Zustand", "User preferences\n/stores/settingsStore.tsx")
+        Component(apikey_store, "API Key Store", "Zustand", "API keys\n/stores/apiKeyStore.tsx")
+    }
+    
+    Container_Boundary(api_controllers, "API Controllers") {
+        Component(api_client, "API Client", "TypeScript", "Base API handling\n/controllers/API/api.tsx")
+        Component(flow_service, "Flow Service", "TypeScript", "Flow operations\n/controllers/API/services/flows.ts")
+        Component(component_service, "Component Service", "TypeScript", "Component data\n/controllers/API/services/components.ts")
+        Component(auth_service, "Auth Service", "TypeScript", "Authentication\n/controllers/API/services/auth.ts")
+        Component(chat_service, "Chat Service", "TypeScript", "Chat functionality\n/controllers/API/services/chat.ts")
+        Component(file_service, "File Service", "TypeScript", "File operations\n/controllers/API/services/files.ts")
+        Component(api_helpers, "API Helpers", "TypeScript", "Response handling\n/controllers/API/helpers")
+        Component(api_queries, "React Query", "TypeScript", "Data fetching\n/controllers/API/queries")
+    }
+    
+    Container_Boundary(utils, "Utilities") {
+        Component(hooks, "Hooks", "React", "Custom React hooks\n/hooks")
+        Component(helpers, "Helpers", "TypeScript", "Helper functions\n/helpers")
+        Component(constants, "Constants", "TypeScript", "Application constants\n/constants")
+        Component(utils_module, "Utils", "TypeScript", "Utility functions\n/utils")
+        Component(shared_utils, "Shared Utils", "TypeScript", "Shared utilities\n/shared")
+        Component(type_definitions, "Type Definitions", "TypeScript", "TypeScript types\n/types")
+        Component(styles, "Styles", "CSS", "Global styles\n/style")
+        Component(theme, "Theme", "TypeScript", "Theme definitions\n/customization")
+    }
+    
+    Container_Boundary(modals, "Modals") {
+        Component(component_modal, "Component Modal", "React", "Component details\n/modals/componentModal")
+        Component(error_modal, "Error Modal", "React", "Error display\n/modals/errorModal")
+        Component(export_modal, "Export Modal", "React", "Export options\n/modals/exportModal")
+        Component(import_modal, "Import Modal", "React", "Import options\n/modals/importModal")
+        Component(api_modal, "API Modal", "React", "API information\n/modals/apiModal")
+    }
+}
+
+System(backend_api, "Backend API", "FastAPI")
+
+' App initialization
+Rel(main, routes, "Defines routes with")
+Rel(routes, app_wrapper, "Routes to")
+Rel(app_wrapper, app_authenticated, "Routes authenticated to")
+Rel(app_authenticated, dashboard_wrapper, "Renders")
+Rel(app_init, auth_context, "Initializes")
+Rel(app_init, types_context, "Loads")
+
+' Pages and layout
+Rel(dashboard_wrapper, flow_page, "Can render")
+Rel(dashboard_wrapper, playground, "Can render")
+Rel(dashboard_wrapper, settings_page, "Can render")
+Rel(dashboard_wrapper, admin_page, "Can render")
+Rel(dashboard_wrapper, store_page, "Can render")
+Rel(dashboard_wrapper, view_page, "Can render")
+
+' Page relationships with components
+Rel(flow_page, flow_editor, "Contains")
+Rel(playground, playground_components, "Contains")
+Rel(login_page, auth_components, "Uses")
+Rel(signup_page, auth_components, "Uses")
+
+' Flow editor components
+Rel(flow_editor, flow_canvas, "Contains")
+Rel(flow_editor, side_panel, "Contains")
+Rel(flow_editor, left_sidebar, "Contains") 
+Rel(flow_editor, toolbar, "Contains")
+Rel(flow_canvas, custom_nodes, "Renders")
+Rel(flow_canvas, custom_edges, "Renders")
+Rel(left_sidebar, search_components, "Uses")
+
+' Playground components
+Rel(playground_components, chat_interface, "Contains")
+Rel(playground_components, input_form, "Contains")
+Rel(playground_components, results_display, "Contains")
+Rel(playground_components, execution_controls, "Contains")
+Rel(playground_components, conversation_history, "Contains")
+Rel(playground_components, debug_info, "Contains")
+
+' Component relationships
+Rel(custom_nodes, generic_node, "Based on")
+Rel(custom_nodes, ui_components, "Uses")
+Rel(ui_components, styles, "Uses")
+Rel(ui_components, theme, "Uses")
+Rel(core_components, ui_components, "Uses")
+Rel(common_components, ui_components, "Uses")
+Rel(auth_components, ui_components, "Uses")
+
+' State management usage
+Rel(ui_components, hooks, "Uses")
+Rel(ui_components, alert_store, "Uses for notifications")
+Rel(flow_page, tabs_context, "Uses for tab management")
+Rel(flow_page, flows_context, "Uses for flow data")
+Rel(main, auth_context, "Uses for auth state")
+Rel(custom_nodes, types_context, "Uses for component types")
+Rel(settings_page, settings_store, "Uses")
+Rel(admin_page, apikey_store, "Uses")
+
+' API communication
+Rel(api_controllers, backend_api, "Makes API calls to", "HTTPS/REST")
+Rel(api_client, flow_service, "Uses")
+Rel(api_client, component_service, "Uses")
+Rel(api_client, auth_service, "Uses")
+Rel(api_client, chat_service, "Uses")
+Rel(api_client, file_service, "Uses")
+Rel(api_client, api_helpers, "Uses")
+Rel(api_client, api_queries, "Uses")
+
+Rel(flow_service, api_queries, "Uses")
+Rel(component_service, api_queries, "Uses")
+Rel(auth_service, api_queries, "Uses")
+Rel(chat_service, api_queries, "Uses")
+Rel(file_service, api_queries, "Uses")
+
+' Frontend service usage
+Rel(flow_page, flow_service, "Uses for flow operations")
+Rel(left_sidebar, component_service, "Uses to get components")
+Rel(playground, chat_service, "Uses for chat")
+Rel(login_page, auth_service, "Uses for authentication")
+Rel(signup_page, auth_service, "Uses for registration")
+
+' Utilities and helpers
+Rel(ui_components, helpers, "Uses")
+Rel(hooks, utils_module, "Uses")
+Rel(helpers, utils_module, "Uses")
+Rel(utils_module, constants, "Uses")
+Rel(utils_module, shared_utils, "Uses")
+Rel(api_controllers, type_definitions, "Uses types from")
+Rel(ui_components, type_definitions, "Uses types from")
+
+' Modal usage
+Rel(flow_page, component_modal, "Can display")
+Rel(flow_page, error_modal, "Can display")
+Rel(flow_page, export_modal, "Can display")
+Rel(flow_page, import_modal, "Can display")
+Rel(flow_page, api_modal, "Can display")
+
+@enduml

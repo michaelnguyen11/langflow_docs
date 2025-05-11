@@ -1,0 +1,92 @@
+@startuml Event_System_Sequence
+title Sequence diagram for Langflow Event System
+
+participant "Flow Executor" as Executor
+participant "Component Instance" as Component
+participant "Event Manager" as EventManager
+participant "Event Dispatcher" as Dispatcher
+participant "Event Subscribers" as Subscribers
+participant "Logging Service" as Logger
+participant "Metric Service" as Metrics
+participant "Notification Service" as Notifications
+
+== Event System Initialization ==
+Executor -> EventManager: initialize_event_manager()
+activate EventManager
+
+EventManager -> Dispatcher: create_dispatcher()
+EventManager -> EventManager: register_event_types()
+
+== Subscriber Registration ==
+Executor -> EventManager: subscribe(event_type, callback)
+EventManager -> Dispatcher: register_subscriber(event_type, callback)
+Dispatcher -> Dispatcher: add_to_subscribers_map()
+
+Logger -> EventManager: subscribe("component.error", log_error)
+EventManager -> Dispatcher: register_subscriber("component.error", log_error)
+
+Metrics -> EventManager: subscribe("component.execution", record_metrics)
+EventManager -> Dispatcher: register_subscriber("component.execution", record_metrics)
+
+Notifications -> EventManager: subscribe("flow.complete", notify_completion)
+EventManager -> Dispatcher: register_subscriber("flow.complete", notify_completion)
+
+== Flow Execution Events ==
+Executor -> EventManager: publish("flow.start", flow_data)
+activate Dispatcher
+EventManager -> Dispatcher: dispatch_event("flow.start", flow_data)
+Dispatcher -> Logger: log_flow_start(flow_data)
+Dispatcher -> Metrics: record_flow_start(flow_data)
+deactivate Dispatcher
+
+loop For each component in flow
+    Executor -> Component: execute()
+    activate Component
+    
+    Component -> EventManager: publish("component.start", component_data)
+    EventManager -> Dispatcher: dispatch_event("component.start", component_data)
+    Dispatcher -> Logger: log_component_start(component_data)
+    Dispatcher -> Metrics: record_component_start(component_data)
+    
+    alt Component execution successful
+        Component -> Component: process_inputs()
+        Component -> Component: run_logic()
+        Component -> Component: prepare_outputs()
+        
+        Component -> EventManager: publish("component.complete", result_data)
+        EventManager -> Dispatcher: dispatch_event("component.complete", result_data)
+        Dispatcher -> Logger: log_component_complete(result_data)
+        Dispatcher -> Metrics: record_component_metrics(result_data)
+    else Component execution fails
+        Component -> Component: handle_error(exception)
+        
+        Component -> EventManager: publish("component.error", error_data)
+        EventManager -> Dispatcher: dispatch_event("component.error", error_data)
+        Dispatcher -> Logger: log_component_error(error_data)
+        Dispatcher -> Metrics: record_component_error(error_data)
+        
+        alt Error is recoverable
+            Component -> Component: attempt_recovery()
+            Component -> EventManager: publish("component.recovery", recovery_data)
+            EventManager -> Dispatcher: dispatch_event("component.recovery", recovery_data)
+        else Error is fatal
+            Component -> Component: prepare_error_result()
+        end
+    end
+    
+    Component --> Executor: execution_result
+    deactivate Component
+end
+
+Executor -> EventManager: publish("flow.complete", final_result)
+EventManager -> Dispatcher: dispatch_event("flow.complete", final_result)
+Dispatcher -> Logger: log_flow_complete(final_result)
+Dispatcher -> Metrics: record_flow_metrics(final_result)
+Dispatcher -> Notifications: send_completion_notification(final_result)
+
+== Event System Cleanup ==
+Executor -> EventManager: cleanup()
+EventManager -> Dispatcher: reset()
+deactivate EventManager
+
+@enduml

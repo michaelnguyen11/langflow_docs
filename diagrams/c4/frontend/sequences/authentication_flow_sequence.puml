@@ -1,0 +1,189 @@
+@startuml Authentication_Flow_Sequence
+title Sequence diagram for Langflow Frontend Authentication Flow
+
+actor "User" as User
+participant "Login Page" as LoginPage
+participant "Auth Context" as AuthContext
+participant "Auth Service" as AuthService
+participant "API Client" as APIClient
+participant "Token Storage" as TokenStorage
+participant "Protected Route" as ProtectedRoute
+participant "App Wrapper" as AppWrapper
+participant "Backend API" as BackendAPI
+
+== Authentication Initialization ==
+AppWrapper -> AuthContext: Initialize
+activate AuthContext
+
+AuthContext -> TokenStorage: Check for tokens
+TokenStorage --> AuthContext: Return existing tokens
+
+alt Tokens Exist
+    AuthContext -> AuthService: Validate token
+    AuthService -> APIClient: Get user profile
+    APIClient -> BackendAPI: GET /api/v1/users/me
+    
+    alt Valid Token
+        BackendAPI --> APIClient: User data
+        APIClient --> AuthService: User profile
+        AuthService --> AuthContext: Set authenticated state
+        AuthContext -> AuthContext: Set user data
+    else Invalid Token
+        BackendAPI --> APIClient: 401 Unauthorized
+        APIClient --> AuthService: Token invalid
+        AuthService -> TokenStorage: Clear tokens
+        AuthService --> AuthContext: Clear auth state
+    end
+else No Tokens
+    AuthContext -> AuthContext: Set unauthenticated state
+end
+
+AuthContext --> AppWrapper: Return auth state
+deactivate AuthContext
+
+== Login Process ==
+User -> LoginPage: Enter credentials
+LoginPage -> LoginPage: Validate form
+
+User -> LoginPage: Submit login form
+activate LoginPage
+
+LoginPage -> AuthContext: login(email, password)
+activate AuthContext
+
+AuthContext -> AuthService: authenticate(email, password)
+AuthService -> APIClient: Post login request
+APIClient -> BackendAPI: POST /api/v1/login
+
+alt Authentication Success
+    BackendAPI --> APIClient: Tokens and user data
+    APIClient --> AuthService: Auth response
+    AuthService -> TokenStorage: Store tokens
+    AuthService -> AuthContext: Set authenticated state
+    AuthContext -> AuthContext: Set user data
+    AuthContext --> LoginPage: Authentication successful
+    LoginPage -> ProtectedRoute: Navigate to dashboard
+    ProtectedRoute --> User: Show dashboard
+else Authentication Failure
+    BackendAPI --> APIClient: Authentication error
+    APIClient --> AuthService: Error response
+    AuthService --> AuthContext: Return error
+    AuthContext --> LoginPage: Authentication failed
+    LoginPage -> User: Display error message
+end
+
+deactivate AuthContext
+deactivate LoginPage
+
+== Route Protection ==
+User -> ProtectedRoute: Access protected page
+activate ProtectedRoute
+
+ProtectedRoute -> AuthContext: Check authentication
+AuthContext --> ProtectedRoute: Authentication state
+
+alt Authenticated
+    ProtectedRoute -> ProtectedRoute: Render protected component
+    ProtectedRoute --> User: Display protected content
+else Not Authenticated
+    ProtectedRoute -> ProtectedRoute: Redirect to login
+    ProtectedRoute --> User: Redirect to login page
+end
+
+deactivate ProtectedRoute
+
+== Logout Process ==
+User -> AppWrapper: Click logout
+AppWrapper -> AuthContext: logout()
+activate AuthContext
+
+AuthContext -> AuthService: logout()
+AuthService -> APIClient: Post logout request
+APIClient -> BackendAPI: POST /api/v1/logout
+BackendAPI --> APIClient: Logout confirmed
+
+AuthService -> TokenStorage: Clear tokens
+AuthService -> AuthContext: Clear auth state
+AuthContext -> AuthContext: Reset user data
+
+AuthContext --> AppWrapper: Logout complete
+AppWrapper -> LoginPage: Navigate to login
+LoginPage --> User: Show login page
+
+deactivate AuthContext
+
+== Token Refresh ==
+APIClient -> BackendAPI: Request with expired token
+BackendAPI --> APIClient: 401 Unauthorized
+
+APIClient -> AuthService: Handle 401 response
+AuthService -> TokenStorage: Get refresh token
+TokenStorage --> AuthService: Refresh token
+
+AuthService -> APIClient: Request token refresh
+APIClient -> BackendAPI: POST /api/v1/refresh_token
+BackendAPI --> APIClient: New access token
+
+APIClient -> AuthService: Update tokens
+AuthService -> TokenStorage: Store new tokens
+AuthService -> APIClient: Retry original request
+APIClient -> BackendAPI: Retry with new token
+BackendAPI --> APIClient: Request response
+APIClient --> AuthService: Request successful
+
+== Sign Up Process ==
+User -> LoginPage: Navigate to sign up
+LoginPage -> User: Show sign up form
+
+User -> LoginPage: Submit sign up form
+activate LoginPage
+
+LoginPage -> AuthService: register(user_data)
+AuthService -> APIClient: Post registration
+APIClient -> BackendAPI: POST /api/v1/signup
+
+alt Registration Success
+    BackendAPI --> APIClient: User created
+    APIClient --> AuthService: Registration successful
+    AuthService --> LoginPage: Show success message
+    LoginPage -> LoginPage: Redirect to login
+    LoginPage --> User: Show login with success message
+else Registration Failure
+    BackendAPI --> APIClient: Registration error
+    APIClient --> AuthService: Error response
+    AuthService --> LoginPage: Return error
+    LoginPage -> User: Display error message
+end
+
+deactivate LoginPage
+
+== Password Reset ==
+User -> LoginPage: Click "Forgot Password"
+LoginPage -> User: Show password reset form
+
+User -> LoginPage: Submit email
+activate LoginPage
+
+LoginPage -> AuthService: requestPasswordReset(email)
+AuthService -> APIClient: Post reset request
+APIClient -> BackendAPI: POST /api/v1/request_password_reset
+BackendAPI --> APIClient: Reset requested
+APIClient --> AuthService: Request successful
+AuthService --> LoginPage: Show confirmation
+LoginPage --> User: Display instructions
+
+User -> LoginPage: Follow reset link with token
+LoginPage -> LoginPage: Show new password form
+
+User -> LoginPage: Submit new password
+LoginPage -> AuthService: resetPassword(token, new_password)
+AuthService -> APIClient: Post new password
+APIClient -> BackendAPI: POST /api/v1/reset_password
+BackendAPI --> APIClient: Password updated
+APIClient --> AuthService: Reset successful
+AuthService --> LoginPage: Password reset complete
+LoginPage -> User: Show login with success message
+
+deactivate LoginPage
+
+@enduml

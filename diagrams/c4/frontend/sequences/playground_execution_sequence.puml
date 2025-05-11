@@ -1,0 +1,146 @@
+@startuml Playground_Execution_Sequence
+title Sequence diagram for Langflow Frontend Playground Execution
+
+actor "User" as User
+participant "Playground Page" as PlaygroundPage
+participant "Chat Interface" as ChatUI
+participant "Input Form" as InputForm
+participant "Execution Controls" as Controls
+participant "Results Display" as Results
+participant "Chat State" as ChatState
+participant "API Service" as APIService
+participant "Backend API" as BackendAPI
+participant "WebSocket" as WebSocket
+
+== Playground Initialization ==
+User -> PlaygroundPage: Open flow playground
+activate PlaygroundPage
+
+PlaygroundPage -> APIService: Fetch flow details
+APIService -> BackendAPI: GET /api/v1/flows/{id}
+BackendAPI --> APIService: Flow data
+APIService --> PlaygroundPage: Flow details
+
+PlaygroundPage -> ChatState: Initialize chat state
+PlaygroundPage -> ChatUI: Initialize chat interface
+PlaygroundPage -> InputForm: Initialize with flow inputs
+PlaygroundPage -> Controls: Initialize execution controls
+PlaygroundPage -> Results: Initialize results display
+
+PlaygroundPage -> WebSocket: Initialize connection
+WebSocket -> BackendAPI: Establish connection
+WebSocket --> PlaygroundPage: Connection established
+
+PlaygroundPage --> User: Display playground interface
+deactivate PlaygroundPage
+
+== Input Preparation ==
+User -> InputForm: Fill input parameters
+activate InputForm
+InputForm -> InputForm: Validate inputs
+InputForm -> ChatState: Store input values
+InputForm --> User: Input validation feedback
+deactivate InputForm
+
+== Flow Execution ==
+User -> Controls: Click Run button
+activate Controls
+Controls -> Controls: Disable Run button
+Controls -> ChatState: Set loading state
+Controls -> ChatUI: Show typing indicator
+
+ChatState -> APIService: Send execution request
+APIService -> BackendAPI: POST /api/v1/flows/{id}/execute
+BackendAPI -> BackendAPI: Start flow execution
+
+alt One-time Response
+    BackendAPI --> APIService: Execution results
+    APIService --> ChatState: Process results
+    ChatState -> ChatUI: Update with response
+    ChatState -> Results: Display detailed results
+else Streaming Response
+    BackendAPI -> WebSocket: Stream results
+    loop For each chunk
+        WebSocket -> ChatState: Receive result chunk
+        ChatState -> ChatUI: Update chat progressively
+    end
+    WebSocket --> ChatState: Stream complete
+end
+
+ChatState -> Controls: Set completed state
+Controls -> Controls: Enable Run button
+Controls --> User: Execution complete
+deactivate Controls
+
+== Results Inspection ==
+User -> Results: View detailed results
+activate Results
+Results -> Results: Format data for display
+Results -> Results: Generate visualizations if needed
+Results --> User: Show detailed output
+deactivate Results
+
+== Conversation Continuation ==
+User -> ChatUI: Send follow-up message
+activate ChatUI
+ChatUI -> ChatState: Add user message
+ChatState -> APIService: Send message to flow
+APIService -> BackendAPI: POST /api/v1/chat/{id}
+BackendAPI -> BackendAPI: Process in context
+
+alt One-time Response
+    BackendAPI --> APIService: Chat response
+    APIService --> ChatState: Update chat history
+    ChatState -> ChatUI: Display response
+else Streaming Response
+    BackendAPI -> WebSocket: Stream response
+    loop For each chunk
+        WebSocket -> ChatState: Receive response chunk
+        ChatState -> ChatUI: Update chat progressively
+    end
+    WebSocket --> ChatState: Stream complete
+end
+
+ChatUI --> User: Show assistant response
+deactivate ChatUI
+
+== Error Handling ==
+alt API Error
+    APIService -> BackendAPI: Request fails
+    APIService --> ChatState: Error details
+    ChatState -> ChatUI: Display error message
+    ChatState -> Controls: Reset to ready state
+    Controls -> Controls: Enable Run button
+else Execution Error
+    BackendAPI --> APIService: Execution error
+    APIService --> ChatState: Error details
+    ChatState -> ChatUI: Display error message
+    ChatState -> Results: Show error details
+    ChatState -> Controls: Reset to ready state
+else WebSocket Error
+    WebSocket -> ChatState: Connection error
+    ChatState -> PlaygroundPage: Show connection error
+    PlaygroundPage -> WebSocket: Attempt reconnection
+    alt Reconnection Success
+        WebSocket --> PlaygroundPage: Connection restored
+    else Reconnection Failure
+        PlaygroundPage -> User: Show persistent error
+    end
+end
+
+== Chat History Management ==
+User -> Controls: Save conversation
+Controls -> ChatState: Request chat history
+ChatState -> APIService: Save chat history
+APIService -> BackendAPI: POST /api/v1/chat_histories
+BackendAPI --> APIService: History saved
+APIService --> ChatState: Update history status
+ChatState --> User: Show save confirmation
+
+== Playground Cleanup ==
+User -> PlaygroundPage: Leave playground
+PlaygroundPage -> WebSocket: Close connection
+PlaygroundPage -> ChatState: Clear state
+PlaygroundPage -> PlaygroundPage: Navigate away
+
+@enduml

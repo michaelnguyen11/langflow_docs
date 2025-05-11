@@ -1,0 +1,65 @@
+@startuml User_Flow_Creation
+title User Perspective - Flow Creation and Testing Sequence
+
+actor "User" as User
+boundary "Langflow UI" as UI
+control "Flow Editor" as Editor
+control "Component Library" as Library
+control "Playground" as Playground
+entity "Flow" as Flow
+control "Backend API" as API
+
+User -> UI: Login
+UI -> API: Authenticate
+API --> UI: Authentication successful
+UI -> User: Show dashboard
+
+User -> UI: Create new flow
+UI -> Editor: Initialize flow editor
+Editor -> Library: Load component library
+Library -> API: Get component types
+API --> Library: Component metadata
+Library -> Editor: Display available components
+
+User -> Editor: Drag components to canvas
+Editor -> Flow: Add component nodes
+User -> Editor: Configure component parameters
+Editor -> Flow: Update component configuration
+User -> Editor: Connect components
+Editor -> Flow: Add edges between nodes
+User -> Editor: Save flow
+Editor -> API: Save flow data
+API --> Editor: Flow saved confirmation
+Editor -> User: Display success message
+
+User -> Editor: Open in playground
+Editor -> Playground: Load flow
+Playground -> API: Get flow data
+API --> Playground: Flow data
+Playground -> User: Display input form
+
+User -> Playground: Enter test inputs
+User -> Playground: Execute flow
+Playground -> API: Execute flow with inputs
+API -> API: Process flow
+API --> Playground: Return results
+Playground -> User: Display results
+
+alt Results need adjustment
+    User -> Editor: Modify flow
+    Editor -> Flow: Update flow components/connections
+    User -> Editor: Save changes
+    Editor -> API: Update flow
+    API --> Editor: Confirmation
+    User -> Playground: Test updated flow
+    Playground -> API: Execute updated flow
+    API --> Playground: New results
+    Playground -> User: Display new results
+end
+
+User -> Playground: Export flow as API
+Playground -> API: Get API endpoint for flow
+API --> Playground: API endpoint details
+Playground -> User: Display API endpoint information
+
+@enduml

@@ -4,8 +4,7 @@
 # Usage: ./render_plantuml.sh [input_directory]
 
 # Default values
-INPUT_DIR="${1:-$(pwd)}"
-OUTPUT_DIR="images"
+INPUT_DIR="${1:-$(pwd)/diagrams}"
 PLANTUML_JAR_URL="https://github.com/plantuml/plantuml/releases/download/v1.2025.2/plantuml-gplv2-1.2025.2.jar"
 PLANTUML_JAR="plantuml.jar"
 
@@ -56,15 +55,11 @@ if [ ! -d "$INPUT_DIR" ]; then
     exit 1
 fi
 
-# Create output directory if it doesn't exist
-mkdir -p "$OUTPUT_DIR"
-echo -e "${BLUE}Output directory: ${NC}$OUTPUT_DIR"
-
 # Function to create the output directory structure
 create_output_dir() {
     local file_path="$1"
     local rel_path=$(dirname "${file_path#$INPUT_DIR/}")
-    local output_path="$OUTPUT_DIR/$rel_path"
+    local output_path="images/$rel_path"
     
     if [ ! -d "$output_path" ]; then
         mkdir -p "$output_path"
@@ -97,11 +92,10 @@ for file in $PUML_FILES; do
     
     echo -e "${BLUE}[$COUNT/$TOTAL_FILES] Rendering: ${NC}$rel_path"
     
-    # Run PlantUML
-    java -jar "$PLANTUML_JAR" -tpng "$file" -o "$(realpath "$output_dir")"
-    
-    if [ $? -eq 0 ] && [ -f "$output_file" ]; then
-        echo -e "${GREEN}  ✓ Success: ${NC}$output_file"
+    # Run PlantUML with increased memory allocation
+    java -Xmx2048m -XX:ReservedCodeCacheSize=1024m -jar "$PLANTUML_JAR" -tpng "$file" -o "$(realpath "$output_dir")"
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}  ✓ PNG rendered${NC}"
     else
         echo -e "${RED}  ✗ Error rendering: ${NC}$file"
         ERRORS=$((ERRORS+1))
@@ -122,6 +116,6 @@ else
 fi
 
 echo -e "${BLUE}==================================================${NC}"
-echo -e "${YELLOW}To view the rendered diagrams, check the '$OUTPUT_DIR' directory.${NC}"
+echo -e "${YELLOW}To view the rendered diagrams, check the 'images' directory.${NC}"
 
 exit 0

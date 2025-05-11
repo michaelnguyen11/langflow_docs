@@ -1,0 +1,103 @@
+@startuml Flow_Validation_Sequence
+title Sequence diagram for Langflow Flow Validation
+
+participant "API Controller" as API
+participant "Flow Service" as FlowService
+participant "Graph Validator" as Validator
+participant "Component Registry" as Registry
+participant "Type System" as TypeSystem
+participant "Flow Database" as DB
+
+API -> FlowService: validate_flow(flow_data)
+activate FlowService
+
+FlowService -> Validator: validate_flow_graph(flow_data)
+activate Validator
+
+Validator -> Validator: extract_nodes_and_edges(flow_data)
+Validator -> Validator: validate_graph_structure()
+
+alt Invalid graph structure
+    Validator --> FlowService: ValidationError(structure_issues)
+    FlowService --> API: Error Response
+else Valid structure
+    
+    Validator -> Registry: get_component_types()
+    Registry --> Validator: available_component_types
+    
+    loop For each node in graph
+        Validator -> Validator: validate_node_type(node, available_types)
+        
+        alt Invalid node type
+            Validator --> FlowService: ValidationError(invalid_node_type)
+            FlowService --> API: Error Response
+        else Valid node type
+            
+            Validator -> Registry: get_component_class(node.type)
+            Registry --> Validator: component_class
+            
+            Validator -> Validator: validate_required_inputs(node, component_class)
+            
+            alt Missing required inputs
+                Validator --> FlowService: ValidationError(missing_inputs)
+                FlowService --> API: Error Response
+            else All required inputs present
+                
+                Validator -> TypeSystem: validate_input_types(node, component_class)
+                TypeSystem -> TypeSystem: check_type_compatibility()
+                TypeSystem --> Validator: type_validation_result
+                
+                alt Type incompatibility
+                    Validator --> FlowService: ValidationError(type_mismatch)
+                    FlowService --> API: Error Response
+                end
+            end
+        end
+    end
+    
+    loop For each edge in graph
+        Validator -> Validator: validate_edge_connections(edge, nodes)
+        
+        alt Invalid connection
+            Validator --> FlowService: ValidationError(invalid_connection)
+            FlowService --> API: Error Response
+        else Valid connection
+            
+            Validator -> TypeSystem: validate_connection_types(edge, nodes)
+            TypeSystem --> Validator: connection_type_result
+            
+            alt Type incompatibility
+                Validator --> FlowService: ValidationError(connection_type_mismatch)
+                FlowService --> API: Error Response
+            end
+        end
+    end
+    
+    Validator -> Validator: validate_graph_cycles()
+    
+    alt Cycles detected
+        Validator --> FlowService: ValidationError(cyclic_graph)
+        FlowService --> API: Error Response
+    else No cycles
+        
+        Validator -> Validator: validate_terminal_nodes()
+        
+        alt No output nodes
+            Validator --> FlowService: ValidationError(no_output_nodes)
+            FlowService --> API: Error Response
+        else Valid terminal nodes
+            
+            Validator --> FlowService: ValidationSuccess(warnings)
+            
+            FlowService -> DB: save_validated_flow(flow_data)
+            DB --> FlowService: save_result
+            
+            FlowService --> API: Success Response
+        end
+    end
+end
+
+deactivate Validator
+deactivate FlowService
+
+@enduml

@@ -1,0 +1,104 @@
+@startuml Frontend_State_Management
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component diagram for Langflow Frontend State Management
+
+Container_Boundary(state_system, "State Management System") {
+    Component(context_api, "Context API", "React Context", "Global state management through React Context")
+    Component(store_system, "Store System", "Zustand", "State stores for specific domains")
+    Component(query_system, "Query System", "React Query", "Server state management")
+    Component(persistence, "Persistence Layer", "Browser API", "State persistence mechanisms")
+    
+    Boundary(context_providers, "Context Providers") {
+        Component(auth_context, "Auth Context", "React Context", "Authentication state")
+        Component(tabs_context, "Tabs Context", "React Context", "Flow editor tabs")
+        Component(types_context, "Types Context", "React Context", "Component types")
+        Component(flows_context, "Flows Context", "React Context", "Flow data")
+        Component(chat_context, "Chat Context", "React Context", "Conversation state")
+        Component(settings_context, "Settings Context", "React Context", "User preferences")
+    }
+    
+    Boundary(stores, "Zustand Stores") {
+        Component(location_store, "Location Store", "Zustand", "Navigation state")
+        Component(alert_store, "Alert Store", "Zustand", "Notifications")
+        Component(settings_store, "Settings Store", "Zustand", "User settings")
+        Component(apikey_store, "API Key Store", "Zustand", "API keys")
+        Component(component_store, "Component Store", "Zustand", "Component library")
+        Component(flow_store, "Flow Store", "Zustand", "Flow state")
+    }
+    
+    Boundary(queries, "React Query") {
+        Component(flow_queries, "Flow Queries", "React Query", "Flow data fetching")
+        Component(component_queries, "Component Queries", "React Query", "Component data fetching")
+        Component(user_queries, "User Queries", "React Query", "User data fetching")
+        Component(chat_queries, "Chat Queries", "React Query", "Chat data fetching")
+        Component(file_queries, "File Queries", "React Query", "File data fetching")
+    }
+    
+    Boundary(mutations, "React Query Mutations") {
+        Component(flow_mutations, "Flow Mutations", "React Query", "Flow data mutations")
+        Component(user_mutations, "User Mutations", "React Query", "User data mutations")
+        Component(settings_mutations, "Settings Mutations", "React Query", "Settings mutations")
+        Component(chat_mutations, "Chat Mutations", "React Query", "Chat data mutations")
+        Component(file_mutations, "File Mutations", "React Query", "File data mutations")
+    }
+    
+    Boundary(storage_mechanisms, "Storage Mechanisms") {
+        Component(local_storage, "Local Storage", "Browser API", "Persistent browser storage")
+        Component(session_storage, "Session Storage", "Browser API", "Session-based storage")
+        Component(cookie_storage, "Cookie Storage", "Browser API", "Cookie-based storage")
+        Component(memory_cache, "Memory Cache", "JavaScript", "In-memory caching")
+    }
+    
+    Boundary(state_utils, "State Utilities") {
+        Component(state_selectors, "State Selectors", "TypeScript", "Efficient state selection")
+        Component(action_creators, "Action Creators", "TypeScript", "Action creation functions")
+        Component(state_validators, "State Validators", "TypeScript", "State validation")
+        Component(state_middleware, "State Middleware", "TypeScript", "State processing middleware")
+        Component(state_persistence, "State Persistence", "TypeScript", "Persistence helpers")
+    }
+}
+
+' Context provider relationships
+Rel(context_api, context_providers, "Implements with")
+Rel(auth_context, flows_context, "Provides auth info to")
+Rel(types_context, flows_context, "Provides type info to")
+Rel(tabs_context, flows_context, "Coordinates with")
+
+' Store relationships
+Rel(store_system, stores, "Implements with")
+Rel(settings_store, location_store, "Influences")
+Rel(component_store, flow_store, "Provides components to")
+Rel(alert_store, flow_store, "Receives notifications from")
+
+' Query relationships
+Rel(query_system, queries, "Implements with")
+Rel(query_system, mutations, "Implements with")
+Rel(flow_queries, flow_mutations, "Coordinates with")
+Rel(component_queries, component_store, "Updates")
+Rel(user_queries, auth_context, "Updates")
+
+' Storage relationships
+Rel(persistence, storage_mechanisms, "Implements with")
+Rel(local_storage, session_storage, "Complements")
+Rel(memory_cache, local_storage, "Caches before")
+
+' State utility relationships
+Rel(state_utils, context_api, "Supports")
+Rel(state_utils, store_system, "Supports")
+Rel(state_utils, query_system, "Supports")
+Rel(state_selectors, state_validators, "Uses")
+Rel(action_creators, state_middleware, "Uses")
+Rel(state_persistence, storage_mechanisms, "Uses")
+
+' Cross-boundary relationships
+Rel(context_providers, stores, "Coordinates with")
+Rel(stores, queries, "Triggers")
+Rel(queries, mutations, "Uses")
+Rel(context_providers, storage_mechanisms, "Persists to")
+Rel(stores, storage_mechanisms, "Persists to")
+Rel(queries, storage_mechanisms, "Caches in")
+
+@enduml

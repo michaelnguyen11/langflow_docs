@@ -1,0 +1,103 @@
+@startuml Admin_User_Management
+title Administrator Perspective - User Management Sequence
+
+actor "Administrator" as Admin
+boundary "Admin UI" as AdminUI
+control "User Management" as UserMgmt
+control "Backend API" as API
+database "Database" as DB
+entity "Email Service" as Email
+
+Admin -> AdminUI: Login with admin credentials
+AdminUI -> API: Authenticate admin
+API -> DB: Verify admin credentials
+DB --> API: Admin authenticated
+API --> AdminUI: Authentication successful
+AdminUI -> Admin: Display admin dashboard
+
+Admin -> AdminUI: Navigate to user management
+AdminUI -> API: GET /api/v1/users
+API -> DB: Query users
+DB --> API: User list
+API --> AdminUI: User data
+AdminUI -> Admin: Display user list
+
+alt Create new user
+    Admin -> AdminUI: Click "Create User"
+    AdminUI -> Admin: Display user creation form
+    Admin -> AdminUI: Enter user details
+    AdminUI -> API: POST /api/v1/users
+    API -> API: Validate input
+    API -> DB: Check username/email uniqueness
+    DB --> API: Validation result
+    
+    alt Validation failed
+        API --> AdminUI: Error details
+        AdminUI -> Admin: Display validation errors
+    else Validation successful
+        API -> DB: Create user record
+        DB --> API: User created
+        
+        opt If email notifications enabled
+            API -> Email: Send welcome email
+            Email --> API: Email sent
+        end
+        
+        API --> AdminUI: User creation successful
+        AdminUI -> AdminUI: Update user list
+        AdminUI -> Admin: Display success message
+    end
+end
+
+alt Edit user
+    Admin -> AdminUI: Select user to edit
+    AdminUI -> Admin: Display user edit form
+    Admin -> AdminUI: Modify user details
+    AdminUI -> API: PUT /api/v1/users/{id}
+    API -> API: Validate changes
+    API -> DB: Update user record
+    DB --> API: User updated
+    API --> AdminUI: Update successful
+    AdminUI -> Admin: Display success message
+end
+
+alt Delete user
+    Admin -> AdminUI: Select user to delete
+    AdminUI -> Admin: Confirm deletion
+    Admin -> AdminUI: Confirm
+    AdminUI -> API: DELETE /api/v1/users/{id}
+    API -> DB: Mark user as deleted
+    DB --> API: User deleted
+    API --> AdminUI: Deletion successful
+    AdminUI -> AdminUI: Remove user from list
+    AdminUI -> Admin: Display success message
+end
+
+alt Reset user password
+    Admin -> AdminUI: Select "Reset Password"
+    AdminUI -> API: POST /api/v1/users/{id}/reset-password
+    API -> API: Generate temporary password
+    API -> DB: Update user password
+    DB --> API: Password updated
+    
+    opt If email notifications enabled
+        API -> Email: Send password reset email
+        Email --> API: Email sent
+    end
+    
+    API --> AdminUI: Password reset successful
+    AdminUI -> Admin: Display success message
+end
+
+alt Manage user roles
+    Admin -> AdminUI: Select user to modify roles
+    AdminUI -> Admin: Display role management interface
+    Admin -> AdminUI: Update user roles
+    AdminUI -> API: PUT /api/v1/users/{id}/roles
+    API -> DB: Update user roles
+    DB --> API: Roles updated
+    API --> AdminUI: Update successful
+    AdminUI -> Admin: Display success message
+end
+
+@enduml

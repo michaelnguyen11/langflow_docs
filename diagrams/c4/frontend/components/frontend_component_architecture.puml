@@ -1,0 +1,112 @@
+@startuml Frontend_Component_Architecture
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component diagram for Langflow Frontend Architecture
+
+Container_Boundary(frontend, "Frontend Application") {
+    Component(main_app, "Main App", "React", "Application root component")
+    
+    Boundary(core_system, "Core System") {
+        Component(router, "Router", "React Router", "Application routing and navigation")
+        Component(auth_provider, "Auth Provider", "React Context", "Authentication state management")
+        Component(theme_provider, "Theme Provider", "React Context", "Theming and appearance")
+        Component(layout_system, "Layout System", "React", "Page structure and organization")
+        Component(error_boundary, "Error Boundary", "React", "Global error handling")
+    }
+    
+    Boundary(state_management, "State Management") {
+        Component(context_providers, "Context Providers", "React Context", "Global state through Context API")
+        Component(stores, "Store System", "Zustand", "State stores for specific domains")
+        Component(local_storage, "Local Storage", "Browser API", "Persistent state storage")
+        Component(query_client, "Query Client", "React Query", "Server state management")
+    }
+    
+    Boundary(ui_system, "UI System") {
+        Component(ui_components, "UI Components", "React", "Basic UI building blocks")
+        Component(form_system, "Form System", "React Hook Form", "Form handling and validation")
+        Component(modal_system, "Modal System", "React", "Dialog and overlay management")
+        Component(notification_system, "Notification System", "React", "Alerts and notifications")
+        Component(animation_system, "Animation System", "React", "Transitions and animations")
+    }
+    
+    Boundary(flow_editor, "Flow Editor") {
+        Component(flow_canvas, "Flow Canvas", "React Flow", "Interactive flow canvas")
+        Component(node_system, "Node System", "React", "Custom node components")
+        Component(edge_system, "Edge System", "React", "Custom edge components")
+        Component(sidebar_system, "Sidebar System", "React", "Component panels and configuration")
+        Component(toolbar, "Toolbar", "React", "Action buttons and tools")
+    }
+    
+    Boundary(playground, "Playground System") {
+        Component(chat_ui, "Chat UI", "React", "Conversation interface")
+        Component(input_system, "Input System", "React", "Flow input management")
+        Component(output_display, "Output Display", "React", "Result visualization")
+        Component(history_system, "History System", "React", "Chat history management")
+    }
+    
+    Boundary(api_integration, "API Integration") {
+        Component(api_client, "API Client", "Axios", "HTTP client for API calls")
+        Component(service_layer, "Service Layer", "TypeScript", "API service abstractions")
+        Component(query_hooks, "Query Hooks", "React Query", "Data fetching hooks")
+        Component(mutation_hooks, "Mutation Hooks", "React Query", "Data mutation hooks")
+        Component(websocket_client, "WebSocket Client", "TypeScript", "Real-time communication")
+    }
+    
+    Boundary(utils, "Utilities") {
+        Component(helper_functions, "Helper Functions", "TypeScript", "Utility functions")
+        Component(custom_hooks, "Custom Hooks", "React", "Reusable logic hooks")
+        Component(type_system, "Type System", "TypeScript", "Type definitions")
+        Component(constants, "Constants", "TypeScript", "Application constants")
+        Component(validators, "Validators", "TypeScript", "Data validation functions")
+    }
+}
+
+' Core relationships
+Rel(main_app, core_system, "Uses")
+Rel(main_app, state_management, "Uses")
+Rel(router, layout_system, "Renders")
+
+' State management relationships
+Rel(context_providers, local_storage, "Persists to")
+Rel(stores, local_storage, "Persists to")
+Rel(context_providers, stores, "Coordinates with")
+Rel(query_client, api_integration, "Uses")
+
+' UI system relationships
+Rel(ui_system, state_management, "Uses")
+Rel(form_system, ui_components, "Uses")
+Rel(modal_system, ui_components, "Uses")
+Rel(notification_system, ui_components, "Uses")
+
+' Flow editor relationships
+Rel(flow_editor, ui_system, "Uses")
+Rel(flow_editor, state_management, "Uses")
+Rel(node_system, ui_components, "Uses")
+Rel(edge_system, ui_components, "Uses")
+Rel(sidebar_system, ui_components, "Uses")
+Rel(toolbar, ui_components, "Uses")
+
+' Playground relationships
+Rel(playground, ui_system, "Uses")
+Rel(playground, state_management, "Uses")
+Rel(chat_ui, ui_components, "Uses")
+Rel(input_system, form_system, "Uses")
+Rel(history_system, local_storage, "Uses")
+
+' API integration relationships
+Rel(api_integration, state_management, "Updates")
+Rel(service_layer, api_client, "Uses")
+Rel(query_hooks, service_layer, "Uses")
+Rel(mutation_hooks, service_layer, "Uses")
+Rel(websocket_client, service_layer, "Coordinates with")
+
+' Utility relationships
+Rel(ui_system, utils, "Uses")
+Rel(flow_editor, utils, "Uses")
+Rel(playground, utils, "Uses")
+Rel(api_integration, utils, "Uses")
+Rel(state_management, utils, "Uses")
+
+@enduml

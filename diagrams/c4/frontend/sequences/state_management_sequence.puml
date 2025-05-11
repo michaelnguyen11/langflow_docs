@@ -1,0 +1,97 @@
+@startuml State_Management_Sequence
+title Sequence diagram for Langflow Frontend State Management
+
+participant "Component" as Component
+participant "React Context Provider" as ContextProvider
+participant "Zustand Store" as Store
+participant "Local Storage" as LocalStorage
+participant "API Service" as APIService
+participant "Backend API" as BackendAPI
+
+== Context Initialization ==
+Component -> ContextProvider: Mount component
+activate ContextProvider
+
+ContextProvider -> ContextProvider: Initialize state
+ContextProvider -> LocalStorage: Load persisted state
+LocalStorage --> ContextProvider: Persisted data (if exists)
+
+alt Data needs to be fetched from API
+    ContextProvider -> APIService: Request data
+    APIService -> BackendAPI: API request
+    BackendAPI --> APIService: Response
+    APIService --> ContextProvider: Processed data
+end
+
+ContextProvider --> Component: Provide state
+deactivate ContextProvider
+
+== Context State Update ==
+Component -> ContextProvider: Trigger state update
+activate ContextProvider
+
+ContextProvider -> ContextProvider: Update internal state
+ContextProvider -> LocalStorage: Persist state (if needed)
+
+alt Update requires API call
+    ContextProvider -> APIService: Send update
+    APIService -> BackendAPI: API request
+    BackendAPI --> APIService: Response
+    APIService --> ContextProvider: Processed response
+end
+
+ContextProvider --> Component: Propagate state update
+ContextProvider -> Component: Trigger re-render
+deactivate ContextProvider
+
+== Zustand Store Initialization ==
+Component -> Store: Create store hooks
+activate Store
+
+Store -> Store: Initialize store state
+Store -> LocalStorage: Load persisted state
+LocalStorage --> Store: Persisted data (if exists)
+
+alt Store needs API data
+    Store -> APIService: Request data
+    APIService -> BackendAPI: API request
+    BackendAPI --> APIService: Response
+    APIService --> Store: Processed data
+end
+
+Store --> Component: Provide state access
+deactivate Store
+
+== Zustand Store Update ==
+Component -> Store: Set state
+activate Store
+
+Store -> Store: Update internal state
+Store -> LocalStorage: Persist state (if needed)
+
+alt Update triggers API call
+    Store -> APIService: Send update
+    APIService -> BackendAPI: API request
+    BackendAPI --> APIService: Response
+    APIService --> Store: Process response
+end
+
+Store --> Component: Return updated state
+Store -> Component: Trigger re-render
+deactivate Store
+
+== Shared State Synchronization ==
+Component -> ContextProvider: Update context state
+ContextProvider -> Store: Synchronize with store
+Store -> LocalStorage: Persist shared state
+Store --> ContextProvider: Confirm sync
+ContextProvider --> Component: Return updated state
+
+== Error Handling ==
+Component -> Store: Set state with invalid data
+Store -> Store: Validate data
+Store -> Store: Revert to previous state
+Store -> Component: Return error
+Component -> Component: Handle error state
+
+@enduml

@@ -1,0 +1,124 @@
+@startuml C4_Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container diagram for Langflow
+
+Person(user, "User", "A user who wants to create and deploy AI workflows")
+Person(admin, "Administrator", "A system administrator who manages users and configurations")
+Person(developer, "Developer", "A developer who wants to integrate with Langflow APIs")
+
+System_Boundary(langflow_system, "Langflow") {
+    Container_Boundary(frontend, "Frontend System") {
+        Container(web_app, "Frontend Application", "React, TypeScript", "Provides UI for building and testing flows\n/src/frontend")
+        
+        Container(ui_components, "UI Components", "React, TypeScript", "Basic UI elements and controls\n/src/frontend/src/components/ui")
+        Container(core_components, "Core Components", "React, TypeScript", "Primary application functionality\n/src/frontend/src/components/core")
+        Container(custom_nodes, "Custom Nodes", "React, TypeScript", "Flow node components\n/src/frontend/src/CustomNodes")
+        Container(contexts_stores, "State Management", "React Context, Zustand", "Global state management\n/src/frontend/src/contexts, /stores")
+        Container(frontend_controllers, "API Controllers", "TypeScript", "Backend communication\n/src/frontend/src/controllers/API")
+    }
+    
+    Container_Boundary(backend, "Backend System") {
+        Container(api_layer, "API Layer", "Python, FastAPI", "Handles API endpoints for frontend interaction\n/src/backend/base/langflow/api")
+        Container(component_system, "Component System", "Python", "Manages AI components and their interfaces\n/src/backend/base/langflow/components")
+        Container(flow_engine, "Flow Engine", "Python", "Executes AI workflows, manages graph representation\n/src/backend/base/langflow/graph")
+        Container(core_system, "Core System", "Python", "Core functionality including security, error handling\n/src/backend/base/langflow/core")
+        Container(component_discovery, "Component Discovery", "Python", "Discovers and loads components at runtime\n/src/backend/base/langflow/interface")
+        Container(event_system, "Event System", "Python", "Manages events and notifications\n/src/backend/base/langflow/events")
+        Container(data_processing, "Data Processing", "Python", "Handles data transformation and pre-processing\n/src/backend/base/langflow/processing")
+        
+        Container_Boundary(services, "Services") {
+            Container(services_module, "Services Module", "Python", "Contains all backend services\n/src/backend/base/langflow/services")
+            Container(auth_service, "Auth Service", "Python", "Handles authentication and authorization\n/services/auth")
+            Container(database_service, "Database Service", "Python", "Manages data persistence\n/services/database")
+            Container(flow_service, "Flow Service", "Python", "Manages flow operations\n/services/flow")
+            Container(settings_service, "Settings Service", "Python", "Manages system configuration\n/services/settings")
+            Container(cache_service, "Cache Service", "Python", "Manages cache operations\n/services/cache")
+            Container(storage_service, "Storage Service", "Python", "Manages file storage\n/services/storage")
+            Container(job_queue, "Job Queue", "Python", "Handles background tasks\n/services/job_queue")
+            Container(telemetry_service, "Telemetry Service", "Python", "Tracks usage metrics\n/services/telemetry")
+            Container(chat_service, "Chat Service", "Python", "Manages chat conversations\n/services/chat")
+            Container(session_service, "Session Service", "Python", "Manages user sessions\n/services/session")
+        }
+        
+        Container(db_integration, "Database Integration", "Python, SQLAlchemy", "ORM models and database operations\n/src/backend/base/langflow/schema")
+    }
+    
+    ContainerDb(database, "Database", "SQLite/PostgreSQL", "Stores flows, users, and configuration")
+    ContainerDb(file_storage, "File Storage", "Local/S3/Azure", "Stores uploaded files and artifacts")
+    ContainerDb(cache_storage, "Cache", "In-memory/Redis", "Caches responses and computation results")
+}
+
+System_Ext(llm_provider, "LLM Provider", "External LLM service (OpenAI, etc.)")
+System_Ext(vector_db, "Vector Database", "External vector storage (Pinecone, etc.)")
+System_Ext(data_source, "External Data Source", "Source of documents and data")
+System_Ext(monitoring, "Monitoring Tools", "LangSmith, LangFuse, etc.")
+System_Ext(external_app, "External Application", "Application using Langflow APIs")
+
+' External interactions
+Rel(user, web_app, "Uses", "HTTPS")
+Rel(admin, web_app, "Administers", "HTTPS")
+Rel(developer, api_layer, "Uses API", "HTTPS/REST")
+Rel(external_app, api_layer, "Makes API calls to", "HTTPS/REST")
+
+' Frontend internal structure
+Rel(web_app, ui_components, "Uses")
+Rel(web_app, core_components, "Uses")
+Rel(web_app, custom_nodes, "Uses")
+Rel(web_app, contexts_stores, "Uses")
+Rel(web_app, frontend_controllers, "Uses")
+
+' Frontend to Backend
+Rel(frontend_controllers, api_layer, "Makes API calls to", "HTTPS/REST")
+
+' Main architectural layers
+Rel(api_layer, core_system, "Uses for cross-cutting concerns")
+Rel(api_layer, flow_engine, "Executes flows using")
+Rel(api_layer, component_system, "Manages components using")
+Rel(api_layer, component_discovery, "Discovers components using")
+Rel(api_layer, event_system, "Publishes events to")
+Rel(api_layer, data_processing, "Processes data using")
+Rel(flow_engine, component_system, "Creates and connects components using")
+Rel(flow_engine, event_system, "Publishes execution events to")
+Rel(component_system, component_discovery, "Registers with")
+Rel(api_layer, services_module, "Uses services from")
+Rel(api_layer, db_integration, "Uses data models from")
+
+' Services relationships
+Rel(services_module, auth_service, "Contains")
+Rel(services_module, database_service, "Contains")
+Rel(services_module, flow_service, "Contains")
+Rel(services_module, settings_service, "Contains")
+Rel(services_module, cache_service, "Contains")
+Rel(services_module, storage_service, "Contains")
+Rel(services_module, job_queue, "Contains")
+Rel(services_module, telemetry_service, "Contains")
+Rel(services_module, chat_service, "Contains")
+Rel(services_module, session_service, "Contains")
+
+' Database interactions
+Rel(db_integration, database, "Reads from and writes to")
+Rel(database_service, db_integration, "Uses")
+Rel(flow_service, db_integration, "Uses")
+Rel(storage_service, db_integration, "Uses")
+Rel(settings_service, db_integration, "Uses")
+Rel(auth_service, db_integration, "Uses")
+
+' Storage interactions
+Rel(storage_service, file_storage, "Manages files in")
+Rel(cache_service, cache_storage, "Stores cached data in")
+
+' Background processing
+Rel(job_queue, flow_engine, "Executes flows using")
+Rel(telemetry_service, monitoring, "Sends telemetry to", "HTTPS")
+
+' External service interactions
+Rel(flow_engine, llm_provider, "Makes API calls to", "HTTPS/REST")
+Rel(flow_engine, vector_db, "Stores and retrieves vectors", "HTTPS/REST")
+Rel(flow_engine, data_source, "Loads data from", "Various")
+Rel(component_system, llm_provider, "Integrates with", "HTTPS/REST")
+Rel(component_system, vector_db, "Integrates with", "HTTPS/REST")
+
+@enduml

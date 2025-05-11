@@ -1,0 +1,194 @@
+@startuml AWS_Deployment
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
+
+LAYOUT_WITH_LEGEND()
+
+title AWS Deployment Diagram for Langflow
+
+Deployment_Node(aws, "AWS Cloud", "Amazon Web Services") {
+    ' Frontend System
+    Deployment_Node(frontend_system, "Frontend System", "Frontend Components") {
+        Deployment_Node(cloudfront, "Content Delivery", "AWS CloudFront") {
+            Container(cdn, "CloudFront Distribution", "CDN", "Distributes frontend content globally")
+        }
+        
+        Deployment_Node(frontend_compute, "Frontend Compute", "Amazon ECS/EKS") {
+            Container(frontend_container, "Frontend Containers", "Nginx, React", "Serves the Langflow UI")
+        }
+        
+        Deployment_Node(s3_assets_node, "Frontend Assets", "Amazon S3") {
+            Container(s3_assets, "Static Assets Bucket", "S3", "Stores frontend assets (UI Components, Custom Nodes)")
+        }
+    }
+    
+    ' Backend System
+    Deployment_Node(backend_system, "Backend System", "Backend Components") {
+        Deployment_Node(apigateway, "API Layer", "AWS API Gateway") {
+            Container(api_gateway, "API Gateway", "REST/WebSocket", "Manages API endpoints and authentication")
+        }
+        
+        Deployment_Node(backend_compute, "Backend Compute", "Amazon ECS/EKS") {
+            Container(backend_container, "API Layer Container", "FastAPI", "Handles API endpoints for frontend interaction")
+            Container(component_system_container, "Component System Container", "Python", "Manages AI components and interfaces")
+            Container(flow_engine_container, "Flow Engine Container", "Python", "Executes AI workflows")
+            Container(core_system_container, "Core System Container", "Python", "Core functionality including security, error handling")
+            Container(component_discovery_container, "Component Discovery Container", "Python", "Discovers and loads components at runtime")
+            Container(event_system_container, "Event System Container", "Python", "Manages events and notifications")
+            Container(data_processing_container, "Data Processing Container", "Python", "Handles data transformation and pre-processing")
+        }
+        
+        Deployment_Node(services_node, "Services", "Backend Services") {
+            Container(auth_service, "Auth Service", "Python", "Authentication and authorization")
+            Container(database_service, "Database Service", "Python", "Database connectivity")
+            Container(flow_service, "Flow Service", "Python", "Flow management")
+            Container(settings_service, "Settings Service", "Python", "Configuration management")
+            Container(cache_service, "Cache Service", "Python", "Data caching")
+            Container(storage_service, "Storage Service", "Python", "File storage")
+            Container(job_queue_service, "Job Queue Service", "Python", "Background task processing")
+            Container(telemetry_service, "Telemetry Service", "Python", "Usage tracking")
+            Container(chat_service, "Chat Service", "Python", "Chat functionality")
+            Container(session_service, "Session Service", "Python", "Session management")
+        }
+        
+        Deployment_Node(messaging, "Messaging", "Amazon SQS") {
+            Container(sqs_queue, "Flow Execution Queue", "SQS", "Queues flow execution requests")
+        }
+        
+        Deployment_Node(serverless, "Serverless", "AWS Lambda") {
+            Container(lambda_functions, "Integration Functions", "Lambda", "Handles integrations with external systems")
+        }
+    }
+    
+    ' Data Storage
+    Deployment_Node(data_storage, "Data Storage", "Storage Components") {
+        Deployment_Node(rds, "Database", "Amazon RDS") {
+            ContainerDb(postgres, "PostgreSQL", "Relational Database", "Stores flows, users, and application data")
+        }
+        
+        Deployment_Node(elasticache, "Cache", "Amazon ElastiCache") {
+            ContainerDb(redis, "Redis", "In-memory cache", "Caches API responses and session data")
+        }
+        
+        Deployment_Node(s3_storage, "File Storage", "Amazon S3") {
+            Container(s3_uploads, "Uploads Bucket", "S3", "Stores user uploaded files")
+            Container(s3_exports, "Exports Bucket", "S3", "Stores flow exports and backups")
+        }
+    }
+    
+    ' Platform Services
+    Deployment_Node(platform_services, "Platform Services", "AWS Platform Components") {
+        Deployment_Node(identity, "Identity", "AWS Cognito") {
+            Container(cognito_userpool, "User Pool", "Cognito", "Manages user authentication")
+        }
+        
+        Deployment_Node(security, "Security", "") {
+            Container(secrets_manager, "Secrets Manager", "AWS Secrets Manager", "Manages API keys and credentials")
+            Container(kms, "Key Management", "AWS KMS", "Manages encryption keys")
+        }
+        
+        Deployment_Node(monitoring, "Monitoring", "") {
+            Container(cloudwatch, "CloudWatch", "Monitoring", "Logs, metrics, and alerts")
+            Container(xray, "X-Ray", "Tracing", "Distributed tracing")
+        }
+        
+        Deployment_Node(network, "Networking", "Amazon VPC") {
+            Container(vpc_endpoints, "VPC Endpoints", "PrivateLink", "Secure connections to AWS services")
+            Container(transit_gateway, "Transit Gateway", "Network routing", "Connects to corporate network")
+        }
+    }
+}
+
+' External Systems
+Deployment_Node(external_systems, "External Systems", "Third-party Services") {
+    Container(llm_provider, "LLM Provider", "OpenAI/etc.", "External language model services")
+    Container(vector_db, "Vector Database", "Pinecone/etc.", "External vector storage")
+    Container(data_source, "External Data Source", "Various", "Source of documents and data")
+    Container(monitoring_tools, "Monitoring Tools", "LangSmith/LangFuse", "LLM observability platforms")
+}
+
+Deployment_Node(corporate, "Corporate Network", "Internal Infrastructure") {
+    Deployment_Node(confluence, "Confluence", "Atlassian") {
+        Container(confluence_server, "Confluence Server", "Java", "Internal wiki and documentation")
+    }
+    
+    Container(internal_systems, "Other Internal Systems", "Various", "Other corporate applications")
+    
+    Deployment_Node(client_apps, "Client Applications", "") {
+        Container(web_app, "Web Applications", "JavaScript", "Browser-based applications")
+        Container(mobile_app, "Mobile Applications", "iOS/Android", "Native mobile applications")
+    }
+    
+    Deployment_Node(corporate_identity, "Corporate Identity", "") {
+        Container(idp, "Identity Provider", "SAML/OIDC", "Corporate user authentication")
+    }
+}
+
+' Frontend System connections
+Rel(cdn, frontend_container, "Distributes content from")
+Rel(frontend_container, s3_assets, "Loads assets from")
+Rel(frontend_container, api_gateway, "Makes API calls to")
+
+' API Gateway connections
+Rel(api_gateway, backend_container, "Routes requests to")
+Rel(api_gateway, cognito_userpool, "Authenticates with")
+
+' Backend System internal connections
+Rel(backend_container, component_system_container, "Uses")
+Rel(backend_container, flow_engine_container, "Executes flows using")
+Rel(backend_container, core_system_container, "Uses")
+Rel(backend_container, component_discovery_container, "Uses")
+Rel(backend_container, event_system_container, "Publishes events to")
+Rel(backend_container, data_processing_container, "Processes data using")
+
+' Backend to Services connections
+Rel(backend_container, auth_service, "Uses")
+Rel(backend_container, database_service, "Uses")
+Rel(backend_container, flow_service, "Uses")
+Rel(backend_container, settings_service, "Uses")
+Rel(backend_container, cache_service, "Uses")
+Rel(backend_container, storage_service, "Uses")
+Rel(backend_container, job_queue_service, "Uses")
+Rel(backend_container, telemetry_service, "Uses")
+Rel(backend_container, chat_service, "Uses")
+Rel(backend_container, session_service, "Uses")
+
+' Backend to Data Storage connections
+Rel(database_service, postgres, "Connects to")
+Rel(cache_service, redis, "Manages cache in")
+Rel(storage_service, s3_uploads, "Stores files in")
+Rel(storage_service, s3_exports, "Manages exports in")
+
+' Job queue connections
+Rel(job_queue_service, sqs_queue, "Manages queues in")
+Rel(flow_engine_container, sqs_queue, "Processes tasks from")
+Rel(sqs_queue, lambda_functions, "Triggers")
+
+' External system connections
+Rel(component_system_container, llm_provider, "Integrates with", "HTTPS/REST")
+Rel(component_system_container, vector_db, "Integrates with", "HTTPS/REST")
+Rel(flow_engine_container, llm_provider, "Makes API calls to", "HTTPS/REST")
+Rel(flow_engine_container, vector_db, "Stores and retrieves vectors", "HTTPS/REST")
+Rel(flow_engine_container, data_source, "Loads data from", "Various")
+Rel(telemetry_service, monitoring_tools, "Sends telemetry to", "HTTPS")
+
+' Lambda connections
+Rel(lambda_functions, vpc_endpoints, "Connects through")
+Rel(lambda_functions, confluence_server, "Integrates with")
+Rel(lambda_functions, internal_systems, "Integrates with")
+
+' Network connections
+Rel(transit_gateway, confluence, "Connects to")
+Rel(cognito_userpool, idp, "Federates with")
+
+' Client connections
+Rel(web_app, api_gateway, "Makes API calls to")
+Rel(mobile_app, api_gateway, "Makes API calls to")
+Rel(client_apps, idp, "Authenticates with")
+
+' Monitoring connections
+Rel(backend_compute, cloudwatch, "Sends logs and metrics to")
+Rel(frontend_compute, cloudwatch, "Sends logs and metrics to")
+Rel(backend_container, xray, "Sends traces to")
+Rel(api_gateway, cloudwatch, "Sends logs to")
+
+@enduml

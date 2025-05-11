@@ -1,0 +1,63 @@
+@startuml Custom_Component_Registration
+title Langflow Backend - Custom Component Registration Sequence
+
+actor "Developer" as Developer
+participant "Frontend" as Frontend
+participant "API Layer" as API
+participant "Component Service" as ComponentService
+participant "Custom Component Loader" as CustomLoader
+participant "Type Extractor" as TypeExtractor
+participant "Component Registry" as Registry
+participant "Custom Component Scanner" as Scanner
+database "Database" as DB
+
+Developer -> Frontend: Uploads custom component code
+Frontend -> API: POST /api/v1/custom_components
+API -> ComponentService: register_custom_component(code, metadata)
+
+ComponentService -> DB: save_custom_component(code, metadata)
+DB --> ComponentService: component_id
+
+ComponentService -> CustomLoader: load_component(code)
+activate CustomLoader
+
+CustomLoader -> CustomLoader: parse_code()
+CustomLoader -> CustomLoader: validate_syntax()
+CustomLoader -> CustomLoader: create_module()
+
+alt Code contains errors
+    CustomLoader --> ComponentService: ValidationError
+    ComponentService --> API: Error Response
+    API --> Frontend: Error Details
+    Frontend --> Developer: Display Error
+else Code is valid
+    CustomLoader -> Scanner: scan_for_component_classes()
+    Scanner -> Scanner: find_component_classes()
+    
+    loop For each component class
+        Scanner -> TypeExtractor: extract_type_info(component_class)
+        TypeExtractor -> TypeExtractor: analyze_input_types()
+        TypeExtractor -> TypeExtractor: analyze_output_types()
+        TypeExtractor -> TypeExtractor: extract_parameters()
+        TypeExtractor --> Scanner: component_type_info
+        
+        Scanner -> Registry: register_component(component_class, type_info)
+        Registry -> Registry: validate_component()
+        Registry -> Registry: add_to_registry()
+        Registry --> Scanner: registration_result
+    end
+    
+    Scanner --> CustomLoader: registered_components
+end
+
+CustomLoader --> ComponentService: loading_result
+deactivate CustomLoader
+
+ComponentService -> DB: update_component_status(component_id, status)
+DB --> ComponentService: success
+
+ComponentService --> API: Component registration response
+API --> Frontend: Registration result
+Frontend --> Developer: Display component status
+
+@enduml

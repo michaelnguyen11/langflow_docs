@@ -1,0 +1,272 @@
+@startuml C4_Code
+
+skinparam packageStyle rectangle
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam roundCorner 4
+skinparam linetype ortho
+
+title Code diagram for Langflow Core Components
+
+' Backend System - Component System
+package "Component System" {
+    class ComponentRegistry {
+        +register(component_type)
+        +get_component(component_id)
+        +list_components()
+    }
+    
+    class ComponentFactory {
+        +create_component(component_type, params)
+    }
+    
+    class ComponentScanner {
+        +scan_components()
+        +refresh()
+    }
+    
+    class ComponentType {
+        +id: String
+        +name: String
+        +description: String
+        +inputs: Dict
+        +outputs: Dict
+    }
+    
+    class ComponentTemplate {
+        +template_fields: Dict
+        +validate(params)
+    }
+    
+    class TypeResolver {
+        +resolve_type(component)
+    }
+    
+    class ComponentMetadata {
+        +display_name: String
+        +documentation: String
+        +category: String
+    }
+    
+    ' Component Implementation Classes
+    class LLMComponent {
+        +generate(prompt)
+    }
+    
+    class AgentComponent {
+        +run(inputs)
+    }
+    
+    class ChainComponent {
+        +run(inputs)
+    }
+    
+    class ToolComponent {
+        +run(inputs)
+    }
+    
+    class MemoryComponent {
+        +add_message(message)
+        +get_messages()
+    }
+    
+    class EmbeddingComponent {
+        +embed(text)
+    }
+    
+    class VectorStoreComponent {
+        +add_texts(texts)
+        +search(query)
+    }
+}
+
+' Backend System - Flow Engine
+package "Flow Engine" {
+    class FlowService {
+        +create_flow(data)
+        +get_flow(flow_id)
+        +update_flow(flow_id, data)
+        +delete_flow(flow_id)
+    }
+    
+    class Flow {
+        +id: String
+        +name: String
+        +nodes: List[Node]
+        +edges: List[Edge]
+    }
+    
+    class Node {
+        +id: String
+        +type: String
+        +position: Dict
+        +data: Dict
+    }
+    
+    class Edge {
+        +id: String
+        +source: String
+        +target: String
+        +source_handle: String
+        +target_handle: String
+    }
+    
+    class GraphProcessor {
+        +process_graph(flow)
+    }
+    
+    class FlowExecutor {
+        +execute_flow(flow, inputs)
+    }
+}
+
+' Backend System - API Layer
+package "API Layer" {
+    class FlowEndpoints {
+        +create_flow()
+        +get_flow()
+        +update_flow()
+        +delete_flow()
+    }
+    
+    class UserEndpoints {
+        +register_user()
+        +login()
+        +get_current_user()
+    }
+    
+    class ComponentEndpoints {
+        +list_components()
+        +get_component_template()
+    }
+    
+    class ExecutionEndpoints {
+        +execute_flow()
+        +stream_response()
+    }
+}
+
+' Frontend System - Core Components
+package "Frontend Components" {
+    class FlowProvider {
+        +flow: Flow
+        +setFlow()
+        +updateFlow()
+    }
+    
+    class FlowStore {
+        +flows: List[Flow]
+        +currentFlow: Flow
+        +actions: Object
+    }
+    
+    class NodeComponent {
+        +data: NodeData
+        +selected: Boolean
+        +render()
+    }
+    
+    class FlowCanvas {
+        +nodes: List[Node]
+        +edges: List[Edge]
+        +onNodesChange()
+        +onEdgesChange()
+    }
+    
+    class NodeConfigPanel {
+        +node: Node
+        +updateNodeData()
+    }
+    
+    class ApiService {
+        +getFlows()
+        +createFlow()
+        +updateFlow()
+        +executeFlow()
+    }
+}
+
+' Data Storage - Database Models
+package "Data Storage" {
+    class FlowModel {
+        +id: UUID
+        +name: String
+        +description: String
+        +data: JSON
+        +user_id: UUID
+    }
+    
+    class UserModel {
+        +id: UUID
+        +username: String
+        +email: String
+        +password_hash: String
+    }
+    
+    class FileModel {
+        +id: UUID
+        +filename: String
+        +path: String
+        +user_id: UUID
+    }
+}
+
+' Component System Relationships
+ComponentRegistry --> ComponentType : manages
+ComponentFactory --> ComponentType : creates instances of
+ComponentScanner --> ComponentType : discovers
+ComponentType --> ComponentMetadata : has
+ComponentType --> TypeResolver : uses
+ComponentFactory --> ComponentTemplate : uses
+
+' Component Inheritance
+LLMComponent --|> ComponentType
+AgentComponent --|> ComponentType
+ChainComponent --|> ComponentType
+ToolComponent --|> ComponentType
+MemoryComponent --|> ComponentType
+EmbeddingComponent --|> ComponentType
+VectorStoreComponent --|> ComponentType
+
+' Flow Relationships
+Flow "1" *-- "many" Node : contains
+Flow "1" *-- "many" Edge : contains
+Node "many" -- "many" Edge : connected by
+Node -- ComponentType : is of type
+FlowService -- Flow : creates/updates/deletes
+FlowExecutor -- Flow : executes
+GraphProcessor -- Flow : processes
+FlowExecutor -- ComponentFactory : uses to instantiate components
+
+' Frontend Relationships
+FlowProvider --> FlowStore : uses
+FlowCanvas --> NodeComponent : renders
+NodeConfigPanel --> NodeComponent : configures
+FlowStore --> ApiService : uses
+
+' Database relationships
+FlowService --> FlowModel : uses
+FlowModel --> UserModel : belongs to
+FileModel --> UserModel : belongs to
+
+' API relationships
+FlowEndpoints --> FlowService : uses
+ExecutionEndpoints --> FlowExecutor : uses
+ComponentEndpoints --> ComponentRegistry : uses to retrieve component metadata
+ApiService --> FlowEndpoints : calls
+ApiService --> ExecutionEndpoints : calls
+ApiService --> ComponentEndpoints : calls
+ApiService --> UserEndpoints : calls
+
+' Cross-system relationships
+"API Layer" --> "Flow Engine" : uses
+"API Layer" --> "Component System" : uses
+"Flow Engine" --> "Component System" : uses
+"API Layer" --> "Data Storage" : uses
+"Frontend Components" --> "API Layer" : calls via API
+
+footer Langflow Code Diagram - Aligned with C4 Architecture Model
+
+@enduml

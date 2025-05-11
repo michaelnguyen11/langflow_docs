@@ -1,0 +1,132 @@
+@startuml Frontend_Flow_System
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component diagram for Langflow Frontend Flow System
+
+Container_Boundary(flow_system, "Flow System") {
+    Component(flow_editor, "Flow Editor", "React", "Main flow editing interface")
+    Component(flow_renderer, "Flow Renderer", "React Flow", "Flow visualization")
+    Component(flow_state, "Flow State", "React/Zustand", "Flow data management")
+    Component(flow_operations, "Flow Operations", "TypeScript", "Flow manipulation")
+    
+    Boundary(canvas_system, "Canvas System") {
+        Component(react_flow, "React Flow", "Library", "Core flow visualization library")
+        Component(canvas_controls, "Canvas Controls", "React", "Zoom, pan, and navigation")
+        Component(canvas_background, "Canvas Background", "React", "Grid and background patterns")
+        Component(minimap, "Minimap", "React", "Overview navigation")
+        Component(canvas_events, "Canvas Events", "React", "Canvas interaction events")
+    }
+    
+    Boundary(node_system, "Node System") {
+        Component(node_factory, "Node Factory", "React", "Creates node components")
+        Component(generic_node, "Generic Node", "React", "Base node implementation")
+        Component(node_types, "Node Types", "React", "Specialized node components")
+        Component(node_data_panel, "Node Data Panel", "React", "Node configuration interface")
+        Component(node_handles, "Node Handles", "React", "Connection points")
+        Component(node_dragging, "Node Dragging", "React", "Drag and drop behavior")
+    }
+    
+    Boundary(edge_system, "Edge System") {
+        Component(edge_factory, "Edge Factory", "React", "Creates edge components")
+        Component(edge_types, "Edge Types", "React", "Specialized edge components")
+        Component(edge_routing, "Edge Routing", "React", "Path calculation")
+        Component(edge_markers, "Edge Markers", "React", "Arrow and endpoint markers")
+        Component(edge_validation, "Edge Validation", "React", "Connection validation")
+        Component(edge_events, "Edge Events", "React", "Edge interaction events")
+    }
+    
+    Boundary(selection_system, "Selection System") {
+        Component(selection_state, "Selection State", "React", "Current selection tracking")
+        Component(multi_selection, "Multi-Selection", "React", "Multiple elements selection")
+        Component(selection_box, "Selection Box", "React", "Area selection tool")
+        Component(keyboard_selection, "Keyboard Selection", "React", "Selection via keyboard")
+        Component(context_menu, "Context Menu", "React", "Right-click menu")
+    }
+    
+    Boundary(history_system, "History System") {
+        Component(command_manager, "Command Manager", "TypeScript", "Command pattern implementation")
+        Component(undo_redo, "Undo/Redo", "TypeScript", "History navigation")
+        Component(command_stack, "Command Stack", "TypeScript", "History storage")
+        Component(snapshot_system, "Snapshot System", "TypeScript", "Flow state snapshots")
+        Component(change_detection, "Change Detection", "TypeScript", "Detects flow modifications")
+    }
+    
+    Boundary(persistence_system, "Persistence System") {
+        Component(flow_serializer, "Flow Serializer", "TypeScript", "Converts flow to JSON")
+        Component(flow_deserializer, "Flow Deserializer", "TypeScript", "Reconstructs flow from JSON")
+        Component(flow_versioning, "Flow Versioning", "TypeScript", "Version management")
+        Component(auto_save, "Auto Save", "TypeScript", "Automatic saving")
+        Component(flow_export, "Flow Export", "TypeScript", "Export to various formats")
+        Component(flow_import, "Flow Import", "TypeScript", "Import from various formats")
+    }
+    
+    Boundary(validation_system, "Validation System") {
+        Component(flow_validator, "Flow Validator", "TypeScript", "Validates flow structure")
+        Component(type_checker, "Type Checker", "TypeScript", "Checks type compatibility")
+        Component(connection_validator, "Connection Validator", "TypeScript", "Validates connections")
+        Component(cycle_detector, "Cycle Detector", "TypeScript", "Detects circular dependencies")
+        Component(required_inputs, "Required Inputs Checker", "TypeScript", "Checks for missing inputs")
+        Component(validation_ui, "Validation UI", "React", "Shows validation errors")
+    }
+}
+
+' Main component relationships
+Rel(flow_editor, flow_renderer, "Uses")
+Rel(flow_editor, flow_state, "Uses")
+Rel(flow_renderer, canvas_system, "Implements with")
+Rel(flow_editor, node_system, "Uses")
+Rel(flow_editor, edge_system, "Uses")
+Rel(flow_editor, selection_system, "Uses")
+Rel(flow_editor, history_system, "Uses")
+Rel(flow_state, persistence_system, "Uses")
+Rel(flow_operations, validation_system, "Uses")
+
+' Canvas system relationships
+Rel(canvas_system, react_flow, "Based on")
+Rel(canvas_controls, react_flow, "Controls")
+Rel(canvas_background, react_flow, "Customizes")
+Rel(minimap, react_flow, "Extends")
+Rel(canvas_events, react_flow, "Handles events for")
+
+' Node system relationships
+Rel(node_factory, generic_node, "Creates instances of")
+Rel(node_factory, node_types, "Creates instances of")
+Rel(generic_node, node_handles, "Contains")
+Rel(node_data_panel, node_types, "Configures")
+Rel(node_dragging, canvas_events, "Uses")
+
+' Edge system relationships
+Rel(edge_factory, edge_types, "Creates instances of")
+Rel(edge_routing, edge_types, "Configures")
+Rel(edge_markers, edge_types, "Customizes")
+Rel(edge_validation, edge_events, "Processes")
+
+' Selection system relationships
+Rel(selection_state, multi_selection, "Supports")
+Rel(selection_box, selection_state, "Updates")
+Rel(keyboard_selection, selection_state, "Updates")
+Rel(context_menu, selection_state, "Uses")
+
+' History system relationships
+Rel(command_manager, command_stack, "Manages")
+Rel(undo_redo, command_stack, "Navigates")
+Rel(snapshot_system, command_stack, "Creates entries in")
+Rel(change_detection, snapshot_system, "Triggers")
+
+' Persistence system relationships
+Rel(flow_serializer, flow_deserializer, "Paired with")
+Rel(auto_save, flow_serializer, "Uses")
+Rel(flow_export, flow_serializer, "Uses")
+Rel(flow_import, flow_deserializer, "Uses")
+Rel(flow_versioning, flow_serializer, "Manages versions of")
+
+' Validation system relationships
+Rel(flow_validator, type_checker, "Uses")
+Rel(flow_validator, connection_validator, "Uses")
+Rel(flow_validator, cycle_detector, "Uses")
+Rel(flow_validator, required_inputs, "Uses")
+Rel(validation_ui, flow_validator, "Displays results from")
+
+@enduml

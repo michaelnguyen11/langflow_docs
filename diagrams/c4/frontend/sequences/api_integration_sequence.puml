@@ -1,0 +1,220 @@
+@startuml API_Integration_Sequence
+title Sequence diagram for Langflow Frontend API Integration
+
+participant "Component" as Component
+participant "React Query Hook" as QueryHook
+participant "Query Client" as QueryClient
+participant "Service Layer" as Service
+participant "API Client" as APIClient
+participant "Error Handler" as ErrorHandler
+participant "Cache" as Cache
+participant "Backend API" as BackendAPI
+
+== Data Fetching (GET request) ==
+Component -> QueryHook: useQuery('flowData', fetchFlow)
+activate QueryHook
+
+QueryHook -> QueryClient: Check cache for 'flowData'
+QueryClient -> Cache: Look up 'flowData'
+
+alt Cache Hit
+    Cache --> QueryClient: Return cached data
+    QueryClient --> QueryHook: Return { data, isLoading: false }
+    QueryHook --> Component: Return data from cache
+else Cache Miss
+    Cache --> QueryClient: No cached data
+    QueryClient -> QueryHook: Set { isLoading: true }
+    QueryHook --> Component: Return loading state
+    
+    QueryHook -> Service: fetchFlow()
+    activate Service
+    
+    Service -> APIClient: get('/api/v1/flows/123')
+    activate APIClient
+    
+    APIClient -> APIClient: Add auth headers
+    APIClient -> BackendAPI: GET /api/v1/flows/123
+    BackendAPI --> APIClient: Response data
+    
+    alt Successful Response
+        APIClient -> Service: Return response data
+        Service -> QueryHook: Return processed data
+        QueryHook -> QueryClient: Update query data
+        QueryClient -> Cache: Store in cache
+        QueryClient -> QueryHook: Set { data, isLoading: false }
+        QueryHook --> Component: Return fresh data
+    else Error Response
+        APIClient -> ErrorHandler: Handle error response
+        ErrorHandler -> ErrorHandler: Format error
+        ErrorHandler --> APIClient: Throw formatted error
+        APIClient --> Service: Propagate error
+        Service --> QueryHook: Throw error
+        QueryHook -> QueryClient: Set { error, isError: true }
+        QueryClient -> QueryHook: Update error state
+        QueryHook --> Component: Return error state
+    end
+    
+    deactivate APIClient
+    deactivate Service
+end
+
+deactivate QueryHook
+
+== Data Mutation (POST/PUT request) ==
+Component -> QueryHook: useMutation(updateFlow)
+activate QueryHook
+
+QueryHook -> Component: Return { mutate, isLoading, error }
+
+Component -> QueryHook: mutate(flowData)
+QueryHook -> QueryClient: Track mutation
+
+QueryHook -> Service: updateFlow(flowData)
+activate Service
+
+Service -> APIClient: put('/api/v1/flows/123', flowData)
+activate APIClient
+
+APIClient -> APIClient: Add auth headers
+APIClient -> APIClient: Format request body
+APIClient -> BackendAPI: PUT /api/v1/flows/123
+BackendAPI --> APIClient: Response data
+
+alt Successful Response
+    APIClient -> Service: Return response data
+    Service -> QueryHook: Return result
+    QueryHook -> QueryClient: Invalidate affected queries
+    QueryClient -> Cache: Clear relevant cache entries
+    QueryHook -> Component: Return success result
+else Error Response
+    APIClient -> ErrorHandler: Handle error response
+    ErrorHandler -> ErrorHandler: Format error
+    ErrorHandler --> APIClient: Throw formatted error
+    APIClient --> Service: Propagate error
+    Service --> QueryHook: Throw error
+    QueryHook -> Component: Return error result
+end
+
+deactivate APIClient
+deactivate Service
+deactivate QueryHook
+
+== Optimistic Updates ==
+Component -> QueryHook: useMutation(updateFlow, { optimistic update config })
+activate QueryHook
+
+QueryHook -> Component: Return { mutate, isLoading, error }
+
+Component -> QueryHook: mutate(flowData)
+QueryHook -> QueryClient: Apply optimistic update
+QueryClient -> Cache: Update cache optimistically
+QueryClient -> Component: Reflect optimistic update immediately
+
+QueryHook -> Service: updateFlow(flowData)
+Service -> APIClient: put('/api/v1/flows/123', flowData)
+APIClient -> BackendAPI: PUT /api/v1/flows/123
+
+alt Successful Response
+    BackendAPI --> APIClient: Response data
+    APIClient --> Service: Return response
+    Service --> QueryHook: Return result
+    QueryHook -> QueryClient: Confirm optimistic update
+else Error Response
+    BackendAPI --> APIClient: Error response
+    APIClient --> Service: Throw error
+    Service --> QueryHook: Throw error
+    QueryHook -> QueryClient: Revert optimistic update
+    QueryClient -> Cache: Restore previous state
+    QueryClient -> Component: Show original state
+end
+
+deactivate QueryHook
+
+== Cache Invalidation ==
+Component -> QueryHook: useMutation(deleteFlow)
+activate QueryHook
+
+Component -> QueryHook: mutate(flowId)
+QueryHook -> Service: deleteFlow(flowId)
+Service -> APIClient: delete('/api/v1/flows/123')
+APIClient -> BackendAPI: DELETE /api/v1/flows/123
+BackendAPI --> APIClient: Success response
+APIClient --> Service: Return success
+Service --> QueryHook: Return result
+
+QueryHook -> QueryClient: Invalidate queries
+QueryClient -> Cache: Remove 'flows' queries
+QueryClient -> Cache: Remove 'flowData' query
+QueryClient -> Component: Notify invalidation
+
+deactivate QueryHook
+
+== Infinite Queries (Pagination) ==
+Component -> QueryHook: useInfiniteQuery('flows', fetchFlows)
+activate QueryHook
+
+QueryHook -> QueryClient: Check cache for 'flows'
+QueryClient -> Cache: Look up 'flows'
+
+alt Initial Load
+    QueryHook -> Service: fetchFlows({ page: 1 })
+    Service -> APIClient: get('/api/v1/flows?page=1')
+    APIClient -> BackendAPI: GET /api/v1/flows?page=1
+    BackendAPI --> APIClient: Page 1 data with pagination info
+    APIClient --> Service: Return response
+    Service --> QueryHook: Return page 1 with nextPageParam
+    QueryHook -> QueryClient: Store page 1 data
+    QueryClient -> Cache: Store in cache with pagination info
+    QueryHook --> Component: Return initial page data
+end
+
+Component -> QueryHook: fetchNextPage()
+QueryHook -> Service: fetchFlows({ page: 2 })
+Service -> APIClient: get('/api/v1/flows?page=2')
+APIClient -> BackendAPI: GET /api/v1/flows?page=2
+BackendAPI --> APIClient: Page 2 data with pagination info
+APIClient --> Service: Return response
+Service --> QueryHook: Return page 2 with nextPageParam
+QueryHook -> QueryClient: Append page 2 data
+QueryClient -> Cache: Update cache with new page
+QueryHook --> Component: Return updated data with both pages
+
+deactivate QueryHook
+
+== Error Handling and Retry ==
+Component -> QueryHook: useQuery('flowData', fetchFlow, { retry: 3 })
+activate QueryHook
+
+QueryHook -> Service: fetchFlow()
+Service -> APIClient: get('/api/v1/flows/123')
+APIClient -> BackendAPI: GET /api/v1/flows/123
+BackendAPI --> APIClient: Network error
+
+APIClient -> ErrorHandler: Handle network error
+ErrorHandler -> APIClient: Throw formatted error
+APIClient --> Service: Propagate error
+Service --> QueryHook: Throw error
+
+QueryHook -> QueryHook: Wait for retry delay
+QueryHook -> Service: Retry fetchFlow()
+Service -> APIClient: get('/api/v1/flows/123')
+APIClient -> BackendAPI: GET /api/v1/flows/123
+
+alt Successful Retry
+    BackendAPI --> APIClient: Response data
+    APIClient --> Service: Return response
+    Service --> QueryHook: Return data
+    QueryHook -> QueryClient: Update query data
+    QueryClient -> Cache: Store in cache
+    QueryHook --> Component: Return successful data
+else Maximum Retries Reached
+    BackendAPI --> APIClient: Another error
+    APIClient --> Service: Throw error
+    Service --> QueryHook: Throw error
+    QueryHook -> QueryClient: Set { error, isError: true, failureCount: 3 }
+    QueryHook --> Component: Return error state
+end
+
+deactivate QueryHook
+
+@enduml

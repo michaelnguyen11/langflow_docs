@@ -1,0 +1,103 @@
+@startuml Component_Lifecycle_Sequence
+title Sequence diagram for Langflow Component Lifecycle
+
+participant "Flow Executor" as Executor
+participant "Component Factory" as Factory
+participant "Component Registry" as Registry
+participant "Component Instance" as Component
+participant "Type System" as TypeSystem
+participant "Template Engine" as Template
+participant "External Service" as External
+participant "Cache Service" as Cache
+
+== Component Creation ==
+Executor -> Factory: create_component(component_type, node_data)
+activate Factory
+
+Factory -> Registry: get_component_class(component_type)
+Registry --> Factory: component_class
+
+Factory -> Factory: prepare_initialization_params(node_data)
+Factory -> Factory: resolve_template_variables(params)
+Factory -> TypeSystem: validate_input_types(params)
+TypeSystem --> Factory: validated_params
+
+Factory -> Component: <<create>>(validated_params)
+activate Component
+
+Component -> Component: initialize_attributes()
+Component -> Component: register_input_fields()
+Component -> Component: register_output_fields()
+
+Component --> Factory: initialized_component
+Factory --> Executor: component_instance
+deactivate Factory
+
+== Component Configuration ==
+Executor -> Component: configure(node_config)
+Component -> Component: apply_configuration()
+Component -> Template: process_templates(config)
+Template --> Component: processed_config
+Component -> Component: update_settings()
+
+== Input Mapping ==
+Executor -> Component: map_inputs(input_values)
+activate Component
+
+loop For each input
+    Component -> TypeSystem: convert_type(value, expected_type)
+    TypeSystem --> Component: converted_value
+    Component -> Component: set_input(name, converted_value)
+end
+
+Component --> Executor: inputs_mapped
+deactivate Component
+
+== Component Execution ==
+Executor -> Component: run()
+activate Component
+
+Component -> Cache: check_cache(inputs_hash)
+Cache --> Component: cache_result
+
+alt Cache hit
+    Component -> Component: use_cached_result()
+else Cache miss
+    Component -> Component: prepare_execution()
+    
+    alt External service required
+        Component -> External: make_api_call(params)
+        External --> Component: service_response
+    else Self-contained processing
+        Component -> Component: process_internally()
+    end
+    
+    Component -> Component: post_process_results()
+    Component -> Cache: store_in_cache(inputs_hash, result)
+end
+
+Component -> Component: validate_outputs()
+Component --> Executor: execution_result
+deactivate Component
+
+== Output Mapping ==
+Executor -> Component: map_outputs()
+activate Component
+
+loop For each output field
+    Component -> Component: extract_output_value(field)
+    Component -> TypeSystem: validate_output_type(value, expected_type)
+    TypeSystem --> Component: validated_output
+    Component -> Component: set_output(name, validated_output)
+end
+
+Component --> Executor: outputs_mapped
+deactivate Component
+
+== Component Cleanup ==
+Executor -> Component: cleanup()
+Component -> Component: release_resources()
+Component -> Component: clear_temporary_data()
+Component --> Executor: cleanup_complete
+
+@enduml

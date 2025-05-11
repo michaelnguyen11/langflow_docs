@@ -1,0 +1,79 @@
+@startuml Error_Handling_System
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component diagram for Langflow Error Handling System
+
+Container_Boundary(error_handling_system, "Error Handling System") {
+    Component(global_error_handler, "Global Error Handler", "Python", "Central error processing component")
+    Component(error_interpreter, "Error Interpreter", "Python", "Translates technical errors to user-friendly messages")
+    Component(validation_system, "Validation System", "Python", "Validates inputs before processing")
+    Component(exception_registry, "Exception Registry", "Python", "Catalogs system-defined exceptions")
+    Component(logging_system, "Logging System", "Python", "Records errors for debugging and auditing")
+    Component(alert_system, "Alert System", "Python", "Sends notifications on critical errors")
+    
+    Boundary(exception_types, "Exception Types") {
+        Component(api_exceptions, "API Exceptions", "Python", "REST API related errors")
+        Component(auth_exceptions, "Authentication Exceptions", "Python", "Security and access errors")
+        Component(component_exceptions, "Component Exceptions", "Python", "Component system errors")
+        Component(flow_exceptions, "Flow Exceptions", "Python", "Flow execution errors")
+        Component(external_service_exceptions, "External Service Exceptions", "Python", "Third-party integration errors")
+        Component(resource_exceptions, "Resource Exceptions", "Python", "System resource errors")
+    }
+    
+    Boundary(error_handlers, "Error Handlers") {
+        Component(api_error_handler, "API Error Handler", "Python", "Handles API-related errors")
+        Component(auth_error_handler, "Auth Error Handler", "Python", "Handles authentication errors")
+        Component(component_error_handler, "Component Error Handler", "Python", "Handles component system errors")
+        Component(flow_error_handler, "Flow Error Handler", "Python", "Handles flow execution errors")
+        Component(external_error_handler, "External Service Error Handler", "Python", "Handles third-party integration errors")
+    }
+    
+    Boundary(recovery_mechanisms, "Recovery Mechanisms") {
+        Component(retry_mechanism, "Retry Mechanism", "Python", "Retries failed operations")
+        Component(circuit_breaker, "Circuit Breaker", "Python", "Prevents cascading failures")
+        Component(fallback_system, "Fallback System", "Python", "Provides alternatives on failure")
+        Component(transaction_rollback, "Transaction Rollback", "Python", "Reverts partial changes")
+    }
+}
+
+Container(api_layer, "API Layer", "FastAPI", "REST API endpoints")
+Container(component_system, "Component System", "Python", "Manages component lifecycle")
+Container(flow_engine, "Flow Engine", "Python", "Executes workflow graphs")
+Container(auth_service, "Auth Service", "Python", "Manages authentication")
+Container(monitoring_system, "Monitoring System", "Python", "System health monitoring")
+Person(end_user, "End User", "User of the Langflow system")
+Person(admin_user, "Administrator", "System administrator")
+
+' Relationships within Error Handling System
+Rel(global_error_handler, exception_registry, "References")
+Rel(global_error_handler, error_interpreter, "Uses")
+Rel(global_error_handler, logging_system, "Records errors in")
+Rel(global_error_handler, alert_system, "Triggers alerts via")
+Rel(global_error_handler, error_handlers, "Dispatches to")
+
+Rel(api_error_handler, api_exceptions, "Handles")
+Rel(auth_error_handler, auth_exceptions, "Handles")
+Rel(component_error_handler, component_exceptions, "Handles")
+Rel(flow_error_handler, flow_exceptions, "Handles")
+Rel(external_error_handler, external_service_exceptions, "Handles")
+
+Rel(error_handlers, recovery_mechanisms, "Uses")
+Rel(validation_system, exception_registry, "Raises errors from")
+
+' External Relationships
+Rel(api_layer, global_error_handler, "Forwards errors to")
+Rel(component_system, global_error_handler, "Reports errors to")
+Rel(flow_engine, global_error_handler, "Reports errors to")
+Rel(auth_service, global_error_handler, "Reports errors to")
+
+Rel(logging_system, monitoring_system, "Provides data to")
+Rel(alert_system, admin_user, "Notifies")
+Rel(error_interpreter, end_user, "Provides friendly messages to")
+
+' Error Flow
+Rel_L(api_layer, validation_system, "Validates requests using")
+Rel_R(validation_system, api_layer, "Returns validation errors to")
+
+@enduml

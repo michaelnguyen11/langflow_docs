@@ -1,83 +1,128 @@
-# Langflow Architecture Diagrams
+# Langflow Diagrams
 
-This directory contains a collection of C4 architecture diagrams that document the Langflow system's architecture, with a focus on the Backend Component System.
+This directory contains various architectural and sequence diagrams that visually document the Langflow system. The diagrams are created using PlantUML and are organized by type and subsystem.
+
+## Directory Structure
+
+```
+diagrams/
+├── README.md                 # This file
+│
+├── c4/                       # C4 model diagrams
+│   ├── README.md             # Overview of C4 model approach
+│   ├── c4_model/             # Core C4 diagrams
+│   │   ├── context/          # Context diagrams (Level 1)
+│   │   ├── container/        # Container diagrams (Level 2)
+│   │   ├── component/        # Component diagrams (Level 3)
+│   │   └── code/             # Code diagrams (Level 4)
+│   │
+│   ├── backend/              # Backend-specific C4 diagrams
+│   │   ├── component_system/ # Component system diagrams
+│   │   ├── flows/            # Flow processing diagrams
+│   │   ├── database/         # Database schema diagrams
+│   │   └── sequences/        # Backend sequence diagrams
+│   │
+│   ├── frontend/             # Frontend-specific C4 diagrams
+│   │   ├── components/       # Frontend component diagrams
+│   │   ├── state/            # State management diagrams
+│   │   ├── flows/            # Flow editor diagrams
+│   │   └── sequences/        # Frontend sequence diagrams
+│   │
+│   ├── deployment/           # Deployment diagrams
+│   │   └── aws/              # AWS deployment diagrams
+│   │
+│   └── developer/            # Developer-focused diagrams
+│       ├── workflows/        # Development workflow diagrams
+│       └── guides/           # Developer guide diagrams
+│
+├── banking_journeys/         # Banking-specific journey diagrams
+│   ├── it_users/             # IT user journey diagrams
+│   ├── digital_users/        # Digital user journey diagrams
+│   ├── retail_users/         # Retail user journey diagrams
+│   ├── customer_service/     # Customer service diagrams
+│   └── compliance/           # Compliance diagrams
+│
+├── sequence/                 # Standalone sequence diagrams
+│   ├── frontend/             # Frontend sequences
+│   ├── backend/              # Backend sequences
+│   ├── user/                 # User perspective sequences
+│   ├── developer/            # Developer perspective sequences
+│   └── admin/                # Admin perspective sequences
+│
+└── integration/              # Integration diagrams
+    └── confluence_integration_flow.puml  # Confluence integration
+```
 
 ## Diagram Types
 
-The architecture is documented through several complementary diagrams:
+### C4 Model Diagrams
 
-### Backend Architecture
+The [C4 model](https://c4model.com/) provides a way to visualize software architecture at different levels of abstraction:
 
-1. [**Backend Component Diagram**](docs/backend_component_diagram.md)
-   - High-level view of the major components in the Langflow backend
-   - Shows relationships between the API, Component System, Flow Engine, and supporting services
+1. **Context (Level 1)**: System context - shows the system and its interactions with users and other systems
+2. **Container (Level 2)**: Shows the high-level technology choices and how containers communicate
+3. **Component (Level 3)**: Decomposes containers into components, showing the key logical components and their interactions
+4. **Code (Level 4)**: Shows how components are implemented with code (classes, interfaces, etc.)
 
-2. [**Backend Services Diagram**](docs/backend_services_diagram.md)
-   - Detailed organization of backend services into functional groups
-   - Illustrates dependencies and interactions between service groups
+### Sequence Diagrams
 
-### Component System
+Sequence diagrams show the time-ordered interactions between objects in a process. They document:
 
-3. [**Component System Diagram**](docs/component_system_diagram.md)
-   - Focused view of the Component System's internal structure
-   - Shows key elements like Registry, Scanner, Factory, and Type Extractor
+- The participants involved in a process
+- The order of interactions
+- Message exchanges between participants
+- Decision points and alternative flows
+- System boundaries and external interactions
 
-4. [**Component System Architecture**](docs/component_system_architecture.md)
-   - Comprehensive view of the Component System architecture
-   - Detailed organization of component types and supporting infrastructure
+### Banking Journey Diagrams
 
-### Implementation Details
+Domain-specific diagrams showing Langflow applications in banking contexts:
 
-5. [**Component Class Diagram**](docs/component_class_diagram.md)
-   - Code-level view of the Component System class structure
-   - Shows inheritance relationships and key methods
+- Customer service workflows
+- IT integration journeys
+- Digital user experiences
+- Compliance processes
 
-6. [**Component Execution Sequence**](docs/component_execution_sequence.md)
-   - Dynamic sequence showing the flow of component execution
-   - Illustrates interactions between different parts of the system during execution
+## Working with the Diagrams
 
-## Viewing the Diagrams
+### Viewing Diagrams
 
-These diagrams are created using PlantUML. To render them:
+1. **Pre-rendered SVG**: Generated SVG images are available in the `images/diagrams/` directory
+2. **PlantUML Source**: Original `.puml` files can be viewed in any text editor
+3. **Rendering**: To render the diagrams, use:
+   - The included `render_plantuml.sh` script
+   - Online PlantUML server (paste the content)
+   - VS Code with the PlantUML extension
+   - IntelliJ IDEA with the PlantUML plugin
 
-1. **Online Rendering**: Use the PlantUML online server at http://www.plantuml.com/plantuml/
-2. **Local Installation**: Run `java -jar plantuml.jar filename.puml` with a local PlantUML installation
-3. **IDE Integration**: Use VS Code with the PlantUML extension or other IDE plugins
-4. **CI/CD Tools**: Many CI/CD pipelines support automatic PlantUML rendering
+### Creating New Diagrams
 
-## Diagram Organization
+1. Create a new `.puml` file in the appropriate subdirectory
+2. Use the existing diagrams as templates for consistent styling
+3. Include the appropriate PlantUML includes for the diagram type
+4. Run the rendering script to generate the SVG output
+5. Add documentation for your diagram in the `docs/diagrams/` directory
 
-The diagrams follow the C4 model hierarchy, providing views at different levels of abstraction:
+### Rendering Diagrams
 
-- **Context Level**: System context and external interactions
-- **Container Level**: Major system components and their relationships
-- **Component Level**: Internal structure of specific components
-- **Code Level**: Class relationships and implementation details
+To render all diagrams, use the included script:
 
-## Documentation
+```bash
+./render_plantuml.sh
+```
 
-Each diagram has accompanying documentation that explains:
+This will generate SVG files in the `images/diagrams/` directory matching the source file structure.
 
-- The diagram's purpose and scope
-- Key elements and their functions
-- Important relationships illustrated
-- How to interpret and use the diagram
+## Diagram Conventions
 
-This documentation can be found in the [docs](docs/) directory.
+- **Consistent Styling**: Each diagram type follows consistent color schemes and notations
+- **Meaningful Names**: File names clearly indicate the diagram's purpose
+- **Documentation**: Each diagram has corresponding documentation in the `docs/diagrams/` folder
+- **Hierarchy**: Diagrams follow the C4 model hierarchy from high-level context to detailed code
+- **Focus**: Each diagram focuses on a specific aspect rather than trying to show everything
 
-## Keeping Diagrams Updated
+## Related Resources
 
-These diagrams should be updated when significant architectural changes are made. When updating:
-
-1. Modify the PlantUML source files
-2. Update the corresponding documentation
-3. Re-render the diagrams to generate new images
-4. Update any related documentation that references the diagrams
-
-## Related Documentation
-
-These diagrams are part of the larger Langflow documentation:
-
-- [Backend Component System Documentation](../backend/backend_component_system.md)
-- [Flow Engine Documentation](../architecture/flow_engine.md)
-- [Architecture Overview](../architecture/architecture_overview.md)
+- Documentation for each diagram can be found in `docs/diagrams/`
+- Pre-rendered images are available in `images/diagrams/`
+- The main documentation portal at `index.html` provides an interactive way to explore diagrams

@@ -1,0 +1,58 @@
+@startuml User_API_Usage
+title User Perspective - API Usage Sequence
+
+actor "User" as User
+boundary "Application" as App
+control "Langflow API" as API
+entity "Flow" as Flow
+control "Flow Engine" as Engine
+database "Database" as DB
+collections "External Services" as External
+
+User -> App: Open application
+App -> API: Authenticate
+API -> DB: Verify credentials
+DB --> API: Authentication successful
+API --> App: Authentication token
+
+User -> App: Perform action requiring AI
+App -> App: Prepare request data
+App -> API: POST /api/v1/flows/{id}/execute
+API -> DB: Retrieve flow
+DB --> API: Flow data
+API -> Flow: Initialize flow
+Flow -> Engine: Execute with inputs
+Engine -> Engine: Process nodes
+
+alt Flow uses external services
+    Engine -> External: Make API calls
+    External --> Engine: Return results
+end
+
+Engine --> Flow: Execution complete
+Flow --> API: Return results
+API --> App: Return response
+App -> App: Process response
+App -> User: Display results
+
+alt Conversation flow
+    User -> App: Continue conversation
+    App -> API: POST /api/v1/flows/chat/{id}
+    API -> Flow: Continue with chat history
+    Flow -> Engine: Execute with context
+    Engine -> Engine: Process with history
+    Engine --> Flow: New response
+    Flow --> API: Return results
+    API --> App: Return response
+    App -> User: Display response
+end
+
+alt Feedback
+    User -> App: Provide feedback on results
+    App -> API: POST /api/v1/feedback
+    API -> DB: Store feedback
+    DB --> API: Confirmation
+    API --> App: Feedback recorded
+end
+
+@enduml

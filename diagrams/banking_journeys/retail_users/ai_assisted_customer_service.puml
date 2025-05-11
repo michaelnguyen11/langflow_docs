@@ -1,0 +1,220 @@
+@startuml AI-Assisted Customer Service
+!theme plain
+scale max 1000 width
+
+'Define participants
+actor "Branch Representative" as Rep
+actor "Customer" as Cust
+actor "Relationship Manager" as RM
+actor "Branch Manager" as Mgr
+participant "Langflow\nWeb Interface" as UI
+participant "Langflow\nAPI Layer" as API
+participant "Banking\nAssistant UI" as BankUI
+participant "Flow\nEngine" as FlowEngine
+participant "Component\nSystem" as CompSys
+participant "Banking\nComponents" as BankComp #lightblue
+participant "Banking Core\nSystems" as Core #lightblue
+participant "LLM\nProviders" as LLM #lightgreen
+participant "Audit\nSystem" as Audit #pink
+
+'Title and headers
+title AI-Assisted Customer Service for Retail Banking
+header Retail User Journey
+footer Langflow in Banking Context
+
+'Sequence definition
+== Login and Authentication Phase ==
+
+Rep -> UI: Login to banking assistant
+UI -> API: Authenticate branch representative
+API --> UI: Return authentication token
+UI -> BankUI: Initialize banking interface
+BankUI --> UI: Banking interface ready
+
+Rep -> BankUI: Select customer service module
+BankUI -> API: Load service options
+API -> FlowEngine: Load customer service flows
+FlowEngine --> API: Available flows returned
+API --> BankUI: Display service options
+
+== Customer Inquiry Phase ==
+
+Cust -> Rep: Present service inquiry
+Rep -> BankUI: Enter customer information
+BankUI -> API: Retrieve customer profile
+API -> FlowEngine: Trigger customer lookup flow
+FlowEngine -> CompSys: Process customer lookup
+CompSys -> BankComp: Use banking customer component
+BankComp -> Core: Query customer information
+Core --> BankComp: Return customer data
+BankComp --> CompSys: Format customer data
+CompSys --> FlowEngine: Return customer profile
+FlowEngine --> API: Customer profile retrieved
+API --> BankUI: Display customer information
+
+Rep -> BankUI: Enter customer inquiry
+BankUI -> API: Process customer inquiry
+API -> FlowEngine: Execute inquiry classification flow
+FlowEngine -> CompSys: Classify inquiry type
+CompSys -> LLM: Analyze inquiry content
+LLM --> CompSys: Return classification
+CompSys --> FlowEngine: Return inquiry category
+FlowEngine --> API: Inquiry classified
+API --> BankUI: Display appropriate response tools
+
+== AI-Assisted Response Phase ==
+
+Rep -> BankUI: Request AI recommendations
+BankUI -> API: Generate recommendations
+API -> FlowEngine: Execute recommendation flow
+FlowEngine -> CompSys: Process recommendation request
+CompSys -> BankComp: Use banking product component
+BankComp -> Core: Query product information
+Core --> BankComp: Return product details
+BankComp --> CompSys: Format product information
+
+CompSys -> LLM: Generate personalized recommendations
+note right: Large language model creates\ncustomer-specific banking recommendations
+LLM --> CompSys: Return personalized content
+
+CompSys -> BankComp: Use compliance component
+BankComp -> Core: Verify compliance requirements
+Core --> BankComp: Return compliance guidelines
+BankComp --> CompSys: Apply compliance rules
+CompSys --> FlowEngine: Return compliant recommendations
+FlowEngine --> API: Recommendations generated
+API --> BankUI: Display AI recommendations
+
+Rep -> BankUI: Review AI suggestions
+Rep -> BankUI: Select relevant information
+BankUI -> API: Save selected information
+API -> Audit: Log information selection
+Audit --> API: Selection logged
+API --> BankUI: Selection confirmed
+
+== Transaction Processing Phase ==
+
+Rep -> BankUI: Initiate banking transaction
+BankUI -> API: Process transaction request
+API -> FlowEngine: Execute transaction flow
+FlowEngine -> CompSys: Process transaction
+CompSys -> BankComp: Use transaction component
+BankComp -> Core: Validate transaction
+Core --> BankComp: Return validation result
+BankComp --> CompSys: Apply transaction rules
+
+CompSys -> BankComp: Use fraud detection component
+BankComp -> Core: Check for fraud indicators
+Core --> BankComp: Return fraud analysis
+BankComp --> CompSys: Provide risk assessment
+
+CompSys -> LLM: Generate transaction explanation
+LLM --> CompSys: Return clear explanation
+CompSys --> FlowEngine: Return transaction details
+FlowEngine --> API: Transaction details prepared
+API --> BankUI: Display transaction details
+
+Rep -> Cust: Explain transaction details
+Cust -> Rep: Confirm transaction
+Rep -> BankUI: Submit transaction approval
+BankUI -> API: Process final transaction
+API -> FlowEngine: Execute final transaction flow
+FlowEngine -> CompSys: Process final submission
+CompSys -> BankComp: Use transaction component
+BankComp -> Core: Submit transaction to core banking
+Core --> BankComp: Return transaction confirmation
+BankComp --> CompSys: Format confirmation
+CompSys --> FlowEngine: Return final result
+FlowEngine --> API: Transaction complete
+API --> BankUI: Display transaction confirmation
+
+== Document Generation Phase ==
+
+Rep -> BankUI: Request transaction documentation
+BankUI -> API: Generate banking documents
+API -> FlowEngine: Execute document flow
+FlowEngine -> CompSys: Process document request
+CompSys -> BankComp: Use document component
+BankComp -> Core: Retrieve document templates
+Core --> BankComp: Return templates
+
+BankComp -> LLM: Generate personalized content
+LLM --> BankComp: Return document content
+BankComp --> CompSys: Format final document
+CompSys --> FlowEngine: Return completed document
+FlowEngine --> API: Document generated
+API --> BankUI: Display document for review
+
+Rep -> BankUI: Finalize document
+BankUI -> API: Process document finalization
+API -> Audit: Log document generation
+Audit --> API: Document logged
+API --> BankUI: Display download/print options
+
+Rep -> Cust: Provide completed documentation
+
+== Complex Case Escalation Phase ==
+
+Rep -> BankUI: Flag complex inquiry
+BankUI -> API: Process escalation
+API -> FlowEngine: Execute escalation flow
+FlowEngine -> CompSys: Process escalation request
+CompSys --> FlowEngine: Return escalation options
+FlowEngine --> API: Escalation prepared
+API --> BankUI: Display escalation options
+
+Rep -> RM: Transfer complex case
+RM -> UI: Login to banking assistant
+UI -> API: Authenticate relationship manager
+API --> UI: Return authentication token
+UI -> BankUI: Initialize banking interface
+BankUI --> UI: Banking interface ready
+
+BankUI -> API: Load case details
+API -> FlowEngine: Retrieve case context
+FlowEngine -> CompSys: Process context request
+CompSys -> Core: Retrieve full case history
+Core --> CompSys: Return case history
+CompSys --> FlowEngine: Return formatted context
+FlowEngine --> API: Case context retrieved
+API --> BankUI: Display comprehensive case view
+
+RM -> BankUI: Request specialized AI guidance
+BankUI -> API: Process specialized request
+API -> FlowEngine: Execute specialized advisory flow
+FlowEngine -> CompSys: Process advisory request
+CompSys -> LLM: Generate specialized guidance
+LLM --> CompSys: Return expert recommendations
+CompSys --> FlowEngine: Return guidance
+FlowEngine --> API: Specialized guidance generated
+API --> BankUI: Display advanced recommendations
+
+RM -> Cust: Provide expert assistance
+
+== Performance Monitoring Phase ==
+
+Mgr -> UI: Login to management dashboard
+UI -> API: Authenticate branch manager
+API --> UI: Return authentication token
+UI -> BankUI: Initialize management interface
+BankUI --> UI: Management interface ready
+
+Mgr -> BankUI: Request performance metrics
+BankUI -> API: Generate performance report
+API -> Audit: Retrieve usage statistics
+Audit --> API: Return usage data
+API --> BankUI: Display performance dashboard
+
+Mgr -> BankUI: Review AI usage patterns
+BankUI -> API: Analyze AI effectiveness
+API -> Audit: Retrieve outcome metrics
+Audit --> API: Return effectiveness data
+API --> BankUI: Display AI effectiveness report
+
+Mgr -> BankUI: Identify training opportunities
+BankUI -> API: Generate training recommendations
+API -> Audit: Analyze error patterns
+Audit --> API: Return learning opportunities
+API --> BankUI: Display training recommendations
+
+@enduml 
